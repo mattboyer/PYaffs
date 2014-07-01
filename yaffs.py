@@ -76,13 +76,22 @@ class Dumper(object):
     def find(self, file_name):
 
         matches = list()
-        for idx, spare in self.spares:
+        for idx, spare in enumerate(self.spares):
             block = self.read_block_data(idx)
             if file_name == block.name:
                 matches.append((idx, block, spare))
+            else:
+                del block
 
         return matches
 
+    def find_blocks_for_objid(self, objid):
+        matches = list()
+        for idx, spare in enumerate(self.spares):
+            spare_objid = self.object_id_from_spare(self.bytes_to_binary(spare))
+            if objid == spare_objid:
+                matches.append((idx, self.read_block_data(idx)))
+        return matches
 
     def read_spare_data(self):
         while True:
@@ -106,36 +115,32 @@ def spike():
         dumper.read_spare_data()
 
         print("{0} spares".format(len(dumper.spares)))
+        matches = dumper.find("wpa_supplicant.conf")
+        assert 1 == len(matches)
+        header_idx, header_block, header_spare = matches[0]
 
-        # For now, let's assume the first block is always a header (a dir, most
-        # likely)
-        first_block = dumper.read_block_data(0)
-        print("1st block type: {0} parent objId: {1}".format(first_block.object_type, first_block.parent_objId))
-        print("1st block name: {0}".format(first_block.name))
+        spare_as_binary = dumper.bytes_to_binary(header_spare)
+        objectid = dumper.object_id_from_spare(spare_as_binary)
+        print("objectId for file is {0}".format(objectid))
 
-        first_block_spare = dumper.bytes_to_binary(dumper.spares[0])
-        first_block_objId = dumper.object_id_from_spare(first_block_spare)
-        print(first_block_objId)
+        matches = dumper.find_blocks_for_objid(objectid)
+        print(len(matches))
+        for (idx, match) in matches:
+            print(str(match))
+            print(dumper.bytes_to_binary(dumper.spares[idx]))
 
-        matches = list()
-        for idx, spare in enumerate(dumper.spares):
-            if dumper.object_id_from_spare(dumper.bytes_to_binary(spare)) == first_block_objId:
-                matches.append((idx, spare))
 
-        print("{0} blocks have a spare matching the objectId of the 1st block".format(len(matches)))
+        # TODO Figure out the length of wpa_supplicant.conf from the header and
+        # cross-ref that to the 16 bytes of spare
 
-        header_spares = list()
-        data_spares = list()
-        for idx, spare in matches:
-            block = dumper.read_block_data(idx)
-            if first_block.name in str(block):
-                header_spares.append(dumper.bytes_to_binary(spare))
-            else:
-                data_spares.append(dumper.bytes_to_binary(spare))
+        #for idx, spare in enumerate(dumper.spares):
+            #tentative_block = dumper.read_block_data(idx)
+            #if 1 != tentative_block.object_type:
+                #del tentative_block
+                #continue
+            #if 20 > len(tentative_block.name):
+                #print(tentative_block.name)
 
-        print('\n'.join(header_spares))
-        print()
-        print('\n'.join(data_spares))
 
 if '__main__' == __name__:
     spike()
