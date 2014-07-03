@@ -95,7 +95,13 @@ class ObjectHeader(Blob):
         return str(self._inner_bytes)
 
     def __repr__(self):
-        return "<{name}:{t} parent {p} size {s} cksum {c}>".format(name=self.name, t=self.header_types[self.object_type], s=self.size, c=self.name_chksum, p=self.parent_objid)
+        return "<{name}:{t} parent {p} size {s} cksum {c}>".format(
+                name=self.name,
+                t=self.header_types[self.object_type],
+                p=self.parent_objid,
+                s=self.size,
+                c=self.name_chksum,
+            )
 
 
 class Dumper(object):
@@ -125,7 +131,7 @@ class Dumper(object):
 
         # Read four times
         for quartet_idx in range(4):
-            self._stream.seek((1+quartet_idx) * 512, io.SEEK_CUR)
+            self._stream.seek(512, io.SEEK_CUR)
 
             read_bytes = self._stream.read(16)
             if 16 != len(read_bytes):
@@ -174,9 +180,8 @@ class Dumper(object):
 
     def find_blocks_for_objid(self, objid):
         matches = list()
-        for idx, spare in enumerate(self.spares[::4]):
-            spare_objid = self.object_id_from_spare(self.bytes_to_binary(spare))
-            if objid == spare_objid:
+        for idx, spare in enumerate(self.spares):
+            if objid == spare.objectid:
                 matches.append((idx, self.read_block_data(idx)))
         return matches
 
@@ -192,23 +197,19 @@ def spike():
     with open(file_path, 'rb') as yaffs_file:
         dumper = Dumper(yaffs_file)
 
-        first_spare = dumper.read_spare_data(0)
-        print(repr(first_spare))
-        print(str(first_spare))
-
         num_blocks = dumper.read_all_spares()
-
         print("{0} blocks".format(num_blocks))
 
-        print(repr(dumper.spares[0]))
-        print(str(dumper.spares[0]))
-        return
-        #objectid = 902
-        #matches = dumper.find_blocks_for_objid(objectid)
+        objectid = 902
+        matches = dumper.find_blocks_for_objid(objectid)
 
-        foo = dumper.read_block_data(3)
-        print(repr(foo))
-        print(str(foo))
+        for block_idx, _ in matches:
+            bits = str(dumper.spares[block_idx])
+            for i in range(4):
+                print(bits[128 * i : 128 * (1+i)])
+            print('\n\n')
+
+        return
 
         idx, first = matches[0]
         print("Block {0} has matching objid in spare".format(idx))
