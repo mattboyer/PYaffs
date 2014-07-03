@@ -50,6 +50,7 @@ class Spare(Blob):
         assert 512 == len(self._inner_bits)
         self.objectid = self.little_endian_bits_to_int(40, 18)
         self.chunkid = self.bits_to_int(136, 16)
+        self.bytecount = self.little_endian_bits_to_int(176, 16)
 
 
     # Needs a better name
@@ -84,16 +85,22 @@ class Spare(Blob):
         return str(self._inner_bits)
 
     def __repr__(self):
-        return "<spare objectId:{0} chunkid:{1}>".format(self.objectid, self.chunkid)
+        return "<spare objectId:{0} chunkid:{1} bytecount:{2}>".format(self.objectid, self.chunkid, self.bytecount)
 
 class ObjectHeader(Blob):
     header_types = {
+            0: "UNKNOWN",
             1: "file",
+            2: "symlink",
             3: "dir",
+            4: "hardlink",
+            5: "special",
             }
 
-    def __init__(self, bytes):
+    def __init__(self, bytes, objectid):
         Blob.__init__(self, bytes)
+
+        self.objectid = objectid
 
         self.object_type = self.little_endian_bytes_to_int(0, 32)
         self.parent_objid = self.little_endian_bytes_to_int(4, 32)
@@ -111,12 +118,12 @@ class ObjectHeader(Blob):
         return str(self._inner_bytes)
 
     def __repr__(self):
-        return "<{name}:{t} parent {p} size {s} cksum {c}>".format(
+        return "<ObjectHeader: {i} {t} \"{name}\" parent {p} size {s}>".format(
+                i=self.objectid,
                 name=self.name,
                 t=self.header_types[self.object_type],
                 p=self.parent_objid,
                 s=self.size,
-                c=self.name_chksum,
             )
 
 class Dumper(object):
@@ -124,6 +131,7 @@ class Dumper(object):
     def __init__(self, file_stream):
         self._stream = file_stream
         self.spares = list()
+        self.headers = set()
 
     @staticmethod
     def weird_from_spare(bit_array):
@@ -165,7 +173,21 @@ class Dumper(object):
                 break
         return idx
 
+    def read_headers(self):
+        for idx, spare in enumerate(self.spares):
+            #print((idx, repr(spare)))
+            if not (0 == spare.chunkid and 0xFFFF == spare.bytecount):
+                continue
+            header_bytes = self.read_block_data(idx)
+            header = ObjectHeader(header_bytes, spare.objectid)
+            print(repr(header))
+            self.headers.add(header)
+            del header
+            del header_bytes
+
     def read_block_data(self, block_idx):
+        num_bytes_to_read = self.spares[block_idx].bytecount
+
         # We'll read the 2048 bytes of data of index block_idx
         self._stream.seek(2112 * block_idx, io.SEEK_SET)
         data_bytes = bytes()
@@ -178,8 +200,11 @@ class Dumper(object):
             data_bytes += read_bytes
 
             self._stream.seek(16, io.SEEK_CUR)
-        assert 2048 == len(data_bytes)
-        return ObjectHeader(data_bytes)
+
+        data_bytes = data_bytes[:num_bytes_to_read]
+        # We should return straight bytes to be passed to ObjectHeader at the
+        # caller's discretion
+        return data_bytes
 
     def find(self, file_name):
         # FIXME BROKEN
@@ -219,21 +244,25 @@ def spike():
 
         num_blocks = dumper.read_all_spares()
         print("{0} blocks".format(num_blocks))
+        dumper.read_headers()
 
+        print('\n\n')
 
-
-        objectid = 485
+        # 485 is tcpdump
+        #objectid = 485
+        objectid = 546
         matches = dumper.find_blocks_for_objid(objectid)
 
         #matches = dumper.find("wpa_supplicant.conf")
         #print(len(matches))
 
         for block_idx, block in matches:
-            print(repr(dumper.spares[block_idx]))
+            #print(repr(dumper.spares[block_idx]))
             if 0 == dumper.spares[block_idx].chunkid:
-                print(repr(block))
-            else:
-                print(str(block))
+                print(repr(ObjectHeader(block, dumper.spares[block_idx].objectid)))
+                continue
+
+            print(str(block))
 
         return
 
