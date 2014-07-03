@@ -49,13 +49,29 @@ class Spare(Blob):
         self._inner_bits = Spare.bytes_to_binary(self._inner_bytes)
         assert 512 == len(self._inner_bits)
         self.objectid = self.little_endian_bits_to_int(40, 18)
+        self.chunkid = self.bits_to_int(136, 16)
+
+
+    # Needs a better name
+    def bits_to_int(self, bit_offset, length):
+
+        bit_substring = self._inner_bits[bit_offset:bit_offset + length]
+
+        bits_as_int = int(bit_substring, 2)
+        return bits_as_int
 
     def little_endian_bits_to_int(self, bit_offset, length):
 
         bit_substring = self._inner_bits[bit_offset:bit_offset + length]
 
         bits_as_int = int()
-        for byte_idx in range(1 + int(length / 8)):
+
+        if 0 == length % 8:
+            range_end = int(length / 8)
+        else:
+            range_end = 1 + int(length/8)
+
+        for byte_idx in range(range_end):
             range_start = 8 * byte_idx
             range_end = min(8 * (1 + byte_idx), length)
             byte_as_int = int(bit_substring[range_start:range_end], 2)
@@ -68,7 +84,7 @@ class Spare(Blob):
         return str(self._inner_bits)
 
     def __repr__(self):
-        return "<spare objectId:{0}>".format(self.objectid)
+        return "<spare objectId:{0} chunkid:{1}>".format(self.objectid, self.chunkid)
 
 class ObjectHeader(Blob):
     header_types = {
@@ -102,7 +118,6 @@ class ObjectHeader(Blob):
                 s=self.size,
                 c=self.name_chksum,
             )
-
 
 class Dumper(object):
 
@@ -157,22 +172,27 @@ class Dumper(object):
 
         # Read four times
         for quartet_idx in range(4):
-            self._stream.seek(quartet_idx * 16, io.SEEK_CUR)
             read_bytes = self._stream.read(512)
             if 512 != len(read_bytes):
                 raise IOError("Couldn't read block {0}".format(block_idx))
             data_bytes += read_bytes
+
+            self._stream.seek(16, io.SEEK_CUR)
         assert 2048 == len(data_bytes)
         return ObjectHeader(data_bytes)
 
     def find(self, file_name):
-
+        # FIXME BROKEN
         matches = list()
-        for idx, spare in enumerate(self.spares[::4]):
+        for idx, spare in enumerate(self.spares):
+            if 0 != spare.chunkid:
+                continue
+
+            print("idx {i} chunkid {0} objid {1}".format(spare.chunkid, spare.objectid, i=idx))
             block = self.read_block_data(idx)
-            print(block.name)
+            print(repr(block))
             if file_name == block.name:
-                matches.append((idx, block, spare))
+                matches.append((block, spare))
             else:
                 del block
 
@@ -200,21 +220,22 @@ def spike():
         num_blocks = dumper.read_all_spares()
         print("{0} blocks".format(num_blocks))
 
-        objectid = 902
+
+
+        objectid = 485
         matches = dumper.find_blocks_for_objid(objectid)
 
-        for block_idx, _ in matches:
-            bits = str(dumper.spares[block_idx])
-            for i in range(4):
-                print(bits[128 * i : 128 * (1+i)])
-            print('\n\n')
+        #matches = dumper.find("wpa_supplicant.conf")
+        #print(len(matches))
+
+        for block_idx, block in matches:
+            print(repr(dumper.spares[block_idx]))
+            if 0 == dumper.spares[block_idx].chunkid:
+                print(repr(block))
+            else:
+                print(str(block))
 
         return
-
-        idx, first = matches[0]
-        print("Block {0} has matching objid in spare".format(idx))
-        print(repr(first))
-        print(str(first))
 
 if '__main__' == __name__:
     spike()
