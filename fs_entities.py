@@ -1,5 +1,3 @@
-import os
-
 class FSLeaf(object):
     def __init__(self, filesystem, header):
         self._filesystem = filesystem
@@ -23,7 +21,7 @@ class FSLeaf(object):
             path_tokens.append(fs_obj.name)
             fs_obj = self._filesystem.get_inode(fs_obj.parent)
 
-        return os.path.sep + os.path.join('', *path_tokens[::-1])
+        return '/' + '/'.join(path_tokens[::-1])
 
     @property
     def perms(self):
