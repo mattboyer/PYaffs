@@ -4,6 +4,55 @@ import sys
 import os
 import io
 
+class FSLeaf(object):
+    def __init__(self, filesystem, header):
+        self._filesystem = filesystem
+
+        self.inode = header.objectid
+        self.parent = header.parent_objid
+        self.name = header.name
+
+        self.mode = header.mode
+        self.uid = header.uid
+        self.gid = header.gid
+        self.atime = header.atime
+        self.mtime = header.mtime
+        self.ctime = header.ctime
+
+    @property
+    def path(self):
+        path_tokens = list()
+        fs_obj = self
+        while fs_obj.parent != fs_obj.inode:
+            path_tokens.append(fs_obj.name)
+            fs_obj = self._filesystem.get_inode(fs_obj.parent)
+
+        return os.path.sep + os.path.join(*path_tokens[::-1])
+
+class FSFile(FSLeaf):
+    def __init__(self, filesystem, header):
+        FSLeaf.__init__(self, filesystem, header)
+        self.size = header.size
+        # TODO Do something about the actual *DATA*!!!!
+
+    def __len__(self):
+        return self.size
+
+    def __repr__(self):
+        return "<File {0}>".format(self.name)
+
+class FSDir(FSLeaf):
+    def __init__(self, filesystem, header):
+        FSLeaf.__init__(self, filesystem, header)
+        # Populate dir entries
+        self.entries = set()
+
+    def __len__(self):
+        return len(self.entries)
+
+    def __iter__(self):
+        return iter(self.entries)
+
 class FileSystem(object):
     def __init__(self, headers_dict):
         self.root_inode = None
@@ -13,7 +62,17 @@ class FileSystem(object):
         self._headers = headers_dict
         self._build_fs()
 
-        self._print_dir(self.root_inode)
+        self._inodes = dict()
+
+        self.root_object = FSDir(self, self._headers[self.root_inode])
+        self._inodes[self.root_inode] = self.root_object
+        self._build_inodes(self.root_object)
+
+        for foo in self.root_object:
+            print(foo.path)
+            if isinstance(foo, FSDir):
+                for bar in foo:
+                    print(bar.path)
 
 
     def _build_fs(self):
@@ -36,16 +95,32 @@ class FileSystem(object):
         if not self.root_inode:
             raise IOError("Root inode not found")
 
+        # Now build "proper" FS objects from all this
 
-    def _print_dir(self, dir_inode):
-        if dir_inode not in self._parents:
+    def get_inode(self, inode):
+        return self._inodes[inode]
+
+
+    def _build_inodes(self, dir_object):
+        if dir_object.parent not in self._parents:
             raise IOError("{0} not a dir".format(dir_inode))
-        for child_inode in self._parents[dir_inode]:
-            child_header = self._headers[child_inode]
-            print(child_header.name)
-            if 3 == child_header.object_type:
-                self._print_dir(child_inode)
 
+        for child_inode in self._parents[dir_object.inode]:
+            child_header = self._headers[child_inode]
+
+            #print(child_header.name)
+            inode_obj = None
+            if 1 == child_header.object_type:
+                # We have a regular file
+                inode_obj = FSFile(self, child_header)
+            if 3 == child_header.object_type:
+                # We have a dir
+                inode_obj = FSDir(self, child_header)
+                self._build_inodes(inode_obj)
+
+            if inode_obj:
+                dir_object.entries.add(inode_obj)
+                self._inodes[inode_obj.inode] = inode_obj
 
 class Blob(object):
 
