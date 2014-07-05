@@ -57,16 +57,13 @@ class FileSystem(object):
     def __init__(self, headers_dict):
         self.root_inode = None
         self._parents = dict()
-
-        # Do we want this here?
-        self._headers = headers_dict
-        self._build_fs()
-
         self._inodes = dict()
 
-        self.root_object = FSDir(self, self._headers[self.root_inode])
-        self._inodes[self.root_inode] = self.root_object
-        self._build_inodes(self.root_object)
+        # Do we want this here?
+        #self._headers = headers_dict
+        self._build_fs(headers_dict)
+
+
 
         for foo in self.root_object:
             print(foo.path)
@@ -75,12 +72,35 @@ class FileSystem(object):
                     print(bar.path)
 
 
-    def _build_fs(self):
-        for header_objid, header in self._headers.items():
-            if not header.parent_objid in self._headers:
+    def _build_fs(self, headers):
+        def _build_objects_in_dir(dir_object):
+            if dir_object.parent not in self._parents:
+                raise IOError("{0} not a dir".format(dir_inode))
+
+            for child_inode in self._parents[dir_object.inode]:
+                child_header = headers[child_inode]
+
+                #print(child_header.name)
+                inode_obj = None
+                if 1 == child_header.object_type:
+                    # We have a regular file
+                    inode_obj = FSFile(self, child_header)
+                if 3 == child_header.object_type:
+                    # We have a dir
+                    inode_obj = FSDir(self, child_header)
+                    _build_objects_in_dir(inode_obj)
+
+                if inode_obj:
+                    dir_object.entries.add(inode_obj)
+                    self._inodes[inode_obj.inode] = inode_obj
+
+
+
+        for header_objid, header in headers.items():
+            if not header.parent_objid in headers:
                 raise IOError("Object {0}'s parent objectid {1} not found".format(repr(header), header.parent_objid))
 
-            parent = self._headers[header.parent_objid]
+            parent = headers[header.parent_objid]
             if parent == header:
                 # We've found the root, what do we do?
                 self.root_inode = header_objid
@@ -95,32 +115,15 @@ class FileSystem(object):
         if not self.root_inode:
             raise IOError("Root inode not found")
 
-        # Now build "proper" FS objects from all this
+        self.root_object = FSDir(self, headers[self.root_inode])
+        self._inodes[self.root_inode] = self.root_object
+        _build_objects_in_dir(self.root_object)
+
 
     def get_inode(self, inode):
         return self._inodes[inode]
 
 
-    def _build_inodes(self, dir_object):
-        if dir_object.parent not in self._parents:
-            raise IOError("{0} not a dir".format(dir_inode))
-
-        for child_inode in self._parents[dir_object.inode]:
-            child_header = self._headers[child_inode]
-
-            #print(child_header.name)
-            inode_obj = None
-            if 1 == child_header.object_type:
-                # We have a regular file
-                inode_obj = FSFile(self, child_header)
-            if 3 == child_header.object_type:
-                # We have a dir
-                inode_obj = FSDir(self, child_header)
-                self._build_inodes(inode_obj)
-
-            if inode_obj:
-                dir_object.entries.add(inode_obj)
-                self._inodes[inode_obj.inode] = inode_obj
 
 class Blob(object):
 
