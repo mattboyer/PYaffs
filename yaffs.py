@@ -4,6 +4,15 @@ import sys
 import os
 import io
 
+class FileSystem(object):
+    def __init__(self):
+        self._root_dir = None
+
+    def set_root_dir(self, dir):
+        self._root_dir = dir
+
+
+
 class Blob(object):
 
     def __init__(self, bytes):
@@ -20,7 +29,6 @@ class Blob(object):
 
         bit_array = ''.join(bit_array)
         return bit_array
-
 
     def little_endian_bytes_to_int(self, offset, length):
         if 0 != length % 8:
@@ -131,21 +139,7 @@ class Dumper(object):
     def __init__(self, file_stream):
         self._stream = file_stream
         self.spares = list()
-        self.headers = set()
-
-    @staticmethod
-    def weird_from_spare(bit_array):
-        assert 128 == len(bit_array), len(bit_array)
-
-        object_id = bit_array[20:40]
-
-        first_byte_as_int = int(object_id[:8], 2)
-        second_byte_as_int = int(object_id[8:16], 2)
-        runt_as_int = int(object_id[16:20], 2)
-
-        weird_as_int = 1024 * runt_as_int + 256 * second_byte_as_int + first_byte_as_int
-
-        return weird_as_int
+        self.headers = dict()
 
     def read_spare_data(self, block_idx):
         # We'll read the 2048 bytes of data of index block_idx
@@ -175,15 +169,14 @@ class Dumper(object):
 
     def read_headers(self):
         for idx, spare in enumerate(self.spares):
-            #print((idx, repr(spare)))
             if not (0 == spare.chunkid and 0xFFFF == spare.bytecount):
                 continue
             header_bytes = self.read_block_data(idx)
             header = ObjectHeader(header_bytes, spare.objectid)
-            print(repr(header))
-            self.headers.add(header)
-            del header
-            del header_bytes
+            #print(repr(header))
+            self.headers[header.objectid] = header
+            #del header
+            #del header_bytes
 
     def read_block_data(self, block_idx):
         num_bytes_to_read = self.spares[block_idx].bytecount
@@ -248,6 +241,35 @@ def spike():
 
         print('\n\n')
 
+        dirs = set()
+        parents = dict()
+
+        root_objid = None
+        for header_objid, header in dumper.headers.items():
+            if not header.parent_objid in dumper.headers:
+                raise IOError("Object {0}'s parent objectid {1} not found".format(repr(header), header.parent_objid))
+
+            parent = dumper.headers[header.parent_objid]
+            if parent == header:
+                # We've found the root, what do we do?
+                root_objid = header_objid
+                continue
+
+            print("{0} has child {1}".format(repr(parent), repr(header)))
+            if not header.parent_objid in parents:
+                parents[header.parent_objid] = set([header_objid])
+            else:
+                parents[header.parent_objid].add(header_objid)
+
+        if not root_objid:
+            raise IOError("Root inode not found")
+
+        for child in parents[root_objid]:
+            print(repr(dumper.headers[child]))
+
+
+        return
+
         # 485 is tcpdump
         #objectid = 485
         objectid = 546
@@ -265,6 +287,8 @@ def spike():
             print(str(block))
 
         return
+
+
 
 if '__main__' == __name__:
     spike()
