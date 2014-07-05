@@ -29,6 +29,10 @@ class FSLeaf(object):
 
         return os.path.sep + os.path.join(*path_tokens[::-1])
 
+    @property
+    def perms(self):
+        return "uid:gid {0}:{1} mode {2}".format(self.uid, self.gid, self.mode)
+
 class FSFile(FSLeaf):
     def __init__(self, filesystem, header):
         FSLeaf.__init__(self, filesystem, header)
@@ -39,7 +43,12 @@ class FSFile(FSLeaf):
         return self.size
 
     def __repr__(self):
-        return "<File {0} {1} bytes>".format(self.path, len(self))
+        return "<File {p} {s} bytes {perms} inode {i}>".format(
+                p=self.path,
+                s=len(self),
+                perms=self.perms,
+                i=self.inode,
+            )
 
 class FSDir(FSLeaf):
     def __init__(self, filesystem, header):
@@ -54,7 +63,12 @@ class FSDir(FSLeaf):
         return iter(self.entries)
 
     def __repr__(self):
-        return "<Dir {0} {1} entries>".format(self.path, len(self))
+        return "<Dir {p} {s} entries {perms} inode {i}>".format(
+                p=self.path,
+                s=len(self),
+                perms=self.perms,
+                i=self.inode,
+            )
 
 class FileSystem(object):
     def __init__(self, headers_dict):
@@ -358,27 +372,6 @@ def spike():
                     print(bar)
 
         print('\n\n')
-        return
-
-        # 485 is tcpdump
-        #objectid = 485
-        objectid = 546
-        matches = dumper.find_blocks_for_objid(objectid)
-
-        #matches = dumper.find("wpa_supplicant.conf")
-        #print(len(matches))
-
-        for block_idx, block in matches:
-            #print(repr(dumper.spares[block_idx]))
-            if 0 == dumper.spares[block_idx].chunkid:
-                print(repr(ObjectHeader(block, dumper.spares[block_idx].objectid)))
-                continue
-
-            print(str(block))
-
-        return
-
-
 
 if '__main__' == __name__:
     spike()
