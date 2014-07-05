@@ -195,23 +195,6 @@ class Dumper(object):
         # caller's discretion
         return data_bytes
 
-    def find(self, file_name):
-        # FIXME BROKEN
-        matches = list()
-        for idx, spare in enumerate(self.spares):
-            if 0 != spare.chunkid:
-                continue
-
-            print("idx {i} chunkid {0} objid {1}".format(spare.chunkid, spare.objectid, i=idx))
-            block = self.read_block_data(idx)
-            print(repr(block))
-            if file_name == block.name:
-                matches.append((block, spare))
-            else:
-                del block
-
-        return matches
-
     def find_blocks_for_objid(self, objid):
         matches = list()
         for idx, spare in enumerate(self.spares):
