@@ -56,20 +56,14 @@ class FSDir(FSLeaf):
 class FileSystem(object):
     def __init__(self, headers_dict):
         self.root_inode = None
+        self.root_object = None
         self._parents = dict()
         self._inodes = dict()
 
-        # Do we want this here?
-        #self._headers = headers_dict
         self._build_fs(headers_dict)
 
-
-
-        for foo in self.root_object:
-            print(foo.path)
-            if isinstance(foo, FSDir):
-                for bar in foo:
-                    print(bar.path)
+        if not (self.root_object):
+            raise Exception("Could not build FS")
 
 
     def _build_fs(self, headers):
@@ -93,8 +87,6 @@ class FileSystem(object):
                 if inode_obj:
                     dir_object.entries.add(inode_obj)
                     self._inodes[inode_obj.inode] = inode_obj
-
-
 
         for header_objid, header in headers.items():
             if not header.parent_objid in headers:
@@ -352,6 +344,12 @@ def spike():
         dumper.read_headers()
 
         fs = FileSystem(dumper.headers)
+        for foo in fs.root_object:
+            print(foo.path)
+            if isinstance(foo, FSDir):
+                for bar in foo:
+                    print(bar.path)
+
         print('\n\n')
         return
 
