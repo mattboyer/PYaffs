@@ -169,10 +169,7 @@ class Dumper(object):
                 continue
             header_bytes = self.read_block_data(idx)
             header = ObjectHeader(header_bytes, spare.objectid)
-            #print(repr(header))
             self.headers[header.objectid] = header
-            #del header
-            #del header_bytes
 
     def read_block_data(self, block_idx):
         num_bytes_to_read = self.spares[block_idx].bytecount
@@ -195,11 +192,19 @@ class Dumper(object):
         # caller's discretion
         return data_bytes
 
-    def find_blocks_for_objid(self, objid):
+    def find_data_for_inode(self, inode):
         matches = list()
         for idx, spare in enumerate(self.spares):
-            if objid == spare.objectid:
-                matches.append((idx, self.read_block_data(idx)))
+            if inode == spare.objectid and 0 != spare.chunkid:
+                matches.append((idx, spare))
+
+
+        max_chunkid = max(matches, key=lambda s:s[1].chunkid)[1].chunkid
+        assert len(matches) == max_chunkid, (len(matches), max_chunkid)
+
+        # Let's order these matches according to their chunkid
+        matches.sort(key=lambda s:s[1].chunkid)
+
         return matches
 
 
@@ -219,12 +224,15 @@ def spike():
         dumper.read_headers()
 
         fs = fs_entities.FileSystem(dumper.headers)
-        fs.root_object.walk()
-
+        #fs.root_object.walk()
         print('\n\n')
 
-        print(fs.find(fs_entities.FSDir, 'lib'))
-        print(fs.find(fs_entities.FSFile, 'racoon'))
+        # So we can use high-level FS entities to explore ObjectHeaders as well
+        # as the relationships between them, but what about the data?
+        file_object = fs.find(fs_entities.FSFile, 'spn-conf.xml').pop()
+        print(file_object)
+        blocks = dumper.find_data_for_inode(file_object.inode)
+        print(blocks)
 
 if '__main__' == __name__:
     spike()
