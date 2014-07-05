@@ -145,3 +145,9 @@ It seems ONE in every FOUR spares is well-formed (ie. with a sensible objid) The
 
 In fact, it looks like we don't *REALLY* have a pattern of 1 512-byte page followed by 16 bytes of spare.
 Instead, we have one 2048-byte page *INTERLACED* with 4 * 16 bytes of spare. We know that the objectId is found in the first 16 bytes with something that looks a lot like the chunkId in the second 16-byte... blob for lack of a better word
+
+
+---------
+
+
+/res/images/lcd_test_07.png in system.img has an interesting set of chunks

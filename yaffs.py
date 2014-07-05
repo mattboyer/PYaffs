@@ -214,10 +214,11 @@ def spike():
 
         # So we can use high-level FS entities to explore ObjectHeaders as well
         # as the relationships between them, but what about the data?
-        file_object = fs.find(fs_entities.FSFile, 'otacerts.zip').pop()
+        file_object = fs.find(fs_entities.FSFile, 'netdiag').pop()
         print(file_object)
 
-        print(file_object.read())
+        with open('/tmp/foo', 'wb') as output_file:
+            output_file.write(file_object.read())
 
 if '__main__' == __name__:
     spike()
