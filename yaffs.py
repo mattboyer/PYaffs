@@ -72,7 +72,10 @@ class FSDir(FSLeaf):
 
     def walk(self):
         print(self)
-        for entry in self.entries:
+
+        ordered_entries = list(self.entries)
+        ordered_entries.sort(key=lambda x:x.name)
+        for entry in ordered_entries:
             if not isinstance(entry, FSDir):
                 print(entry)
             else:
