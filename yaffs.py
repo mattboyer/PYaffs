@@ -27,7 +27,7 @@ class FSLeaf(object):
             path_tokens.append(fs_obj.name)
             fs_obj = self._filesystem.get_inode(fs_obj.parent)
 
-        return os.path.sep + os.path.join(*path_tokens[::-1])
+        return os.path.sep + os.path.join('', *path_tokens[::-1])
 
     @property
     def perms(self):
@@ -69,6 +69,14 @@ class FSDir(FSLeaf):
                 perms=self.perms,
                 i=self.inode,
             )
+
+    def walk(self):
+        print(self)
+        for entry in self.entries:
+            if not isinstance(entry, FSDir):
+                print(entry)
+            else:
+                entry.walk()
 
 class FileSystem(object):
     def __init__(self, headers_dict):
@@ -365,11 +373,7 @@ def spike():
         dumper.read_headers()
 
         fs = FileSystem(dumper.headers)
-        for foo in fs.root_object:
-            print(foo)
-            if isinstance(foo, FSDir):
-                for bar in foo:
-                    print(bar)
+        fs.root_object.walk()
 
         print('\n\n')
 
