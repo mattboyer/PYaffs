@@ -5,12 +5,46 @@ import os
 import io
 
 class FileSystem(object):
-    def __init__(self):
-        self._root_dir = None
+    def __init__(self, headers_dict):
+        self.root_inode = None
+        self._parents = dict()
 
-    def set_root_dir(self, dir):
-        self._root_dir = dir
+        # Do we want this here?
+        self._headers = headers_dict
+        self._build_fs()
 
+        self._print_dir(self.root_inode)
+
+
+    def _build_fs(self):
+        for header_objid, header in self._headers.items():
+            if not header.parent_objid in self._headers:
+                raise IOError("Object {0}'s parent objectid {1} not found".format(repr(header), header.parent_objid))
+
+            parent = self._headers[header.parent_objid]
+            if parent == header:
+                # We've found the root, what do we do?
+                self.root_inode = header_objid
+                continue
+
+            #print("{0} has child {1}".format(repr(parent), repr(header)))
+            if not header.parent_objid in self._parents:
+                self._parents[header.parent_objid] = set([header_objid])
+            else:
+                self._parents[header.parent_objid].add(header_objid)
+
+        if not self.root_inode:
+            raise IOError("Root inode not found")
+
+
+    def _print_dir(self, dir_inode):
+        if dir_inode not in self._parents:
+            raise IOError("{0} not a dir".format(dir_inode))
+        for child_inode in self._parents[dir_inode]:
+            child_header = self._headers[child_inode]
+            print(child_header.name)
+            if 3 == child_header.object_type:
+                self._print_dir(child_inode)
 
 
 class Blob(object):
@@ -239,35 +273,8 @@ def spike():
         print("{0} blocks".format(num_blocks))
         dumper.read_headers()
 
+        fs = FileSystem(dumper.headers)
         print('\n\n')
-
-        dirs = set()
-        parents = dict()
-
-        root_objid = None
-        for header_objid, header in dumper.headers.items():
-            if not header.parent_objid in dumper.headers:
-                raise IOError("Object {0}'s parent objectid {1} not found".format(repr(header), header.parent_objid))
-
-            parent = dumper.headers[header.parent_objid]
-            if parent == header:
-                # We've found the root, what do we do?
-                root_objid = header_objid
-                continue
-
-            print("{0} has child {1}".format(repr(parent), repr(header)))
-            if not header.parent_objid in parents:
-                parents[header.parent_objid] = set([header_objid])
-            else:
-                parents[header.parent_objid].add(header_objid)
-
-        if not root_objid:
-            raise IOError("Root inode not found")
-
-        for child in parents[root_objid]:
-            print(repr(dumper.headers[child]))
-
-
         return
 
         # 485 is tcpdump
