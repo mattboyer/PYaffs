@@ -44,6 +44,9 @@ class FSFile(FSLeaf):
                 i=self.inode,
             )
 
+    def read(self):
+        return self._filesystem.get_file_bytes(self.inode)
+
 class FSDir(FSLeaf):
     def __init__(self, filesystem, header):
         FSLeaf.__init__(self, filesystem, header)
@@ -76,13 +79,15 @@ class FSDir(FSLeaf):
                 entry.walk()
 
 class FileSystem(object):
-    def __init__(self, headers_dict):
+    def __init__(self, dumper):
         self.root_inode = None
         self.root_object = None
         self._parents = dict()
         self._inodes = dict()
 
-        self._build_fs(headers_dict)
+        self.dumper = dumper
+
+        self._build_fs(self.dumper.headers)
 
         if not (self.root_object):
             raise Exception("Could not build FS")
@@ -149,3 +154,19 @@ class FileSystem(object):
             matches.add(obj)
 
         return matches
+
+    def get_file_bytes(self, inode):
+        matches = list()
+        for idx, spare in enumerate(self.dumper.spares):
+            if inode == spare.objectid and 0 != spare.chunkid:
+                matches.append((idx, spare))
+
+        # Let's order these matches according to their chunkid
+        matches.sort(key=lambda s:s[1].chunkid)
+        assert len(matches) == matches[-1][1].chunkid
+
+        data = bytes()
+        for idx, spare in matches:
+            data += self.dumper.read_block_data(idx)
+
+        return data

@@ -192,21 +192,6 @@ class Dumper(object):
         # caller's discretion
         return data_bytes
 
-    def get_file_bytes(self, inode):
-        matches = list()
-        for idx, spare in enumerate(self.spares):
-            if inode == spare.objectid and 0 != spare.chunkid:
-                matches.append((idx, spare))
-
-        # Let's order these matches according to their chunkid
-        matches.sort(key=lambda s:s[1].chunkid)
-        assert len(matches) == matches[-1][1].chunkid
-
-        data = bytes()
-        for idx, spare in matches:
-            data += self.read_block_data(idx)
-
-        return data
 
 def spike():
     # TODO Use argparse instead
@@ -223,7 +208,7 @@ def spike():
         print("{0} blocks".format(num_blocks))
         dumper.read_headers()
 
-        fs = fs_entities.FileSystem(dumper.headers)
+        fs = fs_entities.FileSystem(dumper)
         fs.root_object.walk()
         print('\n\n')
 
@@ -231,8 +216,8 @@ def spike():
         # as the relationships between them, but what about the data?
         file_object = fs.find(fs_entities.FSFile, 'otacerts.zip').pop()
         print(file_object)
-        blocks = dumper.get_file_bytes(file_object.inode)
-        print(blocks)
+
+        print(file_object.read())
 
 if '__main__' == __name__:
     spike()
