@@ -39,7 +39,7 @@ class FSFile(FSLeaf):
         return self.size
 
     def __repr__(self):
-        return "<File {0}>".format(self.name)
+        return "<File {0} {1} bytes>".format(self.path, len(self))
 
 class FSDir(FSLeaf):
     def __init__(self, filesystem, header):
@@ -52,6 +52,9 @@ class FSDir(FSLeaf):
 
     def __iter__(self):
         return iter(self.entries)
+
+    def __repr__(self):
+        return "<Dir {0} {1} entries>".format(self.path, len(self))
 
 class FileSystem(object):
     def __init__(self, headers_dict):
@@ -115,6 +118,10 @@ class FileSystem(object):
     def get_inode(self, inode):
         return self._inodes[inode]
 
+
+
+
+# I should probably split these into another module
 
 
 class Blob(object):
@@ -345,10 +352,10 @@ def spike():
 
         fs = FileSystem(dumper.headers)
         for foo in fs.root_object:
-            print(foo.path)
+            print(foo)
             if isinstance(foo, FSDir):
                 for bar in foo:
-                    print(bar.path)
+                    print(bar)
 
         print('\n\n')
         return
