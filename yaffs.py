@@ -192,21 +192,21 @@ class Dumper(object):
         # caller's discretion
         return data_bytes
 
-    def find_data_for_inode(self, inode):
+    def get_file_bytes(self, inode):
         matches = list()
         for idx, spare in enumerate(self.spares):
             if inode == spare.objectid and 0 != spare.chunkid:
                 matches.append((idx, spare))
 
-
-        max_chunkid = max(matches, key=lambda s:s[1].chunkid)[1].chunkid
-        assert len(matches) == max_chunkid, (len(matches), max_chunkid)
-
         # Let's order these matches according to their chunkid
         matches.sort(key=lambda s:s[1].chunkid)
+        assert len(matches) == matches[-1][1].chunkid
 
-        return matches
+        data = bytes()
+        for idx, spare in matches:
+            data += self.read_block_data(idx)
 
+        return data
 
 def spike():
     # TODO Use argparse instead
@@ -224,14 +224,14 @@ def spike():
         dumper.read_headers()
 
         fs = fs_entities.FileSystem(dumper.headers)
-        #fs.root_object.walk()
+        fs.root_object.walk()
         print('\n\n')
 
         # So we can use high-level FS entities to explore ObjectHeaders as well
         # as the relationships between them, but what about the data?
-        file_object = fs.find(fs_entities.FSFile, 'spn-conf.xml').pop()
+        file_object = fs.find(fs_entities.FSFile, 'otacerts.zip').pop()
         print(file_object)
-        blocks = dumper.find_data_for_inode(file_object.inode)
+        blocks = dumper.get_file_bytes(file_object.inode)
         print(blocks)
 
 if '__main__' == __name__:
