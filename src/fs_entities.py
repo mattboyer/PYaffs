@@ -106,7 +106,6 @@ class FileSystem(object):
         if not (self.root_object):
             raise Exception("Could not build FS")
 
-
     def _build_fs(self, headers):
         def _build_objects_in_dir(dir_object):
             if dir_object.parent not in self._parents:
@@ -190,11 +189,35 @@ class FileSystem(object):
                 matches.append((idx, spare))
 
         # Let's order these matches according to their chunkid
+        # TODO But what if there's more than one spare claiming a given chunkid
+        # for this inode? And what if there's none?
         matches.sort(key=lambda s:s[1].chunkid)
-        assert len(matches) == matches[-1][1].chunkid
+        #assert len(matches) == matches[-1][1].chunkid, matches
+        if len(matches) != matches[-1][1].chunkid:
+            matches = self.debug_duplicate_chunks(matches)
 
         data = bytes()
         for idx, spare in matches:
             data += self.dumper.read_block_data(idx)
 
         return data
+
+    def debug_duplicate_chunks(self, chunk_list):
+        cleaned_matches = list()
+
+        duplicates = dict()
+        for idx, spare in chunk_list:
+            if not spare.chunkid in duplicates:
+                duplicates[spare.chunkid] = set([spare])
+                cleaned_matches.append((idx, spare))
+            else:
+                duplicates[spare.chunkid].add(spare)
+
+        for chunkid in duplicates:
+            if 1 == len(duplicates[chunkid]):
+                continue
+            print(chunkid)
+            for match in duplicates[chunkid]:
+                print(repr(match))
+                print(str(match))
+        return cleaned_matches
