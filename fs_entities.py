@@ -19,7 +19,7 @@ class FSLeaf(object):
         fs_obj = self
         while fs_obj.parent != fs_obj.inode:
             path_tokens.append(fs_obj.name)
-            fs_obj = self._filesystem.get_inode(fs_obj.parent)
+            fs_obj = self._filesystem.get_obj_from_inode(fs_obj.parent)
 
         return '/' + '/'.join(path_tokens[::-1])
 
@@ -51,13 +51,19 @@ class FSDir(FSLeaf):
     def __init__(self, filesystem, header):
         FSLeaf.__init__(self, filesystem, header)
         # Populate dir entries
-        self.entries = set()
+        self.entries = list()
 
     def __len__(self):
         return len(self.entries)
 
     def __iter__(self):
         return iter(self.entries)
+
+    def __contains__(self, leaf_name):
+        for leaf in iter(self):
+            if leaf_name == leaf.name:
+                return True
+        return False
 
     def __repr__(self):
         return "<Dir {p} {s} entries {perms} inode {i}>".format(
@@ -77,6 +83,14 @@ class FSDir(FSLeaf):
                 print(entry)
             else:
                 entry.walk()
+
+    def get_leaf(self, leaf_name):
+        if not leaf_name in self:
+            # Should we raise something instead?
+            return None
+        for leaf in self:
+            if leaf_name == leaf.name:
+                return leaf
 
 class FileSystem(object):
     def __init__(self, dumper):
@@ -112,7 +126,7 @@ class FileSystem(object):
                     _build_objects_in_dir(inode_obj)
 
                 if inode_obj:
-                    dir_object.entries.add(inode_obj)
+                    dir_object.entries.append(inode_obj)
                     self._inodes[inode_obj.inode] = inode_obj
 
         for header_objid, header in headers.items():
@@ -138,8 +152,22 @@ class FileSystem(object):
         self._inodes[self.root_inode] = self.root_object
         _build_objects_in_dir(self.root_object)
 
-    def get_inode(self, inode):
+    def get_obj_from_inode(self, inode):
         return self._inodes[inode]
+
+    def get_obj_from_path(self, path):
+        path_tokens = path.split('/')[1:]
+        if not 1 <= len(path_tokens) or '' in path_tokens:
+            raise ValueError("Malformed path {0}".format(path))
+
+        search_dir = self.root_object
+        for idx, token in enumerate(path_tokens):
+            leaf = search_dir.get_leaf(token)
+            if idx < len(path_tokens) - 1:
+                assert isinstance(leaf, FSDir), leaf
+                search_dir = leaf
+            else:
+                return leaf
 
     def find(self, obj_type, name):
 
