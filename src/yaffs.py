@@ -43,7 +43,9 @@ class Blob(object):
 
     def bytes_to_string(self, offset, length):
         # length is in bytes
-        string_value = ''.join([chr(byte) for byte in self._inner_bytes[offset:length]]).strip('\x00')
+        string_value = ''.join(
+                [chr(byte) for byte in self._inner_bytes[offset:length]]
+            ).strip('\x00')
         return string_value
 
 class Spare(Blob):
@@ -84,7 +86,12 @@ class Spare(Blob):
         return str(self._inner_bits)
 
     def __repr__(self):
-        return "<spare objectId:{0} chunkid:{1} bytecount:{2} bad:{3}>".format(self.objectid, self.chunkid, self.bytecount, self.bad_spare)
+        return "<Spare objectId:{0} chunkid:{1} bytecount:{2}>".format(
+                self.objectid,
+                self.chunkid,
+                self.bytecount,
+                self.bad_spare
+            )
 
 class ObjectHeader(Blob):
     header_types = {
@@ -190,7 +197,10 @@ class Dumper(object):
 
 def dispatcher():
     parser = argparse.ArgumentParser(description="GRUH")
-    parser.add_argument("action", choices=('list', 'ls', 'dump', 'extract', 'find'))
+    parser.add_argument(
+            "action",
+            choices=('list', 'ls', 'dump', 'extract', 'find')
+        )
     parser.add_argument("YAFFS_file")
     parser.add_argument("fs_path", nargs="?")
     parser.add_argument("output_path", nargs="?")
@@ -226,7 +236,7 @@ def dispatcher():
             if not isinstance(file_object, fs_entities.FSFile):
                 raise IOError("Cannot extract {0}".format(repr(file_object)))
             if not args.output_path:
-                args.output_path = args.fs_path.split('/')[-1]
+                args.output_path = args.fs_path.split(fs_entities.SEPARATOR)[-1]
 
             with open(args.output_path, 'wb') as outfile:
                 outfile.write(file_object.read())

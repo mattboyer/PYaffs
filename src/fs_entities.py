@@ -1,3 +1,5 @@
+SEPARATOR = '/'
+
 class FSLeaf(object):
     def __init__(self, filesystem, header):
         self._filesystem = filesystem
@@ -21,7 +23,7 @@ class FSLeaf(object):
             path_tokens.append(fs_obj.name)
             fs_obj = self._filesystem.get_obj_from_inode(fs_obj.parent)
 
-        return '/' + '/'.join(path_tokens[::-1])
+        return SEPARATOR + SEPARATOR.join(path_tokens[::-1])
 
     @property
     def perms(self):
@@ -155,7 +157,7 @@ class FileSystem(object):
         return self._inodes[inode]
 
     def get_obj_from_path(self, path):
-        path_tokens = path.split('/')[1:]
+        path_tokens = path.split(SEPARATOR)[1:]
         if not 1 <= len(path_tokens) or '' in path_tokens:
             raise ValueError("Malformed path {0}".format(path))
 
