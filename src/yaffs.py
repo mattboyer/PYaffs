@@ -30,7 +30,7 @@ class Blob(object):
     def little_endian_bytes_to_int(self, offset, length):
         if 0 != length % 8:
             raise ValueError("length must be a multiple of 8")
-        if length not in (8,16,32):
+        if length not in (8,16,24,32):
             raise ValueError("Weird field length")
 
         byte_length = int(length / 8)
@@ -54,17 +54,11 @@ class Spare(Blob):
         self._inner_bits = Spare.bytes_to_binary(self._inner_bytes)
         assert 512 == len(self._inner_bits)
         self.objectid = self.little_endian_bits_to_int(40, 18)
-        self.chunkid = self.bits_to_int(136, 16)
+
+        self.chunkid = self.little_endian_bytes_to_int(18, 16)
+
+        self.bad_spare = False
         self.bytecount = self.little_endian_bits_to_int(176, 16)
-
-
-    # Needs a better name
-    def bits_to_int(self, bit_offset, length):
-
-        bit_substring = self._inner_bits[bit_offset:bit_offset + length]
-
-        bits_as_int = int(bit_substring, 2)
-        return bits_as_int
 
     def little_endian_bits_to_int(self, bit_offset, length):
 
@@ -90,7 +84,7 @@ class Spare(Blob):
         return str(self._inner_bits)
 
     def __repr__(self):
-        return "<spare objectId:{0} chunkid:{1} bytecount:{2}>".format(self.objectid, self.chunkid, self.bytecount)
+        return "<spare objectId:{0} chunkid:{1} bytecount:{2} bad:{3}>".format(self.objectid, self.chunkid, self.bytecount, self.bad_spare)
 
 class ObjectHeader(Blob):
     header_types = {
