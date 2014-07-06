@@ -1,6 +1,6 @@
 #PYaffs
 
-This is a python library and CLI tool to access the YAFFS filesystem stored in a raw NAND flash dump taken from a MTK-based Android phone I own
+This is a python library and CLI tool to access the YAFFS filesystem stored in a raw NAND flash dump taken from a [MediaTek](http://www.mediatek.com/)-based Android phone I own.
 
 **Warning** This is highly experimental and the product of a reverse-engineering effort based on a single NAND dump. I don't expect this to work on any other dump, and neither should you.
 
@@ -13,6 +13,7 @@ OK, if you insist
 ```shell
 $ src/pyaffs.py list <nand.img> [<path>]
 $ src/pyaffs.py extract <nand.img> <path> <dest_path>
+$ src/pyaffs.py find <nand.img> <name>
 ```
 
 ##Notes on the NAND layout
@@ -20,10 +21,10 @@ $ src/pyaffs.py extract <nand.img> <path> <dest_path>
 Right now, PYaffs hardcodes several important parameters regarding the layout of data in the NAND dump. These should be made parameterisable in future.
 
 Here are the assumptions currently made:
-- Page size is 2048 bytes
-- Each page is interlaced with 4 16-bytes segments of "spare" data, one every 512 bytes
+- Each page comprises 2048 bytes of data
+- Each page is interlaced with 4 16-byte segments of "spare" data, one every 512 bytes
 
-As previously mentioned, these parameters are the product of ~~reverse-engineering~~ glorified guesswork.
+Most information is taken from the official [YAFFS v1 spec](http://www.yaffs.net/yaffs-original-specification), although the spare layout is the product of ~~reverse-engineering~~ glorified guesswork.
 
 Use at your own risk.
 
