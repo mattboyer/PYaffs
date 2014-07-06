@@ -196,8 +196,9 @@ class Dumper(object):
 
 def dispatcher():
     parser = argparse.ArgumentParser(description="GRUH")
-    parser.add_argument("action", choices=('list', 'dump', 'extract', 'find'))
+    parser.add_argument("action", choices=('list', 'ls', 'dump', 'extract', 'find'))
     parser.add_argument("YAFFS_file")
+    parser.add_argument("fs_path", nargs="?")
 
     args = parser.parse_args()
 
@@ -211,13 +212,24 @@ def dispatcher():
         dumper.read_headers()
 
         fs = fs_entities.FileSystem(dumper)
-        if 'list' == args.action:
-            fs.root_object.walk()
+        if args.action in ('ls', 'list'):
+            if not args.fs_path:
+                fs.root_object.walk()
+            else:
+                fs_object = fs.get_obj_from_path(args.fs_path)
+                if isinstance(fs_object, fs_entities.FSDir):
+                    fs_object.walk()
+                else:
+                    print(fs_object)
+
         elif 'find' == args.action:
             results = fs.find(fs_entities.FSFile, 'netdiag')
             print(results)
         elif 'extract' == args.action:
-            file_object = fs.find(fs_entities.FSFile, 'netdiag').pop()
+            assert args.fs_path
+            file_object = fs.get_obj_from_path(args.fs_path)
+            if not isinstance(file_object, fs_entities.FSFile):
+                raise IOError("Cannot extract {0}".format(repr(file_object)))
             with open('/tmp/foo', 'wb') as output_file:
                 output_file.write(file_object.read())
     return 0
