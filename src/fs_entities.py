@@ -6,7 +6,7 @@ class FSLeaf(object):
         self.parent = header.parent_objid
         self.name = header.name
 
-        self.mode = header.mode
+        self.mode = header.mode % 0o1000
         self.uid = header.uid
         self.gid = header.gid
         self.atime = header.atime
