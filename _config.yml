@@ -1,3 +1,5 @@
 name: Matt's Forensic Adventure
 markdown: redcarpet
 pygments: true
+baseurl: /PYaffs
+exclude: ['path']
