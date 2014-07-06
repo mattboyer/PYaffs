@@ -225,13 +225,12 @@ def dispatcher():
             file_object = fs.get_obj_from_path(args.fs_path)
             if not isinstance(file_object, fs_entities.FSFile):
                 raise IOError("Cannot extract {0}".format(repr(file_object)))
-            if args.output_path:
-                with open(args.output_path, 'wb') as outfile:
-                    outfile.write(file_object.read())
-                    outfile.close()
-            else:
-                sys.stdout.write(file_object.read().decode("utf-8"))
+            if not args.output_path:
+                args.output_path = args.fs_path.split('/')[-1]
 
+            with open(args.output_path, 'wb') as outfile:
+                outfile.write(file_object.read())
+                outfile.close()
     return 0
 
 if '__main__' == __name__:
