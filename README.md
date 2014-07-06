@@ -26,3 +26,7 @@ Here are the assumptions currently made:
 As previously mentioned, these parameters are the product of ~~reverse-engineering~~ glorified guesswork.
 
 Use at your own risk.
+
+##And now for something completely different
+
+[Matt's Forensic Adventure](http://mattboyer.github.io/PYaffs/)
