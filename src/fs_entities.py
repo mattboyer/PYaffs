@@ -6,7 +6,7 @@ class FSLeaf(object):
         self.parent = header.parent_objid
         self.name = header.name
 
-        self.mode = header.mode % 0o1000
+        self.mode = header.mode
         self.uid = header.uid
         self.gid = header.gid
         self.atime = header.atime
@@ -25,7 +25,7 @@ class FSLeaf(object):
 
     @property
     def perms(self):
-        return "uid:gid {0}:{1} mode {2}".format(self.uid, self.gid, self.mode)
+        return "uid:gid {0}:{1} mode {2:06o}".format(self.uid, self.gid, self.mode)
 
 class FSFile(FSLeaf):
     def __init__(self, filesystem, header):
