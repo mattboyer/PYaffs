@@ -199,6 +199,7 @@ def dispatcher():
     parser.add_argument("action", choices=('list', 'ls', 'dump', 'extract', 'find'))
     parser.add_argument("YAFFS_file")
     parser.add_argument("fs_path", nargs="?")
+    parser.add_argument("output_path", nargs="?")
 
     args = parser.parse_args()
 
@@ -230,8 +231,13 @@ def dispatcher():
             file_object = fs.get_obj_from_path(args.fs_path)
             if not isinstance(file_object, fs_entities.FSFile):
                 raise IOError("Cannot extract {0}".format(repr(file_object)))
-            with open('/tmp/foo', 'wb') as output_file:
-                output_file.write(file_object.read())
+            if args.output_path:
+                with open(args.output_path, 'wb') as outfile:
+                    outfile.write(file_object.read())
+                    outfile.close()
+            else:
+                sys.stdout.write(file_object.read().decode("utf-8"))
+
     return 0
 
 if '__main__' == __name__:
