@@ -3,6 +3,7 @@
 import sys
 import os
 import io
+import argparse
 
 import fs_entities
 
@@ -193,15 +194,16 @@ class Dumper(object):
         return data_bytes
 
 
-def spike():
-    # TODO Use argparse instead
-    assert 2 == len(sys.argv)
+def dispatcher():
+    parser = argparse.ArgumentParser(description="GRUH")
+    parser.add_argument("action", choices=('list', 'dump', 'extract', 'find'))
+    parser.add_argument("YAFFS_file")
 
-    file_path = sys.argv[1]
+    args = parser.parse_args()
 
-    assert os.path.isfile(file_path)
+    assert os.path.isfile(args.YAFFS_file)
 
-    with open(file_path, 'rb') as yaffs_file:
+    with open(args.YAFFS_file, 'rb') as yaffs_file:
         dumper = Dumper(yaffs_file)
 
         num_blocks = dumper.read_all_spares()
@@ -209,16 +211,16 @@ def spike():
         dumper.read_headers()
 
         fs = fs_entities.FileSystem(dumper)
-        fs.root_object.walk()
-        print('\n\n')
-
-        # So we can use high-level FS entities to explore ObjectHeaders as well
-        # as the relationships between them, but what about the data?
-        file_object = fs.find(fs_entities.FSFile, 'netdiag').pop()
-        print(file_object)
-
-        with open('/tmp/foo', 'wb') as output_file:
-            output_file.write(file_object.read())
+        if 'list' == args.action:
+            fs.root_object.walk()
+        elif 'find' == args.action:
+            results = fs.find(fs_entities.FSFile, 'netdiag')
+            print(results)
+        elif 'extract' == args.action:
+            file_object = fs.find(fs_entities.FSFile, 'netdiag').pop()
+            with open('/tmp/foo', 'wb') as output_file:
+                output_file.write(file_object.read())
+    return 0
 
 if '__main__' == __name__:
-    spike()
+    sys.exit(dispatcher())
