@@ -1,18 +1,68 @@
 ---
 layout: post
-title:  "The Journey So Far"
-date:   2014-07-06 23:31:02
-categories: mediatek
+title:  "Hacklog #0: The Beginning"
+#date:   2014-07-06 23:31:02
+#categories: mediatek
+tags: introduction
 ---
 
-**TBD**
+Hi, I'm Matt. Nice to meet you.
 
-- Details of the phone
-- Early exploration
-- "What's su(1) doing there?"
-- tcpdump, eh?
-- That's an interesting filename
+This is an attempt at documenting a little project I've been working on, on and off, for the last while. I hope to have enough material and enough momentum for a few posts. 
 
-Next blog: Getting the dumps
-Next blog: Writing PYaffs
-Next blog: Fund with binutils
+#Background
+
+I came into possession of an Android phone this April. I say *came into possession* because the manner in which I got this phone is a bit unusual. I didn't buy it, I didn't steal it, I didn't find it and it wasn't given to me.
+
+I won this phone at a claw machine.
+
+Well, not really a claw machine but a twist on the same concept where you have to position then trigger a linear actuator so that the rod that extends goes through a narrow-ish keyhole. The machine looked like [this](http://soe-web-arcade2-pub.s3.amazonaws.com/sharedfiles/styles/game_image_large/public/Key%20Master%20Cabinet_1.jpg) and before you ask, I got the phone on my eighth try.
+
+#The Nam-Phone G40C
+
+So what about that phone? The IMEI sticker beneath the battery claims it's a **Nam-Phone G40C** while the serigraphy on the backplate informs us that it is a **Nam-Gear** product, designed by Namco and made in China. Since Namco is a well-known maker of coin-op games, it makes sense that they'd be involved in the production of prizes for their games.
+
+!["The Nam-Phone G40C"]({{ site.baseurl }}/images/Nam-Phone_G40C.png)
+
+I unboxed the phone, turned it on and proceeded to play with it. Here are my first impressions, in order:
+
+- It actually works!
+- ...but it's *really* slow!
+- The display isn't very good
+- That UI is all over the place
+
+I realised at that point that this wasn't a device I wanted to use in earnest, or at least not with the firmware it had out of the box. My next thought was to try and find out whether I could use a build of CyanogenMod or some other trusted community build of Android that would work on this device.
+
+First, of course, I'd have to learn more about the device. I used a spare Google account to access the [Google Play](https://play.google.com) market and downloaded two essential system info apps: [Under the Hood](https://play.google.com/store/apps/details?id=aws.apps.underthehood) and [CPU-Z](https://play.google.com/store/apps/details?id=com.cpuid.cpu_z&hl=en).
+
+##Specs
+
+Here's a summary of the phone's specs, taken from CPU-Z:
+
+!["Phone specs"]({{ site.baseurl }}/images/cpuz.png)
+
+#On Rooting
+
+Android apps can request *root* privileges from [Superuser](http://androidsu.com/superuser/) on a phone that has been rooted, that is to say on which an implementation of [`su(1)`](http://linux.die.net/man/1/su) has been installed. The Superuser app acts as an authorization broker, but it is the underlying `su(1)` executable that performs the actual privilege escalation since the `setuid` bit in its permission mode means it is executed with the privileges of its owner, viz. `root`. [Wikipedia](http://en.wikipedia.org/wiki/Setuid) has a good primer on setuid and there's more [here](http://wpollock.com/AUnix1/FilePermissions.htm).
+
+At any rate, rooting a phone is a big deal for Android power-users precisely because `su(1)` is typically not found in the firmware of a phone when it leaves the factory.
+
+Now let's look at the last line from that screenshot again:
+
+!["Wait, what?"]({{ site.baseurl }}/images/cpuz_root.png)
+
+Could it be that this phone has `su(1)` in its factory firmware? I installed [Android Terminal Emulator](https://play.google.com/store/apps/details?id=jackpal.androidterm&hl=en) on the phone to have a quick look around the filesystem:
+
+Huh. What else could there be?
+
+[`tcpdump(1)`](http://www.tcpdump.org/manpages/tcpdump.1.html) is a packet capture tool. Its sole purpose is to record network traffic to a file for future analysis. As a network-y kinda guy, I'm a huge fan but it's a bit alarming to find it preloaded on a customer device. I couldn't find any mention of it in the UI, so I must conclude that it isn't there to be used interactively by the user. Which raises the question: why does this phone ship with privilege escalation and packet capture tools? Something's fishy here.
+
+#Matt's Forensic Adventure
+
+This was the starting point for this project. I have a device with something that looks a bit like malware on it. I have the time, the inclanation and hopefully the skills to find out more.
+
+In future posts, I aim to achieve the following goals:
+
+- Access the full filesystem
+- Investigate the presence of `su(1)`, `tcpdump(1)`. What are they doing here? What are they used for?
+- Gain superuser privileges
