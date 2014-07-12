@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mattboyer/PYaffs.svg?branch=master)](https://travis-ci.org/mattboyer/PYaffs)
+
 #PYaffs
 
 This is a python library and CLI tool to access the YAFFS filesystem stored in a raw NAND flash dump taken from a [MediaTek](http://www.mediatek.com/)-based Android phone I own.
