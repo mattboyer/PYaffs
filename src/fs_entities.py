@@ -1,5 +1,4 @@
 PATH_SEP = '/'
-    foo
 
 
 class FSLeaf(object):
