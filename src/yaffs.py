@@ -30,7 +30,7 @@ class Blob(object):
     def little_endian_bytes_to_int(self, offset, length):
         if 0 != length % 8:
             raise ValueError("length must be a multiple of 8")
-        if length not in (8,16,24,32):
+        if length not in (8, 16, 24, 32):
             raise ValueError("Weird field length")
 
         byte_length = int(length / 8)
@@ -44,9 +44,10 @@ class Blob(object):
     def bytes_to_string(self, offset, length):
         # length is in bytes
         string_value = ''.join(
-                [chr(byte) for byte in self._inner_bytes[offset:length]]
-            ).strip('\x00')
+            [chr(byte) for byte in self._inner_bytes[offset:length]]
+        ).strip('\x00')
         return string_value
+
 
 class Spare(Blob):
     def __init__(self, bytes):
@@ -87,21 +88,22 @@ class Spare(Blob):
 
     def __repr__(self):
         return "<Spare objectId:{0} chunkid:{1} bytecount:{2}>".format(
-                self.objectid,
-                self.chunkid,
-                self.bytecount,
-                self.bad_spare
-            )
+            self.objectid,
+            self.chunkid,
+            self.bytecount,
+            self.bad_spare
+        )
+
 
 class ObjectHeader(Blob):
     header_types = {
-            0: "UNKNOWN",
-            1: "file",
-            2: "symlink",
-            3: "dir",
-            4: "hardlink",
-            5: "special",
-            }
+        0: "UNKNOWN",
+        1: "file",
+        2: "symlink",
+        3: "dir",
+        4: "hardlink",
+        5: "special",
+    }
 
     def __init__(self, bytes, objectid):
         Blob.__init__(self, bytes)
@@ -125,12 +127,13 @@ class ObjectHeader(Blob):
 
     def __repr__(self):
         return "<ObjectHeader: {i} {t} \"{name}\" parent {p} size {s}>".format(
-                i=self.objectid,
-                name=self.name,
-                t=self.header_types[self.object_type],
-                p=self.parent_objid,
-                s=self.size,
-            )
+            i=self.objectid,
+            name=self.name,
+            t=self.header_types[self.object_type],
+            p=self.parent_objid,
+            s=self.size,
+        )
+
 
 class Dumper(object):
 
@@ -198,9 +201,9 @@ class Dumper(object):
 def dispatcher():
     parser = argparse.ArgumentParser(description="GRUH")
     parser.add_argument(
-            "action",
-            choices=('list', 'ls', 'dump', 'extract', 'find')
-        )
+        "action",
+        choices=('list', 'ls', 'dump', 'extract', 'find')
+    )
     parser.add_argument("YAFFS_file")
     parser.add_argument("fs_path", nargs="?")
     parser.add_argument("output_path", nargs="?")
@@ -236,7 +239,7 @@ def dispatcher():
             if not isinstance(file_object, fs_entities.FSFile):
                 raise IOError("Cannot extract {0}".format(repr(file_object)))
             if not args.output_path:
-                args.output_path = args.fs_path.split(fs_entities.SEPARATOR)[-1]
+                args.output_path = args.fs_path.split(fs_entities.PATH_SEP)[-1]
 
             with open(args.output_path, 'wb') as outfile:
                 outfile.write(file_object.read())
