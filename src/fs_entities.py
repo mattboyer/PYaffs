@@ -148,7 +148,8 @@ class FileSystem(object):
 
             parent = headers[header.parent_objid]
             if parent == header:
-                # We've found the root, what do we do?
+                # What if the root inode is 0? That would evaluate to False.
+                # Can that even happen?
                 self.root_inode = header_objid
                 continue
 
