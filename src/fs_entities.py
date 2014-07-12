@@ -1,4 +1,5 @@
-SEPARATOR = '/'
+PATH_SEP = '/'
+
 
 class FSLeaf(object):
     def __init__(self, filesystem, header):
@@ -23,11 +24,16 @@ class FSLeaf(object):
             path_tokens.append(fs_obj.name)
             fs_obj = self._filesystem.get_obj_from_inode(fs_obj.parent)
 
-        return SEPARATOR + SEPARATOR.join(path_tokens[::-1])
+        return PATH_SEP + PATH_SEP.join(path_tokens[::-1])
 
     @property
     def perms(self):
-        return "uid:gid {0}:{1} mode {2:06o}".format(self.uid, self.gid, self.mode)
+        return "uid:gid {0}:{1} mode {2:06o}".format(
+            self.uid,
+            self.gid,
+            self.mode
+        )
+
 
 class FSFile(FSLeaf):
     def __init__(self, filesystem, header):
@@ -40,14 +46,15 @@ class FSFile(FSLeaf):
 
     def __repr__(self):
         return "<File {p} {s} bytes {perms} inode {i}>".format(
-                p=self.path,
-                s=len(self),
-                perms=self.perms,
-                i=self.inode,
-            )
+            p=self.path,
+            s=len(self),
+            perms=self.perms,
+            i=self.inode,
+        )
 
     def read(self):
         return self._filesystem.get_file_bytes(self.inode)
+
 
 class FSDir(FSLeaf):
     def __init__(self, filesystem, header):
@@ -69,17 +76,17 @@ class FSDir(FSLeaf):
 
     def __repr__(self):
         return "<Dir {p} {s} entries {perms} inode {i}>".format(
-                p=self.path,
-                s=len(self),
-                perms=self.perms,
-                i=self.inode,
-            )
+            p=self.path,
+            s=len(self),
+            perms=self.perms,
+            i=self.inode,
+        )
 
     def walk(self):
         print(self)
 
         ordered_entries = list(self.entries)
-        ordered_entries.sort(key=lambda x:x.name)
+        ordered_entries.sort(key=lambda x: x.name)
         for entry in ordered_entries:
             if not isinstance(entry, FSDir):
                 print(entry)
@@ -87,12 +94,13 @@ class FSDir(FSLeaf):
                 entry.walk()
 
     def get_leaf(self, leaf_name):
-        if not leaf_name in self:
+        if leaf_name not in self:
             # Should we raise something instead?
             return None
         for leaf in self:
             if leaf_name == leaf.name:
                 return leaf
+
 
 class FileSystem(object):
     def __init__(self, dumper):
@@ -116,7 +124,6 @@ class FileSystem(object):
             for child_inode in self._parents[dir_object.inode]:
                 child_header = headers[child_inode]
 
-                #print(child_header.name)
                 inode_obj = None
                 if 1 == child_header.object_type:
                     # We have a regular file
@@ -131,8 +138,13 @@ class FileSystem(object):
                     self._inodes[inode_obj.inode] = inode_obj
 
         for header_objid, header in headers.items():
-            if not header.parent_objid in headers:
-                raise IOError("Object {0}'s parent objectid {1} not found".format(repr(header), header.parent_objid))
+            if header.parent_objid not in headers:
+                raise IOError(
+                    "Object {0}'s parent objectid {1} not found".format(
+                        repr(header),
+                        header.parent_objid
+                    )
+                )
 
             parent = headers[header.parent_objid]
             if parent == header:
@@ -140,8 +152,7 @@ class FileSystem(object):
                 self.root_inode = header_objid
                 continue
 
-            #print("{0} has child {1}".format(repr(parent), repr(header)))
-            if not header.parent_objid in self._parents:
+            if header.parent_objid not in self._parents:
                 self._parents[header.parent_objid] = set([header_objid])
             else:
                 self._parents[header.parent_objid].add(header_objid)
@@ -157,7 +168,7 @@ class FileSystem(object):
         return self._inodes[inode]
 
     def get_obj_from_path(self, path):
-        path_tokens = path.split(SEPARATOR)[1:]
+        path_tokens = path.split(PATH_SEP)[1:]
         if not 1 <= len(path_tokens) or '' in path_tokens:
             raise ValueError("Malformed path {0}".format(path))
 
@@ -188,11 +199,10 @@ class FileSystem(object):
         matches = list()
         for idx, spare in enumerate(self.dumper.spares):
             if inode == spare.objectid and 0 != spare.chunkid:
-                #print((idx, spare))
                 if not spare.bad_spare:
                     matches.append((idx, spare))
 
-        matches.sort(key=lambda s:s[1].chunkid)
+        matches.sort(key=lambda s: s[1].chunkid)
 
         data = bytes()
         for idx, spare in matches:
