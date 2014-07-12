@@ -1,2 +1,6 @@
 *.img
 *.yaffs2
+_site/*
+Gemfile*
+.bundle/
+path/
