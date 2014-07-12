@@ -4,4 +4,4 @@ python:
 
 install: pip install -r requirements.txt
 
-script:  pep8 -v src/*.py
+script:  run_tests.sh
