@@ -1,0 +1,263 @@
+---
+layout: post
+title: "Hacklog #1: Preparing a work VM"
+tags: libvirt kvm adb android
+---
+
+#A Confession
+
+In the [last post]({{site.baseurl}}{% post_url 2014-07-15-Hacklog#0 %}), I said I'd had this phone since April, which is true. What is definitely not true is that I'm writing these blog posts as the project progresses - that's just a narrative conceit to try and keep things consistent.
+
+In actual fact, I did most of the early investigative work in May using a laptop I've seen retired, then lost interest for several months. I used a native (as in, on-the-metal) install of Microsoft Windows on that laptop as a platform for the various tools I used to get data out of the phone. I no longer have access to that laptop and some of these tools were a little skeevy, so this is basically the story of me getting a VM up and running to achieve parity with the environment I used the first time around.
+
+Something something unreliable narrator something.
+
+#Tell me what you want, what you really really want
+
+During that first wave of investigative work back in May, the following findings were established:
+
+- There are **many** tools out there that can be used to read or write flash data from/to Android phones
+
+- Almost all of these tools are written for Windows
+
+- Many of these tools are of questionable provenance. That is to say, their source code is unavalailable and they are distributed as binary archives dropped on file sharing sites
+
+- Many of these tools have some sort of a dependency against the Android SDK, especially against `adb` (the [Android Debug Bridge](http://developer.android.com/tools/help/adb.html)) and the USB drivers used by `adb` to talk to the device over a USB connection
+
+Based on these findings, I'm going to need a Windows environment on which I can run potential malware in a safe fashion and which can connect to the phone over USB. A VM is a perfect match for that.
+
+#Defining a work VM
+
+While I do have a bare-metal install of Windows on my current laptop, I spend >95% of my time on Linux. I have used VirtualBox to run VMs on a Linux host in the past and while I have nothing bad to say about VBox, I see it as a very heavy software package and I've found `VBoxManage` difficult to work with for scripting purposes in the past.
+
+Instead of VirtualBox, I decided to use a [QEMU](http://wiki.qemu.org/Main_Page) VM managed through [libvirt](http://libvirt.org/index.html). In order to achieve higher performance, I'll be using [KVM](http://www.linux-kvm.org/page/Main_Page) to leverage the virtualisation extensions built into my CPU (a AMD A8-5550M). Lastly, because I'm a heinous neckbeard I defined this VM using libvirt's XML interface.
+
+##The full domain
+
+libvirt calls VMs *domains* and serialises domain configuration as XML using a format documented [here](http://libvirt.org/formatdomain.html). Here's a dump of the domain I created:
+
+{% highlight xml %}
+<domain type='kvm'>
+  <name>NamPhone_VM</name>
+  <memory unit='KiB'>786432</memory>
+  <os>
+    <type arch='x86_64' machine='pc-i440fx-2.0'>hvm</type>
+    <bootmenu enable='yes'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+  </features>
+  <clock offset='utc'/>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <devices>
+    <disk type='dir' device='floppy'>
+      <driver name='qemu'/>
+      <source dir='/home/mboyer/tmp/Win_Stuff/SATA_Driver_floppy'/>
+      <target dev='fd0' bus='fdc'/>
+      <readonly/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/mnt/v12n/ISOs/virtio-win-0.1-81.iso'/>
+      <target dev='hda' bus='ide'/>
+      <readonly/>
+    </disk>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='raw'/>
+      <source file='/mnt/v12n/images/winxp.img'/>
+      <target dev='sda' bus='sata'/>
+      <boot order='2'/>
+    </disk>
+    <controller type='usb' index='0' model='ehci'>
+    </controller>
+    <interface type='network'>
+      <source network='Guests_to_host_private'/>
+      <model type='rtl8139'/>
+    </interface>
+    <input type='mouse' bus='ps2'/>
+    <input type='keyboard' bus='ps2'/>
+    <graphics type='spice' autoport='yes'/>
+    <hostdev mode='subsystem' type='usb' managed='no'>
+      <source startupPolicy='mandatory'>
+        <vendor id='0x0bb4'/>
+        <product id='0x0c03'/>
+      </source>
+    </hostdev>
+  </devices>
+</domain>
+{% endhighlight %}
+
+## Highlights
+
+That was a big blob of XML. The really relevant bits are as follows:
+
+### Domain config
+
+QEMU can be used for cross-platform emulation, which is definitely *not* what I want here. Therefore to make use of hardware-assisted virtualisation, the domain is defined with:
+
+{% highlight xml %}
+<domain type='kvm'>
+  <name>NamPhone_VM</name>
+  <memory unit='KiB'>786432</memory>
+  <os>
+    <type arch='x86_64' machine='pc-i440fx-2.0'>hvm</type>
+    <bootmenu enable='yes'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+  </features>
+{% endhighlight %}
+
+This is enough to let libvirt know to use the right emulator, viz. `/usr/sbin/qemu-system-x86_64`. The `<features>` element and its children actually need to be defined to allow the Windows XP 64bit installer to execute.
+
+### Storage Devices
+
+From past experience using VirtualBox VMs, I've noticed that using a virtual SATA controller to handle I/O with the (virtual) disk on a VM yields better performance than using a IDE/PATA controller. I don't know whether that is true for QEMU/KVM domains as well, but I gave in to my cargo cult tendencies and defined the following storage devices on the domain:
+
+{% highlight xml %}
+<domain type='kvm'>
+
+  <devices>
+
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/mnt/v12n/ISOs/virtio-win-0.1-81.iso'/>
+      <target dev='hda' bus='ide'/>
+      <readonly/>
+    </disk>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='raw'/>
+      <source file='/mnt/v12n/images/winxp.img'/>
+      <target dev='sda' bus='sata'/>
+      <boot order='2'/>
+    </disk>
+
+{% endhighlight %}
+
+I'm using a raw disk image for storage. Again, this is a mostly irrational decision based on poor experiences with `qcow2` images in the past. Using a raw image means I cannot easily snapshot the domain, something I will probably need.
+
+I used an old license of Windows XP for this VM. Windows XP has outlived many generations of hardware and an unfortunate side effect of this is that the drivers present in its install environment may not work with more modern hardware, such as the virtual SATA controller in the domain. To work around this, I've defined a virtual floppy drive using libvirt's `dir` disk type to point its content to a directory on the host in which I've extracted the contents of the driver archive for the Intel ICH9R/DO/DH SATA AHCI Controller, the default (?) SATA controller type emulated by QEMU:
+
+{% highlight xml %}
+<domain type='kvm'>
+
+  <devices>
+
+    <disk type='dir' device='floppy'>
+      <driver name='qemu'/>
+      <source dir='/home/mboyer/tmp/Win_Stuff/SATA_Driver_floppy'/>
+      <target dev='fd0' bus='fdc'/>
+      <readonly/>
+    </disk>
+
+{% endhighlight %}
+
+Note that libvirt will automatically create a floppy, IDE and SATA controllers.
+
+### USB Pass-through
+
+As mentioned above, the VM needs to be able to talk to the phone over a USB connection. QEMU has a USB pass-through feature that provides exactly that functionality. The domain will therefore need two things:
+
+- A USB controller. I chose the `ehci` model after the default model crashed the guest OS several times:
+
+{% highlight xml %}
+<domain type='kvm'>
+
+  <devices>
+
+    <controller type='usb' index='0' model='ehci'>
+    </controller>
+
+{% endhighlight %}
+
+- And a `hostdev` that will instruct QEMU what device on to pass through from the host to the guest. For USB devices, we can define the device in terms of a vendor id/product it pair. Here's what the host, ie. my laptop, sees:
+{% highlight bash %}
+$ lsusb
+Bus 008 Device 003: ID 04f2:b2ea Chicony Electronics Co., Ltd Integrated Camera [ThinkPad]
+Bus 008 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 006 Device 002: ID 04ca:2007 Lite-On Technology Corp.
+Bus 006 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 007 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 005 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 003 Device 003: ID 045e:0737 Microsoft Corp. Compact Optical Mouse 500
+Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 001 Device 007: ID 0bb4:0c03 HTC (High Tech Computer Corp.) Android Phone [Fairphone First Edition (FP1)]
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+{% endhighlight %}
+
+There's only one Android phone connected to my laptop so it's gotta be `0bb4:0c03`. It's certainly interesting that the phone reports itself as an HTC device. Anyway, I used this information to configure pass-through:
+
+{% highlight xml %}
+<domain type='kvm'>
+
+  <devices>
+
+    <hostdev mode='subsystem' type='usb' managed='no'>
+      <source startupPolicy='mandatory'>
+        <vendor id='0x0bb4'/>
+        <product id='0x0c03'/>
+      </source>
+    </hostdev>
+
+{% endhighlight %}
+
+### Networking
+
+Lastly, I'll need network connectivity on the VM to perform some tasks such as installing the Android SDK. There are many networking options available in libvirt and the documentation doesn't really focus on their use-cases. I defined a libvirt network with the following configuration:
+
+{% highlight xml %}
+<network>
+  <name>Guests_to_host_private</name>
+  <forward mode='nat'/>
+  <bridge name='vm_bridge' stp='on' delay='0'/>
+  <ip address='172.16.16.1' netmask='255.255.255.0'>
+  </ip>
+</network>
+{% endhighlight %}
+
+...and added a NIC to the domain's collection of virtual devices:
+{% highlight xml %}
+<domain type='kvm'>
+
+  <devices>
+
+    <interface type='network'>
+      <source network='Guests_to_host_private'/>
+      <model type='rtl8139'/>
+    </interface>
+{% endhighlight %}
+
+
+# Preparing the VM environment
+
+I installed the OS on the VM and then copied the following tools over:
+
+- [USBView](http://msdn.microsoft.com/en-us/library/windows/hardware/ff560019%28v=vs.85%29.aspx)
+
+  This tool lets one visualise the USB bus tree as well as device properties, much like `lsusb(1)`
+
+- [The Android SDK](http://developer.android.com/sdk/index.html)
+
+  This includes `adb` as well as DMMS which I use for phone screenshots
+
+- [The Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+
+  This is a dependency of the Android SDK. I might have gotten away with just installing a JRE.
+
+- [This USB driver for Mediatek phones](http://ge.tt/2yL21VT/v/2)
+
+  I found these through [a post](http://forum.xda-developers.com/showthread.php?t=2160490) on xda-developers.com. The driver is unsigned but it worked for me.
+
+With all that in place, we can confirm that the VM "sees" the phone:
+
+!["USBView"]({ site.baseurl }}/images/USBView.png)
+
+We can also use `adb` to open a UNIX shell on the phone, albeit as an unprivileged user:
+
+!["adb shell"]({ site.baseurl }}/images/adb_shell.png)
