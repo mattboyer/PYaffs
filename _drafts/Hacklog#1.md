@@ -256,8 +256,8 @@ I installed the OS on the VM and then copied the following tools over:
 
 With all that in place, we can confirm that the VM "sees" the phone:
 
-!["USBView"]({ site.baseurl }}/images/USBView.png)
+!["USBView"]({{ site.baseurl }}/images/USBView.png)
 
 We can also use `adb` to open a UNIX shell on the phone, albeit as an unprivileged user:
 
-!["adb shell"]({ site.baseurl }}/images/adb_shell.png)
+!["adb shell"]({{ site.baseurl }}/images/adb_shell.png)
