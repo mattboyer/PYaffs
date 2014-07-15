@@ -39,7 +39,15 @@ First, of course, I'd have to learn more about the device. I used a spare Google
 
 Here's a summary of the phone's specs, taken from CPU-Z:
 
-!["Phone specs"]({{ site.baseurl }}/images/cpuz.png)
+### System On Chip specs
+
+!["Phone specs"]({{ site.baseurl }}/images/CPU-Z_SoC.png)
+
+### System specs
+
+!["Phone specs"]({{ site.baseurl }}/images/CPU-Z_System_1.png)
+
+!["Phone specs"]({{ site.baseurl }}/images/CPU-Z_System_2.png)
 
 #On Rooting
 
@@ -49,9 +57,22 @@ At any rate, rooting a phone is a big deal for Android power-users precisely bec
 
 Now let's look at the last line from that screenshot again:
 
-!["Wait, what?"]({{ site.baseurl }}/images/cpuz_root.png)
+!["Wait, what?"]({{ site.baseurl }}/images/wut.png)
 
 Could it be that this phone has `su(1)` in its factory firmware? I installed [Android Terminal Emulator](https://play.google.com/store/apps/details?id=jackpal.androidterm&hl=en) on the phone to have a quick look around the filesystem:
+
+	$ ls -l /system/xbin
+	ls -l /system/xbin
+	-rwxr-xr-x root     shell       60276 2013-04-03 07:29 dexdump
+	-rwsr-sr-x root     root         9820 2013-04-03 07:30 su
+	-rwxr-xr-x root     shell       31508 2013-04-03 07:29 iwlist
+	-rwxr-xr-x root     shell       17924 2013-04-03 07:29 iwspy
+	-rwxr-xr-x root     shell       31176 2013-04-03 07:29 iwconfig
+	-rwxr-xr-x root     shell       18024 2013-04-03 07:29 iwpriv
+	-rwxr-xr-x root     shell       18360 2013-04-03 07:29 iwevent
+	-rwxr-xr-x root     root       617348 2013-04-03 07:29 tcpdump
+	-rwxr-xr-x root     shell       14280 2013-04-03 07:29 iwgetid
+
 
 Huh. What else could there be?
 
