@@ -83,4 +83,8 @@ none /dev/cpuctl cgroup rw,relatime,cpu 0 0
 
 - This leaves us with 4 [`yaffs2`](http://www.yaffs.net/) filesystems backed by what looks like good, honest block devices.
 
+# MTD block devices
 
+*TBD* Run ls -l on /dev/block/\* and show the major/minor node descriptors
+
+Somehow find the kernel module that implements them (I assume it is mtdblock) and use that to say 'hey, let's have a look at /proc/mtd'
