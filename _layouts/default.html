@@ -38,13 +38,14 @@
 				</div>
 				{% endif %}
 
-				{% if page.next %}
-				<a class="about" href="{{ site.baseurl }}{{ page.next.url }}">{{ page.next.title }}</a>
+				{% if page.previous %}
+				<a class="about" href="{{ site.baseurl }}{{ page.previous.url }}">← Prev</a>
 				{% endif %}
 
-				{% if page.previous %}
-				<a class="about" href="{{ site.baseurl }}{{ page.previous.url }}">{{ page.previous.title }}</a>
+				{% if page.next %}
+				<a class="about" href="{{ site.baseurl }}{{ page.next.url }}">Next →</a>
 				{% endif %}
+
 			</div>
 
 			<div class="col-sm-8 col-offset-1">

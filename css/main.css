@@ -88,6 +88,10 @@ div.content pre {
     font-size: 12px;
 }
 
+pre code {
+    white-space: pre;
+}
+
 div.content .highlight {
 	background: #333333;
 }
