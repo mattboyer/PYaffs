@@ -115,7 +115,7 @@ brw------- root     root       7,   1 2014-07-19 22:26 loop1
 brw------- root     root       7,   0 2014-07-19 22:26 loop0
 {% endhighlight %}
 
-The filesystems that are used for persistent data storage on the phone are backed by [Memory Technology Devices](http://www.linux-mtd.infradead.org/faq/general.html) devices. The FAQ I just linked to points out that MTD are neither character nor block devices, yet for the purpose of data storage they are accessed *as* block devices.
+The filesystems that are used for persistent data storage on the phone are backed by [Memory Technology Devices](http://www.linux-mtd.infradead.org/faq/general.html). The FAQ I just linked to points out that MTD are neither character nor block devices, yet for the purpose of data storage they are accessed *as* block devices.
 
 We can see that there's a grand total of 14 MTD block devices in `/dev/block`, of which only four are used for mounted filesystems. Major device number `31` is indeed claimed by the `mtdblock` driver:
 
