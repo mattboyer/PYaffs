@@ -90,6 +90,11 @@ div.content pre {
     font-size: 12px;
 }
 
+div.content table td,th {
+    border-style: dotted;
+    border-width: 1px;
+}
+
 pre code {
     white-space: pre;
 }
