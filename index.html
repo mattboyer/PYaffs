@@ -3,7 +3,8 @@ layout: default
 ---
 
 <div id="home">
-  <h1>Blog Posts</h1>
+  <h1>Hacklogs</h1>
+  <p>Since progress is rather slow and updates are irregular, you can subscribe to the <a href='{{ site.baseurl }}/feed.xml'>RSS feed.</a> If you want, like. I'm not your boss.</p>
   <ul class="posts">
     {% for post in site.posts %}
     <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
