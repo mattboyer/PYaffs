@@ -95,6 +95,14 @@ div.content table td,th {
     border-width: 1px;
 }
 
+div.content img {
+    max-width: 100%;
+}
+
+div.content img:hover {
+    max-width: none;
+}
+
 pre code {
     white-space: pre;
 }
