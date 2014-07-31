@@ -12,7 +12,7 @@ There's a lesson in there, kids. Always log when you hack.
 
 ## Tools
 
-I mentioned in the first post that tools exist that can be used to write/read flash for this family of devices. The most legit-looking one I found is called *Smart Phone Flash Tool* (or SPFlashTool in some filenames) and is available from [this Russian-language site](http://mtk2000.ucoz.ru/). The site looks a bit dodgy in a back alley phone repair shop kinda way, but it also looks like it has some kind of legit affiliation to MediaTek. Anyway, I also grabbed a zip archive containing drivers for MediaTek SoC's in the 65xx series from the site.
+I mentioned in the first post that tools exist that can be used to write/read flash for this family of devices. The most legit-looking one I found is called *Smart Phone Flash Tool* (or SPFlashTool in some filenames) and is available from [this Russian-language site](http://mtk2000.ucoz.ru/). The site looks a bit dodgy in a back-alley phone repair shop kinda way, but it also looks like it has some kind of legit affiliation to MediaTek. Anyway, I also grabbed a zip archive containing drivers for MediaTek SoC's in the 65xx series from the site.
 
 This is what SPFlashTool looks like:
 
@@ -145,7 +145,7 @@ We can infer from the contents of that file that both devices act as serial port
 
 ## Connecting the phone to the VM
 
-I wanted to connect the phone to my work VM as the `0e8d:0003` USB device. Since this is a transient device (it appears only when I physically connect the phone), I'll need to simulate attaching the device to the VM using QEmu and libvirt's support for hot-plugging pass-through devices. I prepared a XML description of the device:
+I wanted to connect the phone to my [work VM]({{ site.baseurl }}{% post_url 2014-07-16-Hacklog#1 %}) as the `0e8d:0003` USB device. Since this is a transient device (it appears only when I physically connect the phone), I'll need to simulate attaching the device to the VM using QEmu and libvirt's support for hot-plugging pass-through devices. I prepared a XML description of the device:
 
 {% highlight xml %}
 <hostdev mode='subsystem' type='usb' managed='yes'>
@@ -241,15 +241,24 @@ At long last, I have a dump of the `system` partition!
 
 Yay!
 
-## Further considerations
+# Further considerations
 
-As I alluded to above, there is a config option in SPFlashTool that lets the user select whether they want to communication between the tool and DA to occur over USB 1.1 or USB2 ("High speed" mode). When this option is selected, the `0e8d:0003` device disappears from the host's and guest's USB root hub after the Download Agent has been loaded and is replaced by yet another USB device, this time with VID/PID `0e8d:2001`:
+- As I alluded to above, there is a config option in SPFlashTool that lets the user select whether they want communication between the tool and the phone's DA to occur over USB 1.1 or USB2 ("High speed" mode). When this latter option is selected, the `0e8d:0003` device disappears from the host's (and therefore also the guest's) USB root hub after the Download Agent has been loaded and is replaced by yet another USB device, this time with VID/PID `0e8d:2001`:
 
-	289-mboyer@marylou:~ [master:I±R=]$ lsusb | grep -i mediatek
-	Bus 003 Device 013: ID 0e8d:2001 MediaTek Inc.
+		289-mboyer@marylou:~ [master:I±R=]$ lsusb | grep -i mediatek
+		Bus 003 Device 013: ID 0e8d:2001 MediaTek Inc.
 
-I've tried to configure QEmu pass-through to detach `0e8d:0003` from the guest and connect the new `0e8d:2001` device when it appears. I had to hack the INF file above to let Windows on the VM know that it should treat this device in a similar fashion to the other devices in the INF.
+  I've tried to configure QEmu pass-through to detach `0e8d:0003` from the guest and connect the new `0e8d:2001` device when it appears. I had to hack the INF file above to let Windows on the VM know that it should treat this device in a similar fashion to the other devices in the INF.
 
-That actually *did work*, however transfers were very unreliable: SPFlashTool would frequently abort the dump transfer for no clear reason. Slow and steady does it, sometimes.
+  That actually *did work*, however transfers were very unreliable: SPFlashTool would frequently abort the dump transfer for no clear reason. Slow and steady does it, sometimes.
 
-Also, one of the cool things with using USB pass-through, and part of the reason I went through all this pain to get a dump I already had, is that one can use [`tshark(1)`](http://www.wireshark.org/docs/man-pages/tshark.html) and Linux's [`usbmon`](https://www.kernel.org/doc/Documentation/usb/usbmon.txt) module to dump USB traffic to and from the guest. This is of great interest to me, since I would ideally like to replicate SPFlashTool's functionality in a native Linux tool.
+- One of the cool things with using USB pass-through, and part of the reason I went through all this pain to get a dump I already had, is that one can use [`tshark(1)`](http://www.wireshark.org/docs/man-pages/tshark.html) and Linux's [`usbmon`](https://www.kernel.org/doc/Documentation/usb/usbmon.txt) module to capture USB traffic to and from the guest. This is of great interest to me, since I would ideally like to replicate SPFlashTool's functionality in a native Linux tool.
+
+		420-mboyer@marylou:~ [master:I±R=]$ sudo tshark -i usbmon1 -w /tmp/SPFlashTool.pcap
+		tshark: Lua: Error during loading:
+		 [string "/usr/share/wireshark/init.lua"]:46: dofile has been disabled due to running Wireshark as superuser. See http://wiki.wireshark.org/CaptureSetup/CapturePrivileges for help in running Wireshark as an unprivileged user.
+		Running as user "root" and group "root". This could be dangerous.
+		Capturing on 'usbmon1'
+		137637 ^C
+
+In the next post, I'll present my findings regarding the internal structure of the Flash dumps and the [tool](https://github.com/mattboyer/PYaffs) I wrote to extract them. By that point, I will have caught up with the current state of the project and should hopefully be breaking new ground in subsequent hacklogs.
