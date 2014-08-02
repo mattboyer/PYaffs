@@ -97,10 +97,23 @@ div.content table td,th {
 
 div.content img {
     max-width: 100%;
+    opacity: 0.75;
 }
 
 div.content img:hover {
+    opacity: 1.0;
+    cursor: zoom-in;
+}
+
+div.content img:active {
     max-width: none;
+    opacity: 1.0;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index:2;
+    transform: translate(-50%, -50%);
+    cursor: zoom-out;
 }
 
 pre code {
