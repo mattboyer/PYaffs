@@ -137,6 +137,7 @@ class FileSystem(object):
                     dir_object.entries.append(inode_obj)
                     self._inodes[inode_obj.inode] = inode_obj
 
+        print(len(headers))
         for header_objid, header in headers.items():
             if header.parent_objid not in headers:
                 raise IOError(

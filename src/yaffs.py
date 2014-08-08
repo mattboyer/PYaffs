@@ -43,12 +43,22 @@ class Dumper(object):
         return idx
 
     def read_headers(self):
+        spike_chunkids = list()
         for idx, spare in enumerate(self.spares):
-            if not (0 == spare.chunkid and 0xFFFF == spare.bytecount):
+            if spare.objectid in (965, 1358):
+                if 1358 == spare.objectid:
+                    if not spare.chunkid == 1348:
+                        continue
+                print((idx, repr(spare)))
+                print(spare)
+                spike_chunkids.append(spare.chunkid)
+
+            if not (spare.chunkid in (0, 0xffff) and 0xFFFF == spare.bytecount):
                 continue
             header_bytes = self.read_block_data(idx)
             header = block_entities.ObjectHeader(header_bytes, spare.objectid)
             self.headers[header.objectid] = header
+        print(sorted(spike_chunkids))
 
     def read_block_data(self, block_idx):
         num_bytes_to_read = self.spares[block_idx].bytecount
@@ -92,6 +102,10 @@ def dispatcher():
         num_blocks = dumper.read_all_spares()
         print("{0} blocks".format(num_blocks))
         dumper.read_headers()
+        header = block_entities.ObjectHeader(dumper.read_block_data(6708), 1358)
+        print(repr(header))
+        header = block_entities.ObjectHeader(dumper.read_block_data(20274), 965)
+        print(repr(header))
 
         fs = fs_entities.FileSystem(dumper)
         if args.action in ('ls', 'list'):

@@ -49,7 +49,10 @@ class Spare(Blob):
         self.chunkid = self.little_endian_bytes_to_int(18, 16)
 
         self.bad_spare = False
-        self.bytecount = self.little_endian_bits_to_int(176, 16)
+        bytecount_low = self.little_endian_bits_to_int(176, 16)
+        bytecount_high = self.little_endian_bits_to_int(264, 16)
+
+        self.bytecount = bytecount_low + (2**16) * bytecount_high
 
     def little_endian_bits_to_int(self, bit_offset, length):
 
