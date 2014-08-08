@@ -47,6 +47,7 @@ class Spare(Blob):
         self.objectid = self.little_endian_bits_to_int(40, 18)
 
         self.chunkid = self.little_endian_bytes_to_int(18, 16)
+        self.is_header = (32768 == self.little_endian_bits_to_int(160, 16))
 
         self.bad_spare = False
         bytecount_low = self.little_endian_bits_to_int(176, 16)
@@ -78,11 +79,11 @@ class Spare(Blob):
         return str(self._inner_bits)
 
     def __repr__(self):
-        return "<Spare objectId:{0} chunkid:{1} bytecount:{2}>".format(
+        return "<Spare objectId:{0} chunkid:{1} bytecount:{2} spare:{3}>".format(
             self.objectid,
             self.chunkid,
             self.bytecount,
-            self.bad_spare
+            self.is_header,
         )
 
 
