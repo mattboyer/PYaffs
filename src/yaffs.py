@@ -44,11 +44,19 @@ class Dumper(object):
 
     def read_headers(self):
         for idx, spare in enumerate(self.spares):
+            if spare.objectid in (0,):
+                print("gruh", repr(spare))
+
             if not (0xFFFF == spare.bytecount or spare.is_header):
                 continue
             header_bytes = self.read_block_data(idx)
             header = block_entities.ObjectHeader(header_bytes, spare.objectid)
             self.headers[header.objectid] = header
+
+            if header.name=="":
+                print((idx, repr(header)))
+                print((idx, repr(spare)))
+                print()
 
     def read_block_data(self, block_idx):
         block_spare = self.spares[block_idx]

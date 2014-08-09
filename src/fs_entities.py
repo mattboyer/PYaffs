@@ -119,7 +119,7 @@ class FileSystem(object):
     def _build_fs(self, headers):
         def _build_objects_in_dir(dir_object):
             if dir_object.parent not in self._parents:
-                raise IOError("{0} not a dir".format(dir_inode))
+                raise IOError("{0} not a dir".format(dir_object))
 
             for child_inode in self._parents[dir_object.inode]:
                 child_header = headers[child_inode]
@@ -137,9 +137,12 @@ class FileSystem(object):
                     dir_object.entries.append(inode_obj)
                     self._inodes[inode_obj.inode] = inode_obj
 
-        print(len(headers))
         for header_objid, header in headers.items():
+            if header.name == "unlinked":
+                continue
+
             if header.parent_objid not in headers:
+                #continue
                 raise IOError(
                     "Object {0}'s parent objectid {1} not found".format(
                         repr(header),

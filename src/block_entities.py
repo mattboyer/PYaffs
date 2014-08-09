@@ -79,7 +79,7 @@ class Spare(Blob):
         return str(self._inner_bits)
 
     def __repr__(self):
-        return "<Spare objectId:{0} chunkid:{1} bytecount:{2} spare:{3}>".format(
+        return "<Spare objectId:{0} chunkid:{1} bytecount:{2} header:{3}>".format(
             self.objectid,
             self.chunkid,
             self.bytecount,
