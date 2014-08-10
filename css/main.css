@@ -114,6 +114,14 @@ div.content img:active {
     z-index:2;
     transform: translate(-50%, -50%);
     cursor: zoom-out;
+
+    border-left-width: 50vw;
+    border-right-width: 50vw;
+
+    border-top-width: 50vh;
+    border-bottom-width: 50vh;
+    border-color: black;
+    border-style: solid;
 }
 
 pre code {
@@ -184,6 +192,8 @@ div.col-sm-3 div#about {
 }
 
 div.col-sm-3 img#about {
+    width: 150px;
+    height: 150px;
     margin-bottom: 10px;
     margin-left: auto;
     margin-right: auto;
