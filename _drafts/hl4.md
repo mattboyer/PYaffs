@@ -6,9 +6,9 @@ tags: yaffs spare nand python filesystem
 
 # Leitmotiv
 
-Well over twenty years ago, the movie [Jurassic Park](http://www.imdb.com/title/tt0107290/) came out. There's a lot of exposition in the first third of that movie. In particular, there's a scene where a small group of people is given access -for the first time!- to an area of the island where very large dinosaurs roam free.
+Well over twenty years ago, the movie [Jurassic Park](http://www.imdb.com/title/tt0107290/) came out. There was a lot of exposition in the first act. In particular, there's a scene where a small group of people is given access -for the first time!- to an area of the island where very large dinosaurs roam free.
 
-Among them is a man who is some sort of scientist and definitely not a people person. They happen upon a dino-sized dump of dino poo and yer man deadpans:
+Among them is a man who is some sort of scientist and definitely not a people person. They happen upon a dino-sized *dump* of dino poo and yer man deadpans:
 
 > That is one big pile of shit.
 
@@ -47,6 +47,55 @@ The basic unit of data storage in `yaffs` is a **chunk**. A chunk may contain *e
 Within the scope of the yaffs documentation, filesystem entities such as files and directories are called **objects**. Every object has its metadata stored in a dedicated chunk in a data structure the yaffs documentation calls an **object header**
 
 Something about spares
+
+The format for object headers is defined in `yaffs_guts.h` in the form of a [plain old C struct](http://www.aleph1.co.uk/gitweb?p=yaffs2.git;a=blob;f=yaffs_guts.h;h=231f8ac567eb86e3583f4c1fc436e9c89a4ca2c8;hb=HEAD#l312):
+
+{% highlight c %}
+struct yaffs_obj_hdr {
+        enum yaffs_obj_type type;
+
+        /* Apply to everything  */
+        int parent_obj_id;
+        u16 sum_no_longer_used; /* checksum of name. No longer used */
+        YCHAR name[YAFFS_MAX_NAME_LENGTH + 1];
+
+        /* The following apply to all object types except for hard links */
+        u32 yst_mode;           /* protection */
+
+        u32 yst_uid;
+        u32 yst_gid;
+        u32 yst_atime;
+        u32 yst_mtime;
+        u32 yst_ctime;
+
+        /* File size  applies to files only */
+        u32 file_size_low;
+
+        /* Equivalent object id applies to hard links only. */
+        int equiv_id;
+
+        /* Alias is for symlinks only. */
+        YCHAR alias[YAFFS_MAX_ALIAS_LENGTH + 1];
+
+        u32 yst_rdev;   /* stuff for block and char devices (major/min) */
+
+        u32 win_ctime[2];
+        u32 win_atime[2];
+        u32 win_mtime[2];
+
+        u32 inband_shadowed_obj_id;
+        u32 inband_is_shrink;
+
+        u32 file_size_high;
+        u32 reserved[1];
+        int shadows_obj;        /* This object header shadows the
+                                specified object if > 0 */
+
+        /* is_shrink applies to object headers written when wemake a hole. */
+        u32 is_shrink;
+
+};
+{% endhighlight %}
 
 Something about object headers
 
