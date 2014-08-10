@@ -44,9 +44,16 @@ class Spare(Blob):
         assert 64 == len(self._inner_bytes)
         self._inner_bits = Spare.bytes_to_binary(self._inner_bytes)
         assert 512 == len(self._inner_bits)
-        self.objectid = self.little_endian_bits_to_int(40, 18)
 
-        self.chunkid = self.little_endian_bytes_to_int(18, 16)
+        objectid_low = self.little_endian_bits_to_int(40, 24)
+        objectid_high = self.little_endian_bits_to_int(136, 8)
+        #self.objectid = objectid_low + (2**24) * objectid_high
+        self.objectid = objectid_low
+
+        chunkid_low = self.little_endian_bytes_to_int(18, 16)
+        unknown_qty = self.little_endian_bytes_to_int(20, 16)
+        self.chunkid = chunkid_low
+
         self.is_header = (32768 == self.little_endian_bits_to_int(160, 16))
 
         self.bad_spare = False

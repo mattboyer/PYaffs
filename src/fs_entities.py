@@ -138,11 +138,10 @@ class FileSystem(object):
                     self._inodes[inode_obj.inode] = inode_obj
 
         for header_objid, header in headers.items():
-            if header.name == "unlinked":
-                continue
-
             if header.parent_objid not in headers:
-                #continue
+                if 0 == header.parent_objid:
+                    continue
+
                 raise IOError(
                     "Object {0}'s parent objectid {1} not found".format(
                         repr(header),
@@ -151,9 +150,10 @@ class FileSystem(object):
                 )
 
             parent = headers[header.parent_objid]
-            if parent == header:
+            if header_objid == header.parent_objid:
                 # What if the root inode is 0? That would evaluate to False.
                 # Can that even happen?
+                print("found root", repr(header))
                 self.root_inode = header_objid
                 continue
 
