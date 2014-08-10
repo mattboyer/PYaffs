@@ -8,9 +8,9 @@ body {
 }
 
 @media (min-width: 768px) {
-  .container {
-    max-width: 730px;
-  }
+    .container {
+        max-width: 730px;
+    }
 }
 /**
  * //////////////////////////
@@ -35,7 +35,7 @@ h2 {
     color: #666666;
     border-bottom: 1px solid #E6E6E6;
 }
-        
+
 h3 {
     font-weight: normal;
     margin-bottom: 5px;
@@ -72,7 +72,7 @@ div.right {
     width: 500px;
     float: left;
 }
-           
+
 div.content {
     border-top: 1px solid #E6E6E6;
     margin-top: 5px;
@@ -114,6 +114,14 @@ div.content img:active {
     z-index:2;
     transform: translate(-50%, -50%);
     cursor: zoom-out;
+
+    border-left-width: 50vw;
+    border-right-width: 50vw;
+
+    border-top-width: 50vh;
+    border-bottom-width: 50vh;
+    border-color: black;
+    border-style: solid;
 }
 
 pre code {
@@ -121,7 +129,7 @@ pre code {
 }
 
 div.content .highlight {
-	background: #333333;
+    background: #333333;
 }
 
 footer {
@@ -137,28 +145,28 @@ footer {
 }
 
 footer div#github {
-	text-align: right;
+    text-align: right;
 }
 
 div.right h1 {
-	margin-bottom: -2px;
+    margin-bottom: -2px;
 }
 
 div.right ul {
-	list-style: none;
-	margin-left: 0;
-	padding: 0;
+    list-style: none;
+    margin-left: 0;
+    padding: 0;
 }
 
 div.right ul li {
-	margin-top: 5px;
-	margin-left: 0;
-	padding: 0;
+    margin-top: 5px;
+    margin-left: 0;
+    padding: 0;
 }
 
 div.right .post ul {
-	list-style: square;
-	margin-left: 15px;
+    list-style: square;
+    margin-left: 15px;
 }
 
 /**
@@ -167,24 +175,25 @@ div.right .post ul {
  * ///////////////////////////////////
  */
 div.col-sm-3 {
-        margin-top: 100px;
-        font-size: 11px;
-        color: #666;
+    margin-top: 100px;
+    font-size: 11px;
+    color: #666;
 }
 
 div.col-sm-3 strong {
-        font-size: 16px;
-        color: #4A4A4A;
-        font-weight: normal;
+    font-size: 16px;
+    color: #4A4A4A;
+    font-weight: normal;
 }
 
 div.col-sm-3 div#about {
-        margin-top: 10px;
-		color: #8C8C8C;
+    margin-top: 10px;
+    color: #8C8C8C;
 }
 
 div.col-sm-3 img#about {
-    -webkit-border-radius: 150px;
+    width: 150px;
+    height: 150px;
     margin-bottom: 10px;
     margin-left: auto;
     margin-right: auto;
