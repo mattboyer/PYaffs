@@ -314,7 +314,7 @@ Let's put together the 4 16-byte fragments we've got around that chunk and see w
 	64d0720: ff00001a ffffff00 2059caf5 ed0bfbff  ........ Y......
 	64d0930: ff000000 ffaaaa2e 03a502ea 410bffff  ............A...
 
-The only `0x26` byte in there is found at spare offset `0x05` and it is followed by a `0x02`. That sounds promising. I repeated this process using other files I knew the path of and was able to determine that the `obj_id`-equivalent is stored as a little-endian unsigned integer starting on the 40th bit of the spare. The YAFFS1 `struct yaffs_tags` declaration points to a length of 18 bits althought there could be more here.
+The only `0x26` byte in there is found at spare offset `0x05` and it is followed by a `0x02`. That sounds promising. I repeated this process using other files I knew the path of and was able to determine that the `obj_id`-equivalent is stored as a little-endian unsigned integer starting on the 40th bit of the spare. The YAFFS1 `struct yaffs_tags` declaration points to a length of 18 bits although there could be more here.
 
 ## Finding the `chunk_id`
 
@@ -342,7 +342,11 @@ To find out, I had to find at least two consecutive chunks of file data and get 
 	616f3a0: ff00000c ffffff0d a8b75e90 ba0bf8ff  ..........^.....
 	616f5b0: ff000000 0daaaaa3 25a947e4 f8affcff  ........%.G.....
 
+The only bytes that seem to have incremented from the first chunk's spar to the next's are at spare offset `0x12`. This is consistent with what we got from the `tcpdump` object header's spare where we have `0x00000000` at that offset. I tested that hypothesis on other files' chunks and was able to confirm that the only location in the spare where a chunkid could be found is at `0x12`. The length for that field is set to 20 bits in the YAFFS1 tags structure and could be up to 32 bits based on what I have seen.
 
+## Finding the chunk's byte count
+
+The last piece of information I need to successfully extract file data from my dump is the number of file data bytes in a given chunk. I know that my chunks are 2048 bytes in length, so I expect to find that value in mid-file chunks' spares. The last chunk in a given file, that is to say with a certain `obj_id`, should have a length field with a value equal to the file's length taken from the object's header modulo 2048.
 
 # Conclusion
 
