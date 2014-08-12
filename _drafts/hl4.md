@@ -120,7 +120,7 @@ struct yaffs_tags {
 
 Let's see what we have here:
 
-- `obj_id` - That's our object identifier - this lets us know which filesystem "entity" a given chunk belongs to. I think of that numeric identifier as an [*inode number*](http://www.linfo.org/inode.html).
+- `obj_id` - That's the object identifier - this lets us know which filesystem "entity" a given chunk belongs to. I think of that numeric identifier as an [*inode number*](http://www.linfo.org/inode.html).
 
 - `chunk_id` - This is effectively the chunk's position in the ordered list of chunks that, together, hold the file's contents.
 
@@ -170,9 +170,9 @@ Let's have a closer look at the area of the dump around `0x64d4b4a`:
 
 My `tcpdump` is preceded by `0xffff`. That's consistent with the `u16 sum_no_longer_used` in the struct declaration - if YAFFS isn't using these 16 bits, it makes sense that it would set them to 1.
 
-We expect the previous member of the struct to be `int parent_obj_id` and the value `0x00000226` sounds like a reasonable inode number for a file system of this size. To put it differently, it's less far-fetched than if it were `0x9c36281b`
+I expect the previous member of the struct to be `int parent_obj_id` and the value `0x00000226` sounds like a reasonable inode number for a file system of this size. To put it differently, it's less far-fetched than if it were `0x9c36281b`
 
-The previous member of the struct is the first one, `enum yaffs_obj_type type`. Its value here is `0x00000001` and we expect `tcpdump` to be a regular file. According to [`yaffs_guts.h`](http://www.aleph1.co.uk/gitweb?p=yaffs2.git;a=blob;f=yaffs_guts.h;hb=7e5cf0fa1b694f835cdc184a8395b229fa29f9ae#l170), the type enumeration for `yaffs_obj_type` looks like:
+The previous member of the struct is the first one, `enum yaffs_obj_type type`. Its value here is `0x00000001` and I expect `tcpdump` to be a regular file. According to [`yaffs_guts.h`](http://www.aleph1.co.uk/gitweb?p=yaffs2.git;a=blob;f=yaffs_guts.h;hb=7e5cf0fa1b694f835cdc184a8395b229fa29f9ae#l170), the type enumeration for `yaffs_obj_type` looks like:
 
 {% highlight c %}
 enum yaffs_obj_type {
@@ -199,7 +199,7 @@ I know that `0x64d4b40` is a multiple of the chunk size but I still don't know h
 
 - `0x64d5380 - ...` - I've seen a lot of ELF headers [in my time](https://github.com/mattboyer/optenum) and this sure looks like one!
 
-I don't know whether the ELF header at `0x64d5380` belongs to `tcpdump` or any other file but it looks like we've got a data chunk starting at that offset. This would put the chunk size at `0x64d5380 - 0x64d4b40 = 2112` bytes.
+I don't know whether the ELF header at `0x64d5380` belongs to `tcpdump` or any other file but it looks like there's a data chunk starting at that offset. This would put the chunk size at `0x64d5380 - 0x64d4b40 = 2112` bytes.
 
 ## Spares
 
@@ -289,7 +289,9 @@ Still, that's a lot more than I expected and it's obvious that the 64-*bit* `str
 
 Since unlike the object headers I don't *know* what the dump's spare data *should* look like, I had to find the equivalents of the `struct yaffs_tags` members in spare data the hard way.
 
-I do know that `tcpdump`'s parent object has objectId `0x00000226` and I know that its parent object is a directory named `xbin`. Knowing what I know now about block sizes, I can look for that directory's object header and search the block's spare data for that number. We expect the `xbin` string to start 10 bytes from a block boundary:
+## Finding the `obj_id`
+
+I do know that `tcpdump`'s parent object has objectId `0x00000226` and I know that its parent object is a directory named `xbin`. Knowing what I know now about block sizes, I can look for that directory's object header and search the block's spare data for that number. I expect the `xbin` string to start 10 bytes from a block boundary:
 
 	714-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ grep -abo 'xbin' ../images/system.img  | awk -F':' '{ if(10==($1 % 2112)){ print $1 - 10} }'
 	105709824
@@ -302,7 +304,7 @@ I do know that `tcpdump`'s parent object has objectId `0x00000226` and I know th
 	64d0140: 00000000 00000000 00000000 00000000  ................
 
 
-`0x00000003` is consistent with the enumerated type for a directory, our header is looking pretty groovy.
+`0x00000003` is consistent with the enumerated type for a directory, my header is looking pretty groovy.
 
 Let's put together the 4 16-byte fragments we've got around that chunk and see what we can see.
 
@@ -312,9 +314,34 @@ Let's put together the 4 16-byte fragments we've got around that chunk and see w
 	64d0720: ff00001a ffffff00 2059caf5 ed0bfbff  ........ Y......
 	64d0930: ff000000 ffaaaa2e 03a502ea 410bffff  ............A...
 
-The only `0x26` byte in there is found at spare offset `0x05` and it is followed by a `0x02`. That sounds promising.
+The only `0x26` byte in there is found at spare offset `0x05` and it is followed by a `0x02`. That sounds promising. I repeated this process using other files I knew the path of and was able to determine that the `obj_id`-equivalent is stored as a little-endian unsigned integer starting on the 40th bit of the spare. The YAFFS1 `struct yaffs_tags` declaration points to a length of 18 bits althought there could be more here.
 
-MORE TO BE WRITTEN
+## Finding the `chunk_id`
+
+According to the YAFFS spec, object header chunks have a `chunk_id` value of zero whereas file data chunks have a positive integer `chunk_id` that indicates the chunk's position in the file. There are several contiguous runs of `0x00` bytes in the `tcpdump` object header spare above. Which one's the `chunk_id`?
+
+To find out, I had to find at least two consecutive chunks of file data and get compare their spares. I headed back to the GPL. I knew there was a 16-byte spare fragment at `0x616e950`.
+
+	747-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ echo $(( 102164304 % 2112 ))
+	528
+	
+	748-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ echo $(( 102164304 - 528 ))
+	102163776
+
+	750-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ for frag_offset in 512 1040 1568 2096; do xxd -g4 -s $(( 102163776 + frag_offset)) -l 16 ../images/system.img  ; done
+	616e740: ff001000 00c80100 b1d3e86c 3218f9ff  ...........l2...
+	616e950: ff008000 00000008 31c0f8d8 3ce1ffff  ........1...<...
+	616eb60: ff000019 ffffff05 68afaa7c 4a4cfcff  ........h..|JL..
+	616ed70: ff000000 faaaaa48 d1334c8c 70d3f0ff  .......H.3L.p...
+
+	751-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ echo $(( 102163776 + 2112 ))
+	102165888
+	752-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ for frag_offset in 512 1040 1568 2096; do xxd -g4 -s $(( 102165888 + frag_offset)) -l 16 ../images/system.img  ; done
+	616ef80: ff001000 00c80100 c5a1ae9d 713af0ff  ............q:..
+	616f190: ff008100 00000008 39565abc 5b40f3ff  ........9VZ.[@..
+	616f3a0: ff00000c ffffff0d a8b75e90 ba0bf8ff  ..........^.....
+	616f5b0: ff000000 0daaaaa3 25a947e4 f8affcff  ........%.G.....
+
 
 
 # Conclusion
