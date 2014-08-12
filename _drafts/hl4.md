@@ -14,7 +14,7 @@ Among them is a man who is some sort of scientist and definitely not a people pe
 
 !["That is one big pile of shit"]({{ site.baseurl }}/images/BPOS.jpg)
 
-He's not alone, of course. Accompanying him on the tour is Dr Sattler, a paleobotanist. Dr Sattler takes a keen interest in how plant life has been recreated in the park and seizes the opportunity to *explore* the *dump*:
+He's not alone, of course. Accompanying him on the tour is Dr Sattler, a paleobotanist. Dr Sattler takes a keen interest in how plant life has been recreated in the park and seizes the opportunity to *explore the dump*:
 
 !["Reverse-engineering"]({{ site.baseurl }}/images/reverse_engineering.jpg)
 
@@ -30,15 +30,15 @@ I only need to figure out how.
 
 ## Context
 
-As I saw in the output of mount(1), `/system` is a `yaffs2` filesystem, mounted read-only:
+As I saw in the output of [`mount(8)`](http://linux.die.net/man/8/mount), `/system` is a `yaffs2` filesystem, mounted read-only:
 
 	$ mount
 	
 	/dev/block/mtdblock11 /system yaffs2 ro,noatime 0 0
 
-[`yaffs2`](http://www.yaffs.net/yaffs-2-specification) is the second revision of [`yaffs`](http://www.yaffs.net/yaffs-original-specification), a Flash-optimised filesystem that's been around a while.
+[`YAFFS2`](http://www.yaffs.net/yaffs-2-specification) is the second revision of [`YAFFS`](http://www.yaffs.net/yaffs-original-specification), a Flash-optimised filesystem that's been around a while.
 
-My first idea was to open the `/system` dump with a YAFFS access tool. None of them worked with the dumps I got out of my phone and this little project lost momentum and got stalled at that point for three months.
+My first idea was to open the `/system` dump with a YAFFS access tool. None of them worked with the dumps I got out of my phone and this little project lost momentum and got stalled there for almost three months.
 
 I eventually picked it up again and decided to do this the hard way. In order to access the filesystem's contents out-of-band, I had to spend time reading and digesting both filesystems' specification documents. The YAFFS2 spec is not a standalone document so familiarity with YAFFS stuff is pretty much required.
 
@@ -48,7 +48,7 @@ The basic unit of data storage in YAFFS is a **chunk**. A chunk may contain *eit
 
 Within the scope of the YAFFS documentation, filesystem entities such as files and directories are called **objects**. Every object has its metadata stored in a dedicated chunk in a data structure the YAFFS documentation calls an **object header**
 
-The format for object headers is defined in `yaffs_guts.h` in the form of a [plain old C struct](http://www.aleph1.co.uk/gitweb?p=yaffs2.git;a=blob;f=yaffs_guts.h;h=231f8ac567eb86e3583f4c1fc436e9c89a4ca2c8;hb=HEAD#l312):
+The format for object headers is defined in [`yaffs_guts.h`](http://www.aleph1.co.uk/gitweb?p=yaffs2.git;a=blob;f=yaffs_guts.h;h=231f8ac567eb86e3583f4c1fc436e9c89a4ca2c8;hb=HEAD#l312) in the form of this plain old C struct:
 
 {% highlight c %}
 struct yaffs_obj_hdr {
@@ -99,7 +99,7 @@ struct yaffs_obj_hdr {
 
 As the YAFFS documentation points out, this is not just an in-memory structure, but also the format in which header information is stored on the NAND (ie. on the raw MTD). This was my starting point.
 
-A given file may be split across several data chunks, independently of its header chunk. Since the object header format doesn't have any references to other chunks, it follows that some sort of metadata is needed around data chunks for the filesystem implementation to know what file a given chunk belongs to, and where that chunk falls in the ordered list of data chunks that comprise the whole file.
+A given file may be split across several data chunks, independently of its header chunk. Since the object header format doesn't have any references to other chunks, it follows that some sort of metadata is needed *around* data chunks for the filesystem implementation to know what file a given chunk belongs to, and where that chunk falls in the ordered list of data chunks that comprise the whole file.
 
 This data is stored in what the YAFFS docs call **spare** data. The docs mention that spare data is interleaved with "actual" chunk data but doesn't say much more beyond that.
 
@@ -132,13 +132,13 @@ Let's see what we have here:
 
 Interestingly, the number of bytes in a chunk is stored on 10 + 2 bits, meaning that there can be up to 4095.
 
-# TBD Clever title
+# Exploring the dump
 
 I now have some idea of what I can expect to find in the dump. As I mentioned in the [first post]({{ site.baseurl }}{% post_url 2014-07-15-Hacklog#0 %}), I am particularly interested in a file named `/system/xbin/tcpdump`. I can expect to find a YAFFS object header for this file as well as for its parent dir `xbin`.
 
 ## Object Headers
 
-Let's get greppin'
+Let's get greppin', yo!
 
 	647-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ for offset in $(grep -abo tcpdump ../images/system.img  | cut -d':' -f1); do xxd -g4 -s ${offset} -l 16 ../images/system.img; done
 	510782b: 74637064 756d7000 0c0c7463 7064756d  tcpdump...tcpdum
@@ -257,7 +257,7 @@ I don't know for sure what's in the phone's `/system` directory but I can make a
 	616e990: 204c6963 656e7365 20666f72 206d6f72   License for mor
 	616e9a0: 65206465 7461696c 732e0a0a 00596f75  e details....You
 
-We can see the familiar text in the dump and just at the point where Lawrence Lessig has built up a good head of steam and is shouting about the **MERCHANTABILITY** and the **FITNESS FOR A PARTICULAR PURPOSE**, a 16-byte fragment of data occurs at offset `0x616e950` that is definitely *not* part of the GPL.
+We can see the familiar text in the dump and just when Lawrence Lessig has built up a good head of steam and starts shouting about the **MERCHANTABILITY** and the **FITNESS FOR A PARTICULAR PURPOSE**, a 16-byte fragment of data occurs at offset `0x616e950` that is definitely *not* part of the GPL.
 
 At this point I'm fairly confident that these fragments are the out-of-band spare data written and read by YAFFS.
 
@@ -276,8 +276,10 @@ It looks like I've got 151040 of them in my dump:
 	Modify: 2014-06-01 03:59:00.494426437 +0100
 	Change: 2014-07-06 12:47:15.303356073 +0100
 	 Birth: -
+	
 	706-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ echo $(( 318996480 % 2112 ))
 	0
+	
 	707-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ echo $(( 318996480 / 2112 ))
 	151040
 
@@ -372,7 +374,7 @@ I've now reverse-engineered enough information about the layout of the `/system`
 
 This is very exciting news to me because it means this blog, which is really just a side-project, has now caught up with the main event and future hacklogs will detail new developments instead of rehashing weeks-old stuff. It's nice when you break even.
 
-Since I've now partially achieved one of the [goals]({{ site.baseurl }}{% post_url 2014-07-15-Hacklog#0 %}) I set when I began, and in doing so enabled the other two, I think I should conclude with this other quote from Jurassic Park.
+Since I've now partially achieved one of the [goals]({{ site.baseurl }}{% post_url 2014-07-15-Hacklog#0 %}) I set for myself when I began, and in doing so enabled the other two, I think I should conclude with this other quote from Jurassic Park.
 
 > It's a UNIX system, I know this!
 
