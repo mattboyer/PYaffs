@@ -289,7 +289,7 @@ Still, that's a lot more than I expected and it's obvious that the 64-*bit* `str
 
 Since unlike the object headers I don't *know* what the dump's spare data *should* look like, I had to find the equivalents of the `struct yaffs_tags` members in spare data the hard way.
 
-I do know that `tcpdump`'s parent object has objectId `0x00000226` and I know that this parent object is directory named `xbin`. Knowing what I know now about block sizes, I can look for that directory's object header and search the block's spare data for that number. We expect the `xbin` string to start 10 bytes from a block boundary:
+I do know that `tcpdump`'s parent object has objectId `0x00000226` and I know that its parent object is a directory named `xbin`. Knowing what I know now about block sizes, I can look for that directory's object header and search the block's spare data for that number. We expect the `xbin` string to start 10 bytes from a block boundary:
 
 	714-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ grep -abo 'xbin' ../images/system.img  | awk -F':' '{ if(10==($1 % 2112)){ print $1 - 10} }'
 	105709824
@@ -306,7 +306,16 @@ I do know that `tcpdump`'s parent object has objectId `0x00000226` and I know th
 
 Let's put together the 4 16-byte fragments we've got around that chunk and see what we can see.
 
-Then: Use the parent objectid field from the objectheader of a file with a known path to know what to look for in the spares of the parent. This assumes the chunk containing the parent's header is known
+	725-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I=R=]$ for frag_offset in 512 1040 1568 2096; do xxd -g4 -s $(( 105709824 + frag_offset)) -l 16 ../images/system.img  ; done
+	64d0300: ff001000 00260200 d98ba090 4fd6feff  .....&......O...
+	64d0510: ff000000 0000ffff a75b4381 75a3f5ff  .........[C.u...
+	64d0720: ff00001a ffffff00 2059caf5 ed0bfbff  ........ Y......
+	64d0930: ff000000 ffaaaa2e 03a502ea 410bffff  ............A...
+
+The only `0x26` byte in there is found at spare offset `0x05` and it is followed by a `0x02`. That sounds promising.
+
+MORE TO BE WRITTEN
+
 
 # Conclusion
 
