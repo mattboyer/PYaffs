@@ -351,10 +351,20 @@ The last piece of information I need to successfully extract file data from my d
 	767-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ printf '%x\n' 2048
 	800
 
-There's a `0x0008` in both of my GPL spares, starting at spare offset `0x16`. The object header's spare has `0xffff` there, which makes sense since the headers don't include any file data. I set out to find a file's last data chunk to test that hypothesis.
+There's a `0x0008` in both of my GPL spares, starting at spare offset `0x16`. The object header's spare has `0xffff` there, which makes sense since the headers don't include any file data. I set out to find `tcpdump`'s last data chunk to test that hypothesis.
 
+I can tell from the object header above that the file's size is `0x00096b84` which is reasonable for a binary. `0x00096b84 % 2048 == 900` so I'll expect the runt chunk to have a byte count of 900. The last file chunk for `tcpdump` is in block #50363.
 
-self.bytecount = self.little_endian_bits_to_int(176, 16)
+	790-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ echo $(( 50363 * 2112 ))
+	106366656
+
+	791-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ for frag_offset in 512 1040 1568 2096; do xxd -g4 -s $(( 106366656 + frag_offset)) -l 16 ../images/system.img  ; done
+	65708c0: ff001000 00280200 f5453b63 c5b5ffff  .....(...E;c....
+	6570ad0: ff002e01 00008403 324fc629 baa2f8ff  ........2O.)....
+	6570ce0: ff000019 ffffff0d 7f1bae87 9e88faff  ................
+	6570ef0: ff000000 f2aaaa8b 70b3f52b 746dfbff  ........p..+tm..
+
+`0x0384` is indeed 900. I'm now quite satisfied that the chunk's byte count is stored at spare offset `0x16`.
 
 # Conclusion
 
