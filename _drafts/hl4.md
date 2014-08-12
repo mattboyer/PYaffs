@@ -291,7 +291,7 @@ Since unlike the object headers I don't *know* what the dump's spare data *shoul
 
 ## Finding the `obj_id`
 
-I do know that `tcpdump`'s parent object has objectId `0x00000226` and I know that its parent object is a directory named `xbin`. Knowing what I know now about block sizes, I can look for that directory's object header and search the block's spare data for that number. I expect the `xbin` string to start 10 bytes from a block boundary:
+I know that `tcpdump`'s object header has a `parent_obj_id` member with a value of `0x00000226` and I know that its parent object is a directory named `xbin`. Knowing what I know now about block sizes, I can look for that directory's object header and search the block's spare data for that number. I expect the `xbin` string to start 10 bytes from a block boundary:
 
 	714-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ grep -abo 'xbin' ../images/system.img  | awk -F':' '{ if(10==($1 % 2112)){ print $1 - 10} }'
 	105709824
@@ -347,6 +347,14 @@ The only bytes that seem to have incremented from the first chunk's spar to the 
 ## Finding the chunk's byte count
 
 The last piece of information I need to successfully extract file data from my dump is the number of file data bytes in a given chunk. I know that my chunks are 2048 bytes in length, so I expect to find that value in mid-file chunks' spares. The last chunk in a given file, that is to say with a certain `obj_id`, should have a length field with a value equal to the file's length taken from the object's header modulo 2048.
+
+	767-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [HL4:I±R=]$ printf '%x\n' 2048
+	800
+
+There's a `0x0008` in both of my GPL spares, starting at spare offset `0x16`. The object header's spare has `0xffff` there, which makes sense since the headers don't include any file data. I set out to find a file's last data chunk to test that hypothesis.
+
+
+self.bytecount = self.little_endian_bits_to_int(176, 16)
 
 # Conclusion
 
