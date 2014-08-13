@@ -1,11 +1,12 @@
 ---
 layout: default
+title: Hacklogs
 ---
 
 <div id="home">
-  <h1>Hacklogs</h1>
-  <p>Since progress is rather slow and updates are irregular, you can subscribe to the <a href='{{ site.baseurl }}/feed.xml'>RSS feed.</a> If you want, like. I'm not your boss.</p>
-  <ul class="posts">
+  <h1><i class="icon-bookmark"></i> Hacklogs</h1>
+  <p>Since progress is rather slow and updates are irregular, you can subscribe to the <a href='{{ site.baseurl }}/atom.xml'>Atom feed.</a><br/>If you want, like. I'm not your boss.</p>
+  <ul id="blog-posts" class="posts">
     {% for post in site.posts %}
     <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
     {% endfor %}

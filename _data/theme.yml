@@ -1,0 +1,20 @@
+# Theme customization - please change from the defaults!
+
+# Color for top bar, links, etc
+highlight_color: '#3498db'
+
+# Profile links on the left sidebar, leave blank to ignore
+social:
+  github: mattboyer
+
+# "Hi, I'm _______"
+name: Matt's Forensic Adventure
+author: Matt Boyer
+email: mboyer@sdf.org
+tagline: "Matt's Forensic Adventure"
+
+# Google Analytics key, leave blank to ignore
+google_analytics_key: UA-27086544-6
+
+# Toggle "Postings are my own" disclaimer in footer
+show_disclaimer: false

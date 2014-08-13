@@ -1,5 +1,6 @@
 name: Matt's Forensic Adventure
 markdown: redcarpet
+highlighter: pygments
 
 redcarpet:
   extensions: ["tables"]
