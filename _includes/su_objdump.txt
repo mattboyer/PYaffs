@@ -1,0 +1,1396 @@
+
+/home/mboyer/Hacks/Nam-Phone_G40C/su:     file format elf32-littlearm
+
+
+Disassembly of section .plt:
+
+00008c5c <__libc_init@plt-0x14>:
+    8c5c:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
+    8c60:	e59fe004 	ldr	lr, [pc, #4]	; 8c6c <__libc_init@plt-0x4>
+    8c64:	e08fe00e 	add	lr, pc, lr
+    8c68:	e5bef008 	ldr	pc, [lr, #8]!
+    8c6c:	000014a0 	andeq	r1, r0, r0, lsr #9
+
+00008c70 <__libc_init@plt>:
+    8c70:	e28fc600 	add	ip, pc, #0, 12
+    8c74:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8c78:	e5bcf4a0 	ldr	pc, [ip, #1184]!	; 0x4a0
+
+00008c7c <android::RefBase::decStrong(void const*) const@plt>:
+    8c7c:	e28fc600 	add	ip, pc, #0, 12
+    8c80:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8c84:	e5bcf498 	ldr	pc, [ip, #1176]!	; 0x498
+
+00008c88 <memset@plt>:
+    8c88:	e28fc600 	add	ip, pc, #0, 12
+    8c8c:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8c90:	e5bcf490 	ldr	pc, [ip, #1168]!	; 0x490
+
+00008c94 <property_get@plt>:
+    8c94:	e28fc600 	add	ip, pc, #0, 12
+    8c98:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8c9c:	e5bcf488 	ldr	pc, [ip, #1160]!	; 0x488
+
+00008ca0 <atoi@plt>:
+    8ca0:	e28fc600 	add	ip, pc, #0, 12
+    8ca4:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8ca8:	e5bcf480 	ldr	pc, [ip, #1152]!	; 0x480
+
+00008cac <android::defaultServiceManager()@plt>:
+    8cac:	e28fc600 	add	ip, pc, #0, 12
+    8cb0:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8cb4:	e5bcf478 	ldr	pc, [ip, #1144]!	; 0x478
+
+00008cb8 <android::String16::String16(char const*)@plt>:
+    8cb8:	e28fc600 	add	ip, pc, #0, 12
+    8cbc:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8cc0:	e5bcf470 	ldr	pc, [ip, #1136]!	; 0x470
+
+00008cc4 <android::String16::~String16()@plt>:
+    8cc4:	e28fc600 	add	ip, pc, #0, 12
+    8cc8:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8ccc:	e5bcf468 	ldr	pc, [ip, #1128]!	; 0x468
+
+00008cd0 <android::Parcel::Parcel()@plt>:
+    8cd0:	e28fc600 	add	ip, pc, #0, 12
+    8cd4:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8cd8:	e5bcf460 	ldr	pc, [ip, #1120]!	; 0x460
+
+00008cdc <android::Parcel::writeInterfaceToken(android::String16 const&)@plt>:
+    8cdc:	e28fc600 	add	ip, pc, #0, 12
+    8ce0:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8ce4:	e5bcf458 	ldr	pc, [ip, #1112]!	; 0x458
+
+00008ce8 <android::Parcel::writeStrongBinder(android::sp<android::IBinder> const&)@plt>:
+    8ce8:	e28fc600 	add	ip, pc, #0, 12
+    8cec:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8cf0:	e5bcf450 	ldr	pc, [ip, #1104]!	; 0x450
+
+00008cf4 <android::Parcel::writeString16(android::String16 const&)@plt>:
+    8cf4:	e28fc600 	add	ip, pc, #0, 12
+    8cf8:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8cfc:	e5bcf448 	ldr	pc, [ip, #1096]!	; 0x448
+
+00008d00 <android::Parcel::writeInt32(int)@plt>:
+    8d00:	e28fc600 	add	ip, pc, #0, 12
+    8d04:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8d08:	e5bcf440 	ldr	pc, [ip, #1088]!	; 0x440
+
+00008d0c <android::Parcel::writeString16(unsigned short const*, unsigned int)@plt>:
+    8d0c:	e28fc600 	add	ip, pc, #0, 12
+    8d10:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8d14:	e5bcf438 	ldr	pc, [ip, #1080]!	; 0x438
+
+00008d18 <android::Parcel::dataPosition() const@plt>:
+    8d18:	e28fc600 	add	ip, pc, #0, 12
+    8d1c:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8d20:	e5bcf430 	ldr	pc, [ip, #1072]!	; 0x430
+
+00008d24 <android::Parcel::setDataPosition(unsigned int) const@plt>:
+    8d24:	e28fc600 	add	ip, pc, #0, 12
+    8d28:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8d2c:	e5bcf428 	ldr	pc, [ip, #1064]!	; 0x428
+
+00008d30 <android::Parcel::~Parcel()@plt>:
+    8d30:	e28fc600 	add	ip, pc, #0, 12
+    8d34:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8d38:	e5bcf420 	ldr	pc, [ip, #1056]!	; 0x420
+
+00008d3c <__stack_chk_fail@plt>:
+    8d3c:	e28fc600 	add	ip, pc, #0, 12
+    8d40:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8d44:	e5bcf418 	ldr	pc, [ip, #1048]!	; 0x418
+
+00008d48 <puts@plt>:
+    8d48:	e28fc600 	add	ip, pc, #0, 12
+    8d4c:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8d50:	e5bcf410 	ldr	pc, [ip, #1040]!	; 0x410
+
+00008d54 <putchar@plt>:
+    8d54:	e28fc600 	add	ip, pc, #0, 12
+    8d58:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8d5c:	e5bcf408 	ldr	pc, [ip, #1032]!	; 0x408
+
+00008d60 <exit@plt>:
+    8d60:	e28fc600 	add	ip, pc, #0, 12
+    8d64:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8d68:	e5bcf400 	ldr	pc, [ip, #1024]!	; 0x400
+
+00008d6c <socket@plt>:
+    8d6c:	e28fc600 	add	ip, pc, #0, 12
+    8d70:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8d74:	e5bcf3f8 	ldr	pc, [ip, #1016]!	; 0x3f8
+
+00008d78 <strcpy@plt>:
+    8d78:	e28fc600 	add	ip, pc, #0, 12
+    8d7c:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8d80:	e5bcf3f0 	ldr	pc, [ip, #1008]!	; 0x3f0
+
+00008d84 <mktemp@plt>:
+    8d84:	e28fc600 	add	ip, pc, #0, 12
+    8d88:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8d8c:	e5bcf3e8 	ldr	pc, [ip, #1000]!	; 0x3e8
+
+00008d90 <snprintf@plt>:
+    8d90:	e28fc600 	add	ip, pc, #0, 12
+    8d94:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8d98:	e5bcf3e0 	ldr	pc, [ip, #992]!	; 0x3e0
+
+00008d9c <unlink@plt>:
+    8d9c:	e28fc600 	add	ip, pc, #0, 12
+    8da0:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8da4:	e5bcf3d8 	ldr	pc, [ip, #984]!	; 0x3d8
+
+00008da8 <bind@plt>:
+    8da8:	e28fc600 	add	ip, pc, #0, 12
+    8dac:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8db0:	e5bcf3d0 	ldr	pc, [ip, #976]!	; 0x3d0
+
+00008db4 <__errno@plt>:
+    8db4:	e28fc600 	add	ip, pc, #0, 12
+    8db8:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8dbc:	e5bcf3c8 	ldr	pc, [ip, #968]!	; 0x3c8
+
+00008dc0 <listen@plt>:
+    8dc0:	e28fc600 	add	ip, pc, #0, 12
+    8dc4:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8dc8:	e5bcf3c0 	ldr	pc, [ip, #960]!	; 0x3c0
+
+00008dcc <select@plt>:
+    8dcc:	e28fc600 	add	ip, pc, #0, 12
+    8dd0:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8dd4:	e5bcf3b8 	ldr	pc, [ip, #952]!	; 0x3b8
+
+00008dd8 <accept@plt>:
+    8dd8:	e28fc600 	add	ip, pc, #0, 12
+    8ddc:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8de0:	e5bcf3b0 	ldr	pc, [ip, #944]!	; 0x3b0
+
+00008de4 <strcmp@plt>:
+    8de4:	e28fc600 	add	ip, pc, #0, 12
+    8de8:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8dec:	e5bcf3a8 	ldr	pc, [ip, #936]!	; 0x3a8
+
+00008df0 <execvp@plt>:
+    8df0:	e28fc600 	add	ip, pc, #0, 12
+    8df4:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8df8:	e5bcf3a0 	ldr	pc, [ip, #928]!	; 0x3a0
+
+00008dfc <execlp@plt>:
+    8dfc:	e28fc600 	add	ip, pc, #0, 12
+    8e00:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8e04:	e5bcf398 	ldr	pc, [ip, #920]!	; 0x398
+
+00008e08 <free@plt>:
+    8e08:	e28fc600 	add	ip, pc, #0, 12
+    8e0c:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8e10:	e5bcf390 	ldr	pc, [ip, #912]!	; 0x390
+
+00008e14 <read@plt>:
+    8e14:	e28fc600 	add	ip, pc, #0, 12
+    8e18:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8e1c:	e5bcf388 	ldr	pc, [ip, #904]!	; 0x388
+
+00008e20 <malloc@plt>:
+    8e20:	e28fc600 	add	ip, pc, #0, 12
+    8e24:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8e28:	e5bcf380 	ldr	pc, [ip, #896]!	; 0x380
+
+00008e2c <memcpy@plt>:
+    8e2c:	e28fc600 	add	ip, pc, #0, 12
+    8e30:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8e34:	e5bcf378 	ldr	pc, [ip, #888]!	; 0x378
+
+00008e38 <setgid@plt>:
+    8e38:	e28fc600 	add	ip, pc, #0, 12
+    8e3c:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8e40:	e5bcf370 	ldr	pc, [ip, #880]!	; 0x370
+
+00008e44 <getppid@plt>:
+    8e44:	e28fc600 	add	ip, pc, #0, 12
+    8e48:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8e4c:	e5bcf368 	ldr	pc, [ip, #872]!	; 0x368
+
+00008e50 <sprintf@plt>:
+    8e50:	e28fc600 	add	ip, pc, #0, 12
+    8e54:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8e58:	e5bcf360 	ldr	pc, [ip, #864]!	; 0x360
+
+00008e5c <stat@plt>:
+    8e5c:	e28fc600 	add	ip, pc, #0, 12
+    8e60:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8e64:	e5bcf358 	ldr	pc, [ip, #856]!	; 0x358
+
+00008e68 <mkdir@plt>:
+    8e68:	e28fc600 	add	ip, pc, #0, 12
+    8e6c:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8e70:	e5bcf350 	ldr	pc, [ip, #848]!	; 0x350
+
+00008e74 <setuid@plt>:
+    8e74:	e28fc600 	add	ip, pc, #0, 12
+    8e78:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8e7c:	e5bcf348 	ldr	pc, [ip, #840]!	; 0x348
+
+00008e80 <bsd_signal@plt>:
+    8e80:	e28fc600 	add	ip, pc, #0, 12
+    8e84:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8e88:	e5bcf340 	ldr	pc, [ip, #832]!	; 0x340
+
+00008e8c <atexit@plt>:
+    8e8c:	e28fc600 	add	ip, pc, #0, 12
+    8e90:	e28cca01 	add	ip, ip, #4096	; 0x1000
+    8e94:	e5bcf338 	ldr	pc, [ip, #824]!	; 0x338
+
+Disassembly of section .text:
+
+00008ea0 <android::sp<android::IBinder>::~sp()-0x30>:
+    8ea0:	e1a0000d 	mov	r0, sp
+    8ea4:	e3a01000 	mov	r1, #0
+    8ea8:	e28f2004 	add	r2, pc, #4
+    8eac:	e28f3004 	add	r3, pc, #4
+    8eb0:	eaffff6e 	b	8c70 <__libc_init@plt>
+    8eb4:	ea0002d8 	b	9a1c <android::sp<android::IBinder>::~sp()+0xb4c>
+    8eb8:	0000a000 	andeq	sl, r0, r0
+    8ebc:	0000a008 	andeq	sl, r0, r8
+    8ec0:	0000a010 	andeq	sl, r0, r0, lsl r0
+    8ec4:	0000a018 	andeq	sl, r0, r8, lsl r0
+    8ec8:	e1a00000 	nop			; (mov r0, r0)
+    8ecc:	e1a00000 	nop			; (mov r0, r0)
+
+00008ed0 <android::sp<android::IBinder>::~sp()>:
+    8ed0:	b510      	push	{r4, lr}
+    8ed2:	4604      	mov	r4, r0
+    8ed4:	6803      	ldr	r3, [r0, #0]
+    8ed6:	b133      	cbz	r3, 8ee6 <android::sp<android::IBinder>::~sp()+0x16>
+    8ed8:	681a      	ldr	r2, [r3, #0]
+    8eda:	4621      	mov	r1, r4
+    8edc:	f852 0c0c 	ldr.w	r0, [r2, #-12]
+    8ee0:	1818      	adds	r0, r3, r0
+    8ee2:	f7ff eecc 	blx	8c7c <android::RefBase::decStrong(void const*) const@plt>
+    8ee6:	4620      	mov	r0, r4
+    8ee8:	bd10      	pop	{r4, pc}
+    8eea:	bf00      	nop
+    8eec:	2300      	movs	r3, #0
+    8eee:	6003      	str	r3, [r0, #0]
+    8ef0:	4770      	bx	lr
+    8ef2:	bf00      	nop
+    8ef4:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+    8ef8:	f8df 92f0 	ldr.w	r9, [pc, #752]	; 91ec <android::sp<android::IBinder>::~sp()+0x31c>
+    8efc:	b0bf      	sub	sp, #252	; 0xfc
+    8efe:	4dbc      	ldr	r5, [pc, #752]	; (91f0 <android::sp<android::IBinder>::~sp()+0x320>)
+    8f00:	4680      	mov	r8, r0
+    8f02:	447d      	add	r5, pc
+    8f04:	460f      	mov	r7, r1
+    8f06:	f855 6009 	ldr.w	r6, [r5, r9]
+    8f0a:	2130      	movs	r1, #48	; 0x30
+    8f0c:	4692      	mov	sl, r2
+    8f0e:	9126      	str	r1, [sp, #152]	; 0x98
+    8f10:	6832      	ldr	r2, [r6, #0]
+    8f12:	2100      	movs	r1, #0
+    8f14:	923d      	str	r2, [sp, #244]	; 0xf4
+    8f16:	a827      	add	r0, sp, #156	; 0x9c
+    8f18:	2258      	movs	r2, #88	; 0x58
+    8f1a:	f7ff eeb6 	blx	8c88 <memset@plt>
+    8f1e:	ac26      	add	r4, sp, #152	; 0x98
+    8f20:	48b4      	ldr	r0, [pc, #720]	; (91f4 <android::sp<android::IBinder>::~sp()+0x324>)
+    8f22:	4621      	mov	r1, r4
+    8f24:	4478      	add	r0, pc
+    8f26:	4ab4      	ldr	r2, [pc, #720]	; (91f8 <android::sp<android::IBinder>::~sp()+0x328>)
+    8f28:	447a      	add	r2, pc
+    8f2a:	ae23      	add	r6, sp, #140	; 0x8c
+    8f2c:	f7ff eeb2 	blx	8c94 <property_get@plt>
+    8f30:	4620      	mov	r0, r4
+    8f32:	f7ff eeb6 	blx	8ca0 <atoi@plt>
+    8f36:	4604      	mov	r4, r0
+    8f38:	a825      	add	r0, sp, #148	; 0x94
+    8f3a:	f7ff eeb8 	blx	8cac <android::defaultServiceManager()@plt>
+    8f3e:	f8dd b094 	ldr.w	fp, [sp, #148]	; 0x94
+    8f42:	49ae      	ldr	r1, [pc, #696]	; (91fc <android::sp<android::IBinder>::~sp()+0x32c>)
+    8f44:	f8db 0000 	ldr.w	r0, [fp]
+    8f48:	4479      	add	r1, pc
+    8f4a:	f8d0 9014 	ldr.w	r9, [r0, #20]
+    8f4e:	4630      	mov	r0, r6
+    8f50:	f7ff eeb2 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    8f54:	a824      	add	r0, sp, #144	; 0x90
+    8f56:	4659      	mov	r1, fp
+    8f58:	4632      	mov	r2, r6
+    8f5a:	47c8      	blx	r9
+    8f5c:	4630      	mov	r0, r6
+    8f5e:	f7ff eeb2 	blx	8cc4 <android::String16::~String16()@plt>
+    8f62:	9b24      	ldr	r3, [sp, #144]	; 0x90
+    8f64:	b913      	cbnz	r3, 8f6c <android::sp<android::IBinder>::~sp()+0x9c>
+    8f66:	f04f 37ff 	mov.w	r7, #4294967295	; 0xffffffff
+    8f6a:	e122      	b.n	91b2 <android::sp<android::IBinder>::~sp()+0x2e2>
+    8f6c:	ae0e      	add	r6, sp, #56	; 0x38
+    8f6e:	4630      	mov	r0, r6
+    8f70:	f7ff eeae 	blx	8cd0 <android::Parcel::Parcel()@plt>
+    8f74:	a802      	add	r0, sp, #8
+    8f76:	f7ff eeac 	blx	8cd0 <android::Parcel::Parcel()@plt>
+    8f7a:	f10d 0988 	add.w	r9, sp, #136	; 0x88
+    8f7e:	49a0      	ldr	r1, [pc, #640]	; (9200 <android::sp<android::IBinder>::~sp()+0x330>)
+    8f80:	4648      	mov	r0, r9
+    8f82:	4479      	add	r1, pc
+    8f84:	f7ff ee98 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    8f88:	4649      	mov	r1, r9
+    8f8a:	4630      	mov	r0, r6
+    8f8c:	f7ff eea6 	blx	8cdc <android::Parcel::writeInterfaceToken(android::String16 const&)@plt>
+    8f90:	4648      	mov	r0, r9
+    8f92:	f7ff ee98 	blx	8cc4 <android::String16::~String16()@plt>
+    8f96:	f10d 0984 	add.w	r9, sp, #132	; 0x84
+    8f9a:	4648      	mov	r0, r9
+    8f9c:	f7ff ffa6 	bl	8eec <android::sp<android::IBinder>::~sp()+0x1c>
+    8fa0:	4649      	mov	r1, r9
+    8fa2:	4630      	mov	r0, r6
+    8fa4:	f7ff eea0 	blx	8ce8 <android::Parcel::writeStrongBinder(android::sp<android::IBinder> const&)@plt>
+    8fa8:	4648      	mov	r0, r9
+    8faa:	f7ff ff91 	bl	8ed0 <android::sp<android::IBinder>::~sp()>
+    8fae:	f10d 0980 	add.w	r9, sp, #128	; 0x80
+    8fb2:	4994      	ldr	r1, [pc, #592]	; (9204 <android::sp<android::IBinder>::~sp()+0x334>)
+    8fb4:	4648      	mov	r0, r9
+    8fb6:	4479      	add	r1, pc
+    8fb8:	f7ff ee7e 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    8fbc:	4649      	mov	r1, r9
+    8fbe:	4630      	mov	r0, r6
+    8fc0:	f7ff ee98 	blx	8cf4 <android::Parcel::writeString16(android::String16 const&)@plt>
+    8fc4:	4648      	mov	r0, r9
+    8fc6:	f7ff ee7e 	blx	8cc4 <android::String16::~String16()@plt>
+    8fca:	2100      	movs	r1, #0
+    8fcc:	4630      	mov	r0, r6
+    8fce:	f7ff ee98 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    8fd2:	2100      	movs	r1, #0
+    8fd4:	4630      	mov	r0, r6
+    8fd6:	460a      	mov	r2, r1
+    8fd8:	f7ff ee98 	blx	8d0c <android::Parcel::writeString16(unsigned short const*, unsigned int)@plt>
+    8fdc:	2100      	movs	r1, #0
+    8fde:	4630      	mov	r0, r6
+    8fe0:	f7ff ee8e 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    8fe4:	2c03      	cmp	r4, #3
+    8fe6:	dd04      	ble.n	8ff2 <android::sp<android::IBinder>::~sp()+0x122>
+    8fe8:	2100      	movs	r1, #0
+    8fea:	4630      	mov	r0, r6
+    8fec:	460a      	mov	r2, r1
+    8fee:	f7ff ee8e 	blx	8d0c <android::Parcel::writeString16(unsigned short const*, unsigned int)@plt>
+    8ff2:	2100      	movs	r1, #0
+    8ff4:	ae0e      	add	r6, sp, #56	; 0x38
+    8ff6:	460a      	mov	r2, r1
+    8ff8:	4630      	mov	r0, r6
+    8ffa:	f7ff ee88 	blx	8d0c <android::Parcel::writeString16(unsigned short const*, unsigned int)@plt>
+    8ffe:	2100      	movs	r1, #0
+    9000:	4630      	mov	r0, r6
+    9002:	f7ff ee7e 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9006:	2c06      	cmp	r4, #6
+    9008:	dd09      	ble.n	901e <android::sp<android::IBinder>::~sp()+0x14e>
+    900a:	2100      	movs	r1, #0
+    900c:	4630      	mov	r0, r6
+    900e:	f7ff ee78 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9012:	2c0e      	cmp	r4, #14
+    9014:	dd03      	ble.n	901e <android::sp<android::IBinder>::~sp()+0x14e>
+    9016:	4630      	mov	r0, r6
+    9018:	2100      	movs	r1, #0
+    901a:	f7ff ee72 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    901e:	ac0e      	add	r4, sp, #56	; 0x38
+    9020:	f04f 31ff 	mov.w	r1, #4294967295	; 0xffffffff
+    9024:	4620      	mov	r0, r4
+    9026:	ae1f      	add	r6, sp, #124	; 0x7c
+    9028:	f7ff ee6a 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    902c:	4620      	mov	r0, r4
+    902e:	f7ff ee74 	blx	8d18 <android::Parcel::dataPosition() const@plt>
+    9032:	496d      	ldr	r1, [pc, #436]	; (91e8 <android::sp<android::IBinder>::~sp()+0x318>)
+    9034:	4681      	mov	r9, r0
+    9036:	4620      	mov	r0, r4
+    9038:	f7ff ee62 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    903c:	2107      	movs	r1, #7
+    903e:	4620      	mov	r0, r4
+    9040:	f7ff ee5e 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9044:	2100      	movs	r1, #0
+    9046:	4620      	mov	r0, r4
+    9048:	f7ff ee5a 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    904c:	4630      	mov	r0, r6
+    904e:	496e      	ldr	r1, [pc, #440]	; (9208 <android::sp<android::IBinder>::~sp()+0x338>)
+    9050:	4479      	add	r1, pc
+    9052:	f7ff ee32 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    9056:	4631      	mov	r1, r6
+    9058:	4620      	mov	r0, r4
+    905a:	f7ff ee4c 	blx	8cf4 <android::Parcel::writeString16(android::String16 const&)@plt>
+    905e:	4630      	mov	r0, r6
+    9060:	f7ff ee30 	blx	8cc4 <android::String16::~String16()@plt>
+    9064:	2100      	movs	r1, #0
+    9066:	4620      	mov	r0, r4
+    9068:	ae1e      	add	r6, sp, #120	; 0x78
+    906a:	f7ff ee4a 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    906e:	4630      	mov	r0, r6
+    9070:	4641      	mov	r1, r8
+    9072:	f7ff ee22 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    9076:	4631      	mov	r1, r6
+    9078:	4620      	mov	r0, r4
+    907a:	f7ff ee3c 	blx	8cf4 <android::Parcel::writeString16(android::String16 const&)@plt>
+    907e:	4630      	mov	r0, r6
+    9080:	f7ff ee20 	blx	8cc4 <android::String16::~String16()@plt>
+    9084:	2100      	movs	r1, #0
+    9086:	4620      	mov	r0, r4
+    9088:	ae1d      	add	r6, sp, #116	; 0x74
+    908a:	f7ff ee3a 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    908e:	4630      	mov	r0, r6
+    9090:	495e      	ldr	r1, [pc, #376]	; (920c <android::sp<android::IBinder>::~sp()+0x33c>)
+    9092:	4479      	add	r1, pc
+    9094:	f7ff ee10 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    9098:	4631      	mov	r1, r6
+    909a:	4620      	mov	r0, r4
+    909c:	f7ff ee2a 	blx	8cf4 <android::Parcel::writeString16(android::String16 const&)@plt>
+    90a0:	4630      	mov	r0, r6
+    90a2:	f7ff ee10 	blx	8cc4 <android::String16::~String16()@plt>
+    90a6:	2101      	movs	r1, #1
+    90a8:	4620      	mov	r0, r4
+    90aa:	f7ff ee2a 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    90ae:	4639      	mov	r1, r7
+    90b0:	4620      	mov	r0, r4
+    90b2:	af1c      	add	r7, sp, #112	; 0x70
+    90b4:	f7ff ee24 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    90b8:	2100      	movs	r1, #0
+    90ba:	4620      	mov	r0, r4
+    90bc:	f7ff ee20 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    90c0:	4638      	mov	r0, r7
+    90c2:	4953      	ldr	r1, [pc, #332]	; (9210 <android::sp<android::IBinder>::~sp()+0x340>)
+    90c4:	4479      	add	r1, pc
+    90c6:	f7ff edf8 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    90ca:	4639      	mov	r1, r7
+    90cc:	4620      	mov	r0, r4
+    90ce:	f7ff ee12 	blx	8cf4 <android::Parcel::writeString16(android::String16 const&)@plt>
+    90d2:	4638      	mov	r0, r7
+    90d4:	f7ff edf6 	blx	8cc4 <android::String16::~String16()@plt>
+    90d8:	2101      	movs	r1, #1
+    90da:	4620      	mov	r0, r4
+    90dc:	af1b      	add	r7, sp, #108	; 0x6c
+    90de:	f7ff ee10 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    90e2:	4651      	mov	r1, sl
+    90e4:	4620      	mov	r0, r4
+    90e6:	f7ff ee0c 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    90ea:	4620      	mov	r0, r4
+    90ec:	f7ff ee14 	blx	8d18 <android::Parcel::dataPosition() const@plt>
+    90f0:	f1a9 0104 	sub.w	r1, r9, #4
+    90f4:	4606      	mov	r6, r0
+    90f6:	4620      	mov	r0, r4
+    90f8:	f7ff ee14 	blx	8d24 <android::Parcel::setDataPosition(unsigned int) const@plt>
+    90fc:	ebc9 0106 	rsb	r1, r9, r6
+    9100:	4620      	mov	r0, r4
+    9102:	f7ff edfe 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9106:	4631      	mov	r1, r6
+    9108:	4620      	mov	r0, r4
+    910a:	ae1a      	add	r6, sp, #104	; 0x68
+    910c:	f7ff ee0a 	blx	8d24 <android::Parcel::setDataPosition(unsigned int) const@plt>
+    9110:	2100      	movs	r1, #0
+    9112:	4620      	mov	r0, r4
+    9114:	460a      	mov	r2, r1
+    9116:	f7ff edfa 	blx	8d0c <android::Parcel::writeString16(unsigned short const*, unsigned int)@plt>
+    911a:	f04f 31ff 	mov.w	r1, #4294967295	; 0xffffffff
+    911e:	4620      	mov	r0, r4
+    9120:	f7ff edee 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9124:	4638      	mov	r0, r7
+    9126:	f7ff fee1 	bl	8eec <android::sp<android::IBinder>::~sp()+0x1c>
+    912a:	4639      	mov	r1, r7
+    912c:	4620      	mov	r0, r4
+    912e:	f7ff eddc 	blx	8ce8 <android::Parcel::writeStrongBinder(android::sp<android::IBinder> const&)@plt>
+    9132:	4638      	mov	r0, r7
+    9134:	f7ff fecc 	bl	8ed0 <android::sp<android::IBinder>::~sp()>
+    9138:	f04f 31ff 	mov.w	r1, #4294967295	; 0xffffffff
+    913c:	4620      	mov	r0, r4
+    913e:	f7ff ede0 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9142:	2100      	movs	r1, #0
+    9144:	4620      	mov	r0, r4
+    9146:	460a      	mov	r2, r1
+    9148:	f7ff ede0 	blx	8d0c <android::Parcel::writeString16(unsigned short const*, unsigned int)@plt>
+    914c:	f04f 31ff 	mov.w	r1, #4294967295	; 0xffffffff
+    9150:	4620      	mov	r0, r4
+    9152:	f7ff edd6 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9156:	4630      	mov	r0, r6
+    9158:	492e      	ldr	r1, [pc, #184]	; (9214 <android::sp<android::IBinder>::~sp()+0x344>)
+    915a:	4479      	add	r1, pc
+    915c:	f7ff edac 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    9160:	4631      	mov	r1, r6
+    9162:	4620      	mov	r0, r4
+    9164:	f7ff edc6 	blx	8cf4 <android::Parcel::writeString16(android::String16 const&)@plt>
+    9168:	4630      	mov	r0, r6
+    916a:	f7ff edac 	blx	8cc4 <android::String16::~String16()@plt>
+    916e:	2100      	movs	r1, #0
+    9170:	4620      	mov	r0, r4
+    9172:	ae02      	add	r6, sp, #8
+    9174:	f7ff edc4 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9178:	2100      	movs	r1, #0
+    917a:	4620      	mov	r0, r4
+    917c:	f7ff edc0 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9180:	f04f 31ff 	mov.w	r1, #4294967295	; 0xffffffff
+    9184:	4620      	mov	r0, r4
+    9186:	f7ff edbc 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    918a:	9824      	ldr	r0, [sp, #144]	; 0x90
+    918c:	2100      	movs	r1, #0
+    918e:	6803      	ldr	r3, [r0, #0]
+    9190:	4622      	mov	r2, r4
+    9192:	9100      	str	r1, [sp, #0]
+    9194:	210e      	movs	r1, #14
+    9196:	695f      	ldr	r7, [r3, #20]
+    9198:	4633      	mov	r3, r6
+    919a:	47b8      	blx	r7
+    919c:	2800      	cmp	r0, #0
+    919e:	bfb4      	ite	lt
+    91a0:	f04f 37ff 	movlt.w	r7, #4294967295	; 0xffffffff
+    91a4:	2700      	movge	r7, #0
+    91a6:	4630      	mov	r0, r6
+    91a8:	f7ff edc2 	blx	8d30 <android::Parcel::~Parcel()@plt>
+    91ac:	4620      	mov	r0, r4
+    91ae:	f7ff edc0 	blx	8d30 <android::Parcel::~Parcel()@plt>
+    91b2:	a824      	add	r0, sp, #144	; 0x90
+    91b4:	f7ff fe8c 	bl	8ed0 <android::sp<android::IBinder>::~sp()>
+    91b8:	9b25      	ldr	r3, [sp, #148]	; 0x94
+    91ba:	b133      	cbz	r3, 91ca <android::sp<android::IBinder>::~sp()+0x2fa>
+    91bc:	681a      	ldr	r2, [r3, #0]
+    91be:	a925      	add	r1, sp, #148	; 0x94
+    91c0:	f852 0c0c 	ldr.w	r0, [r2, #-12]
+    91c4:	1818      	adds	r0, r3, r0
+    91c6:	f7ff ed5a 	blx	8c7c <android::RefBase::decStrong(void const*) const@plt>
+    91ca:	993d      	ldr	r1, [sp, #244]	; 0xf4
+    91cc:	f8df c01c 	ldr.w	ip, [pc, #28]	; 91ec <android::sp<android::IBinder>::~sp()+0x31c>
+    91d0:	4638      	mov	r0, r7
+    91d2:	f855 200c 	ldr.w	r2, [r5, ip]
+    91d6:	6813      	ldr	r3, [r2, #0]
+    91d8:	4299      	cmp	r1, r3
+    91da:	d001      	beq.n	91e0 <android::sp<android::IBinder>::~sp()+0x310>
+    91dc:	f7ff edae 	blx	8d3c <__stack_chk_fail@plt>
+    91e0:	b03f      	add	sp, #252	; 0xfc
+    91e2:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
+    91e6:	bf00      	nop
+    91e8:	4e42      	ldr	r6, [pc, #264]	; (92f4 <android::sp<android::IBinder>::~sp()+0x424>)
+    91ea:	4c44      	ldr	r4, [pc, #272]	; (92fc <android::sp<android::IBinder>::~sp()+0x42c>)
+    91ec:	fffc ffff 			; <UNDEFINED> instruction: 0xfffcffff
+    91f0:	1206      	asrs	r6, r0, #8
+    91f2:	0000      	movs	r0, r0
+    91f4:	0afc      	lsrs	r4, r7, #11
+    91f6:	0000      	movs	r0, r0
+    91f8:	0b0d      	lsrs	r5, r1, #12
+    91fa:	0000      	movs	r0, r0
+    91fc:	0aef      	lsrs	r7, r5, #11
+    91fe:	0000      	movs	r0, r0
+    9200:	0abe      	lsrs	r6, r7, #10
+    9202:	0000      	movs	r0, r0
+    9204:	0aa7      	lsrs	r7, r4, #10
+    9206:	0000      	movs	r0, r0
+    9208:	0a35      	lsrs	r5, r6, #8
+    920a:	0000      	movs	r0, r0
+    920c:	09ff      	lsrs	r7, r7, #7
+    920e:	0000      	movs	r0, r0
+    9210:	09d1      	lsrs	r1, r2, #7
+    9212:	0000      	movs	r0, r0
+    9214:	093f      	lsrs	r7, r7, #4
+    9216:	0000      	movs	r0, r0
+    9218:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+    921c:	f8df 92e8 	ldr.w	r9, [pc, #744]	; 9508 <android::sp<android::IBinder>::~sp()+0x638>
+    9220:	b0bf      	sub	sp, #252	; 0xfc
+    9222:	4dba      	ldr	r5, [pc, #744]	; (950c <android::sp<android::IBinder>::~sp()+0x63c>)
+    9224:	4680      	mov	r8, r0
+    9226:	447d      	add	r5, pc
+    9228:	460f      	mov	r7, r1
+    922a:	f855 6009 	ldr.w	r6, [r5, r9]
+    922e:	2130      	movs	r1, #48	; 0x30
+    9230:	4692      	mov	sl, r2
+    9232:	9126      	str	r1, [sp, #152]	; 0x98
+    9234:	6832      	ldr	r2, [r6, #0]
+    9236:	2100      	movs	r1, #0
+    9238:	923d      	str	r2, [sp, #244]	; 0xf4
+    923a:	a827      	add	r0, sp, #156	; 0x9c
+    923c:	2258      	movs	r2, #88	; 0x58
+    923e:	f7ff ed24 	blx	8c88 <memset@plt>
+    9242:	ac26      	add	r4, sp, #152	; 0x98
+    9244:	48b2      	ldr	r0, [pc, #712]	; (9510 <android::sp<android::IBinder>::~sp()+0x640>)
+    9246:	4621      	mov	r1, r4
+    9248:	4478      	add	r0, pc
+    924a:	4ab2      	ldr	r2, [pc, #712]	; (9514 <android::sp<android::IBinder>::~sp()+0x644>)
+    924c:	447a      	add	r2, pc
+    924e:	ae23      	add	r6, sp, #140	; 0x8c
+    9250:	f7ff ed20 	blx	8c94 <property_get@plt>
+    9254:	4620      	mov	r0, r4
+    9256:	f7ff ed24 	blx	8ca0 <atoi@plt>
+    925a:	4604      	mov	r4, r0
+    925c:	a825      	add	r0, sp, #148	; 0x94
+    925e:	f7ff ed26 	blx	8cac <android::defaultServiceManager()@plt>
+    9262:	f8dd b094 	ldr.w	fp, [sp, #148]	; 0x94
+    9266:	49ac      	ldr	r1, [pc, #688]	; (9518 <android::sp<android::IBinder>::~sp()+0x648>)
+    9268:	f8db 0000 	ldr.w	r0, [fp]
+    926c:	4479      	add	r1, pc
+    926e:	f8d0 9014 	ldr.w	r9, [r0, #20]
+    9272:	4630      	mov	r0, r6
+    9274:	f7ff ed20 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    9278:	a824      	add	r0, sp, #144	; 0x90
+    927a:	4659      	mov	r1, fp
+    927c:	4632      	mov	r2, r6
+    927e:	47c8      	blx	r9
+    9280:	4630      	mov	r0, r6
+    9282:	f7ff ed20 	blx	8cc4 <android::String16::~String16()@plt>
+    9286:	9b24      	ldr	r3, [sp, #144]	; 0x90
+    9288:	b913      	cbnz	r3, 9290 <android::sp<android::IBinder>::~sp()+0x3c0>
+    928a:	f04f 37ff 	mov.w	r7, #4294967295	; 0xffffffff
+    928e:	e11f      	b.n	94d0 <android::sp<android::IBinder>::~sp()+0x600>
+    9290:	ae0f      	add	r6, sp, #60	; 0x3c
+    9292:	4630      	mov	r0, r6
+    9294:	f7ff ed1c 	blx	8cd0 <android::Parcel::Parcel()@plt>
+    9298:	a803      	add	r0, sp, #12
+    929a:	f7ff ed1a 	blx	8cd0 <android::Parcel::Parcel()@plt>
+    929e:	f10d 0988 	add.w	r9, sp, #136	; 0x88
+    92a2:	499e      	ldr	r1, [pc, #632]	; (951c <android::sp<android::IBinder>::~sp()+0x64c>)
+    92a4:	4648      	mov	r0, r9
+    92a6:	4479      	add	r1, pc
+    92a8:	f7ff ed06 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    92ac:	4649      	mov	r1, r9
+    92ae:	4630      	mov	r0, r6
+    92b0:	f7ff ed14 	blx	8cdc <android::Parcel::writeInterfaceToken(android::String16 const&)@plt>
+    92b4:	4648      	mov	r0, r9
+    92b6:	f7ff ed06 	blx	8cc4 <android::String16::~String16()@plt>
+    92ba:	f10d 0984 	add.w	r9, sp, #132	; 0x84
+    92be:	4648      	mov	r0, r9
+    92c0:	f7ff fe14 	bl	8eec <android::sp<android::IBinder>::~sp()+0x1c>
+    92c4:	4649      	mov	r1, r9
+    92c6:	4630      	mov	r0, r6
+    92c8:	f7ff ed0e 	blx	8ce8 <android::Parcel::writeStrongBinder(android::sp<android::IBinder> const&)@plt>
+    92cc:	4648      	mov	r0, r9
+    92ce:	f7ff fdff 	bl	8ed0 <android::sp<android::IBinder>::~sp()>
+    92d2:	f10d 0980 	add.w	r9, sp, #128	; 0x80
+    92d6:	4992      	ldr	r1, [pc, #584]	; (9520 <android::sp<android::IBinder>::~sp()+0x650>)
+    92d8:	4648      	mov	r0, r9
+    92da:	4479      	add	r1, pc
+    92dc:	f7ff ecec 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    92e0:	4649      	mov	r1, r9
+    92e2:	4630      	mov	r0, r6
+    92e4:	f7ff ed06 	blx	8cf4 <android::Parcel::writeString16(android::String16 const&)@plt>
+    92e8:	4648      	mov	r0, r9
+    92ea:	f7ff ecec 	blx	8cc4 <android::String16::~String16()@plt>
+    92ee:	2100      	movs	r1, #0
+    92f0:	4630      	mov	r0, r6
+    92f2:	f7ff ed06 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    92f6:	2100      	movs	r1, #0
+    92f8:	4630      	mov	r0, r6
+    92fa:	460a      	mov	r2, r1
+    92fc:	f7ff ed06 	blx	8d0c <android::Parcel::writeString16(unsigned short const*, unsigned int)@plt>
+    9300:	2100      	movs	r1, #0
+    9302:	4630      	mov	r0, r6
+    9304:	f7ff ecfc 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9308:	2c03      	cmp	r4, #3
+    930a:	dd04      	ble.n	9316 <android::sp<android::IBinder>::~sp()+0x446>
+    930c:	2100      	movs	r1, #0
+    930e:	4630      	mov	r0, r6
+    9310:	460a      	mov	r2, r1
+    9312:	f7ff ecfc 	blx	8d0c <android::Parcel::writeString16(unsigned short const*, unsigned int)@plt>
+    9316:	2100      	movs	r1, #0
+    9318:	ae0f      	add	r6, sp, #60	; 0x3c
+    931a:	460a      	mov	r2, r1
+    931c:	4630      	mov	r0, r6
+    931e:	f7ff ecf6 	blx	8d0c <android::Parcel::writeString16(unsigned short const*, unsigned int)@plt>
+    9322:	2100      	movs	r1, #0
+    9324:	4630      	mov	r0, r6
+    9326:	f7ff ecec 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    932a:	2c06      	cmp	r4, #6
+    932c:	dd09      	ble.n	9342 <android::sp<android::IBinder>::~sp()+0x472>
+    932e:	2100      	movs	r1, #0
+    9330:	4630      	mov	r0, r6
+    9332:	f7ff ece6 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9336:	2c0e      	cmp	r4, #14
+    9338:	dd03      	ble.n	9342 <android::sp<android::IBinder>::~sp()+0x472>
+    933a:	4630      	mov	r0, r6
+    933c:	2100      	movs	r1, #0
+    933e:	f7ff ece0 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9342:	ac0f      	add	r4, sp, #60	; 0x3c
+    9344:	f04f 31ff 	mov.w	r1, #4294967295	; 0xffffffff
+    9348:	4620      	mov	r0, r4
+    934a:	ae1f      	add	r6, sp, #124	; 0x7c
+    934c:	f7ff ecd8 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9350:	4620      	mov	r0, r4
+    9352:	f7ff ece2 	blx	8d18 <android::Parcel::dataPosition() const@plt>
+    9356:	496b      	ldr	r1, [pc, #428]	; (9504 <android::sp<android::IBinder>::~sp()+0x634>)
+    9358:	4681      	mov	r9, r0
+    935a:	4620      	mov	r0, r4
+    935c:	f7ff ecd0 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9360:	2107      	movs	r1, #7
+    9362:	4620      	mov	r0, r4
+    9364:	f7ff eccc 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9368:	2100      	movs	r1, #0
+    936a:	4620      	mov	r0, r4
+    936c:	f7ff ecc8 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9370:	4630      	mov	r0, r6
+    9372:	496c      	ldr	r1, [pc, #432]	; (9524 <android::sp<android::IBinder>::~sp()+0x654>)
+    9374:	4479      	add	r1, pc
+    9376:	f7ff eca0 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    937a:	4631      	mov	r1, r6
+    937c:	4620      	mov	r0, r4
+    937e:	f7ff ecba 	blx	8cf4 <android::Parcel::writeString16(android::String16 const&)@plt>
+    9382:	4630      	mov	r0, r6
+    9384:	f7ff ec9e 	blx	8cc4 <android::String16::~String16()@plt>
+    9388:	2101      	movs	r1, #1
+    938a:	4620      	mov	r0, r4
+    938c:	ae1e      	add	r6, sp, #120	; 0x78
+    938e:	f7ff ecb8 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9392:	4641      	mov	r1, r8
+    9394:	4620      	mov	r0, r4
+    9396:	f7ff ecb4 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    939a:	2100      	movs	r1, #0
+    939c:	4620      	mov	r0, r4
+    939e:	f7ff ecb0 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    93a2:	4630      	mov	r0, r6
+    93a4:	4960      	ldr	r1, [pc, #384]	; (9528 <android::sp<android::IBinder>::~sp()+0x658>)
+    93a6:	4479      	add	r1, pc
+    93a8:	f7ff ec86 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    93ac:	4631      	mov	r1, r6
+    93ae:	4620      	mov	r0, r4
+    93b0:	f7ff eca0 	blx	8cf4 <android::Parcel::writeString16(android::String16 const&)@plt>
+    93b4:	4630      	mov	r0, r6
+    93b6:	f7ff ec86 	blx	8cc4 <android::String16::~String16()@plt>
+    93ba:	2101      	movs	r1, #1
+    93bc:	4620      	mov	r0, r4
+    93be:	f7ff eca0 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    93c2:	4639      	mov	r1, r7
+    93c4:	4620      	mov	r0, r4
+    93c6:	af1d      	add	r7, sp, #116	; 0x74
+    93c8:	f7ff ec9a 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    93cc:	2100      	movs	r1, #0
+    93ce:	4620      	mov	r0, r4
+    93d0:	f7ff ec96 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    93d4:	4638      	mov	r0, r7
+    93d6:	4955      	ldr	r1, [pc, #340]	; (952c <android::sp<android::IBinder>::~sp()+0x65c>)
+    93d8:	4479      	add	r1, pc
+    93da:	f7ff ec6e 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    93de:	4639      	mov	r1, r7
+    93e0:	4620      	mov	r0, r4
+    93e2:	f7ff ec88 	blx	8cf4 <android::Parcel::writeString16(android::String16 const&)@plt>
+    93e6:	4638      	mov	r0, r7
+    93e8:	f7ff ec6c 	blx	8cc4 <android::String16::~String16()@plt>
+    93ec:	2101      	movs	r1, #1
+    93ee:	4620      	mov	r0, r4
+    93f0:	af1c      	add	r7, sp, #112	; 0x70
+    93f2:	f7ff ec86 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    93f6:	4651      	mov	r1, sl
+    93f8:	4620      	mov	r0, r4
+    93fa:	f7ff ec82 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    93fe:	4620      	mov	r0, r4
+    9400:	f7ff ec8a 	blx	8d18 <android::Parcel::dataPosition() const@plt>
+    9404:	f1a9 0104 	sub.w	r1, r9, #4
+    9408:	4606      	mov	r6, r0
+    940a:	4620      	mov	r0, r4
+    940c:	f7ff ec8a 	blx	8d24 <android::Parcel::setDataPosition(unsigned int) const@plt>
+    9410:	ebc9 0106 	rsb	r1, r9, r6
+    9414:	4620      	mov	r0, r4
+    9416:	f7ff ec74 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    941a:	4631      	mov	r1, r6
+    941c:	4620      	mov	r0, r4
+    941e:	ae1b      	add	r6, sp, #108	; 0x6c
+    9420:	f7ff ec80 	blx	8d24 <android::Parcel::setDataPosition(unsigned int) const@plt>
+    9424:	2100      	movs	r1, #0
+    9426:	4620      	mov	r0, r4
+    9428:	460a      	mov	r2, r1
+    942a:	f7ff ec70 	blx	8d0c <android::Parcel::writeString16(unsigned short const*, unsigned int)@plt>
+    942e:	f04f 31ff 	mov.w	r1, #4294967295	; 0xffffffff
+    9432:	4620      	mov	r0, r4
+    9434:	f7ff ec64 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9438:	4638      	mov	r0, r7
+    943a:	f7ff fd57 	bl	8eec <android::sp<android::IBinder>::~sp()+0x1c>
+    943e:	4639      	mov	r1, r7
+    9440:	4620      	mov	r0, r4
+    9442:	f7ff ec52 	blx	8ce8 <android::Parcel::writeStrongBinder(android::sp<android::IBinder> const&)@plt>
+    9446:	4638      	mov	r0, r7
+    9448:	f7ff fd42 	bl	8ed0 <android::sp<android::IBinder>::~sp()>
+    944c:	f04f 31ff 	mov.w	r1, #4294967295	; 0xffffffff
+    9450:	4620      	mov	r0, r4
+    9452:	f7ff ec56 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9456:	2100      	movs	r1, #0
+    9458:	4620      	mov	r0, r4
+    945a:	460a      	mov	r2, r1
+    945c:	f7ff ec56 	blx	8d0c <android::Parcel::writeString16(unsigned short const*, unsigned int)@plt>
+    9460:	f04f 31ff 	mov.w	r1, #4294967295	; 0xffffffff
+    9464:	4620      	mov	r0, r4
+    9466:	f7ff ec4c 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    946a:	4630      	mov	r0, r6
+    946c:	4930      	ldr	r1, [pc, #192]	; (9530 <android::sp<android::IBinder>::~sp()+0x660>)
+    946e:	4479      	add	r1, pc
+    9470:	f7ff ec22 	blx	8cb8 <android::String16::String16(char const*)@plt>
+    9474:	4631      	mov	r1, r6
+    9476:	4620      	mov	r0, r4
+    9478:	f7ff ec3c 	blx	8cf4 <android::Parcel::writeString16(android::String16 const&)@plt>
+    947c:	4630      	mov	r0, r6
+    947e:	f7ff ec22 	blx	8cc4 <android::String16::~String16()@plt>
+    9482:	2100      	movs	r1, #0
+    9484:	4620      	mov	r0, r4
+    9486:	460a      	mov	r2, r1
+    9488:	f7ff ec40 	blx	8d0c <android::Parcel::writeString16(unsigned short const*, unsigned int)@plt>
+    948c:	2100      	movs	r1, #0
+    948e:	4620      	mov	r0, r4
+    9490:	ae03      	add	r6, sp, #12
+    9492:	f7ff ec36 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    9496:	2100      	movs	r1, #0
+    9498:	4620      	mov	r0, r4
+    949a:	f7ff ec32 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    949e:	f04f 31ff 	mov.w	r1, #4294967295	; 0xffffffff
+    94a2:	4620      	mov	r0, r4
+    94a4:	f7ff ec2c 	blx	8d00 <android::Parcel::writeInt32(int)@plt>
+    94a8:	9824      	ldr	r0, [sp, #144]	; 0x90
+    94aa:	2100      	movs	r1, #0
+    94ac:	6803      	ldr	r3, [r0, #0]
+    94ae:	4622      	mov	r2, r4
+    94b0:	9100      	str	r1, [sp, #0]
+    94b2:	210e      	movs	r1, #14
+    94b4:	695f      	ldr	r7, [r3, #20]
+    94b6:	4633      	mov	r3, r6
+    94b8:	47b8      	blx	r7
+    94ba:	2800      	cmp	r0, #0
+    94bc:	bfb4      	ite	lt
+    94be:	f04f 37ff 	movlt.w	r7, #4294967295	; 0xffffffff
+    94c2:	2700      	movge	r7, #0
+    94c4:	4630      	mov	r0, r6
+    94c6:	f7ff ec34 	blx	8d30 <android::Parcel::~Parcel()@plt>
+    94ca:	4620      	mov	r0, r4
+    94cc:	f7ff ec30 	blx	8d30 <android::Parcel::~Parcel()@plt>
+    94d0:	a824      	add	r0, sp, #144	; 0x90
+    94d2:	f7ff fcfd 	bl	8ed0 <android::sp<android::IBinder>::~sp()>
+    94d6:	9b25      	ldr	r3, [sp, #148]	; 0x94
+    94d8:	b133      	cbz	r3, 94e8 <android::sp<android::IBinder>::~sp()+0x618>
+    94da:	681a      	ldr	r2, [r3, #0]
+    94dc:	a925      	add	r1, sp, #148	; 0x94
+    94de:	f852 0c0c 	ldr.w	r0, [r2, #-12]
+    94e2:	1818      	adds	r0, r3, r0
+    94e4:	f7ff ebca 	blx	8c7c <android::RefBase::decStrong(void const*) const@plt>
+    94e8:	993d      	ldr	r1, [sp, #244]	; 0xf4
+    94ea:	f8df c01c 	ldr.w	ip, [pc, #28]	; 9508 <android::sp<android::IBinder>::~sp()+0x638>
+    94ee:	4638      	mov	r0, r7
+    94f0:	f855 200c 	ldr.w	r2, [r5, ip]
+    94f4:	6813      	ldr	r3, [r2, #0]
+    94f6:	4299      	cmp	r1, r3
+    94f8:	d001      	beq.n	94fe <android::sp<android::IBinder>::~sp()+0x62e>
+    94fa:	f7ff ec20 	blx	8d3c <__stack_chk_fail@plt>
+    94fe:	b03f      	add	sp, #252	; 0xfc
+    9500:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
+    9504:	4e42      	ldr	r6, [pc, #264]	; (9610 <android::sp<android::IBinder>::~sp()+0x740>)
+    9506:	4c44      	ldr	r4, [pc, #272]	; (9618 <android::sp<android::IBinder>::~sp()+0x748>)
+    9508:	fffc ffff 			; <UNDEFINED> instruction: 0xfffcffff
+    950c:	0ee2      	lsrs	r2, r4, #27
+    950e:	0000      	movs	r0, r0
+    9510:	07d8      	lsls	r0, r3, #31
+    9512:	0000      	movs	r0, r0
+    9514:	07e9      	lsls	r1, r5, #31
+    9516:	0000      	movs	r0, r0
+    9518:	07cb      	lsls	r3, r1, #31
+    951a:	0000      	movs	r0, r0
+    951c:	079a      	lsls	r2, r3, #30
+    951e:	0000      	movs	r0, r0
+    9520:	07e9      	lsls	r1, r5, #31
+    9522:	0000      	movs	r0, r0
+    9524:	0778      	lsls	r0, r7, #29
+    9526:	0000      	movs	r0, r0
+    9528:	06eb      	lsls	r3, r5, #27
+    952a:	0000      	movs	r0, r0
+    952c:	06bd      	lsls	r5, r7, #26
+    952e:	0000      	movs	r0, r0
+    9530:	062b      	lsls	r3, r5, #24
+    9532:	0000      	movs	r0, r0
+    9534:	b510      	push	{r4, lr}
+    9536:	480f      	ldr	r0, [pc, #60]	; (9574 <android::sp<android::IBinder>::~sp()+0x6a4>)
+    9538:	4478      	add	r0, pc
+    953a:	f7ff ec06 	blx	8d48 <puts@plt>
+    953e:	480e      	ldr	r0, [pc, #56]	; (9578 <android::sp<android::IBinder>::~sp()+0x6a8>)
+    9540:	4478      	add	r0, pc
+    9542:	f7ff ec02 	blx	8d48 <puts@plt>
+    9546:	480d      	ldr	r0, [pc, #52]	; (957c <android::sp<android::IBinder>::~sp()+0x6ac>)
+    9548:	4478      	add	r0, pc
+    954a:	f7ff ebfe 	blx	8d48 <puts@plt>
+    954e:	480c      	ldr	r0, [pc, #48]	; (9580 <android::sp<android::IBinder>::~sp()+0x6b0>)
+    9550:	4478      	add	r0, pc
+    9552:	f7ff ebfa 	blx	8d48 <puts@plt>
+    9556:	200a      	movs	r0, #10
+    9558:	f7ff ebfc 	blx	8d54 <putchar@plt>
+    955c:	4809      	ldr	r0, [pc, #36]	; (9584 <android::sp<android::IBinder>::~sp()+0x6b4>)
+    955e:	4478      	add	r0, pc
+    9560:	f7ff ebf2 	blx	8d48 <puts@plt>
+    9564:	4808      	ldr	r0, [pc, #32]	; (9588 <android::sp<android::IBinder>::~sp()+0x6b8>)
+    9566:	4478      	add	r0, pc
+    9568:	f7ff ebee 	blx	8d48 <puts@plt>
+    956c:	2000      	movs	r0, #0
+    956e:	f7ff ebf8 	blx	8d60 <exit@plt>
+    9572:	bf00      	nop
+    9574:	05c1      	lsls	r1, r0, #23
+    9576:	0000      	movs	r0, r0
+    9578:	05cd      	lsls	r5, r1, #23
+    957a:	0000      	movs	r0, r0
+    957c:	05ce      	lsls	r6, r1, #23
+    957e:	0000      	movs	r0, r0
+    9580:	05e3      	lsls	r3, r4, #23
+    9582:	0000      	movs	r0, r0
+    9584:	05ee      	lsls	r6, r5, #23
+    9586:	0000      	movs	r0, r0
+    9588:	05f6      	lsls	r6, r6, #23
+    958a:	0000      	movs	r0, r0
+    958c:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+    9590:	4930      	ldr	r1, [pc, #192]	; (9654 <android::sp<android::IBinder>::~sp()+0x784>)
+    9592:	b09f      	sub	sp, #124	; 0x7c
+    9594:	2200      	movs	r2, #0
+    9596:	4d30      	ldr	r5, [pc, #192]	; (9658 <android::sp<android::IBinder>::~sp()+0x788>)
+    9598:	447d      	add	r5, pc
+    959a:	5868      	ldr	r0, [r5, r1]
+    959c:	6803      	ldr	r3, [r0, #0]
+    959e:	2001      	movs	r0, #1
+    95a0:	4601      	mov	r1, r0
+    95a2:	931d      	str	r3, [sp, #116]	; 0x74
+    95a4:	f7ff ebe2 	blx	8d6c <socket@plt>
+    95a8:	4604      	mov	r4, r0
+    95aa:	2800      	cmp	r0, #0
+    95ac:	bfb8      	it	lt
+    95ae:	f04f 34ff 	movlt.w	r4, #4294967295	; 0xffffffff
+    95b2:	db40      	blt.n	9636 <android::sp<android::IBinder>::~sp()+0x766>
+    95b4:	f10d 0904 	add.w	r9, sp, #4
+    95b8:	4f28      	ldr	r7, [pc, #160]	; (965c <android::sp<android::IBinder>::~sp()+0x78c>)
+    95ba:	f8df 80a4 	ldr.w	r8, [pc, #164]	; 9660 <android::sp<android::IBinder>::~sp()+0x790>
+    95be:	4e29      	ldr	r6, [pc, #164]	; (9664 <android::sp<android::IBinder>::~sp()+0x794>)
+    95c0:	f8df a0a4 	ldr.w	sl, [pc, #164]	; 9668 <android::sp<android::IBinder>::~sp()+0x798>
+    95c4:	447f      	add	r7, pc
+    95c6:	44f8      	add	r8, pc
+    95c8:	447e      	add	r6, pc
+    95ca:	f109 0b02 	add.w	fp, r9, #2
+    95ce:	44fa      	add	sl, pc
+    95d0:	2100      	movs	r1, #0
+    95d2:	226e      	movs	r2, #110	; 0x6e
+    95d4:	4648      	mov	r0, r9
+    95d6:	f7ff eb58 	blx	8c88 <memset@plt>
+    95da:	4641      	mov	r1, r8
+    95dc:	4638      	mov	r0, r7
+    95de:	f04f 0201 	mov.w	r2, #1
+    95e2:	f8ad 2004 	strh.w	r2, [sp, #4]
+    95e6:	f7ff ebc8 	blx	8d78 <strcpy@plt>
+    95ea:	4638      	mov	r0, r7
+    95ec:	f7ff ebca 	blx	8d84 <mktemp@plt>
+    95f0:	216c      	movs	r1, #108	; 0x6c
+    95f2:	4603      	mov	r3, r0
+    95f4:	4652      	mov	r2, sl
+    95f6:	f846 0cf8 	str.w	r0, [r6, #-248]
+    95fa:	4658      	mov	r0, fp
+    95fc:	f7ff ebc8 	blx	8d90 <snprintf@plt>
+    9600:	f856 0cf8 	ldr.w	r0, [r6, #-248]
+    9604:	f7ff ebca 	blx	8d9c <unlink@plt>
+    9608:	226e      	movs	r2, #110	; 0x6e
+    960a:	4620      	mov	r0, r4
+    960c:	4649      	mov	r1, r9
+    960e:	f7ff ebcc 	blx	8da8 <bind@plt>
+    9612:	2800      	cmp	r0, #0
+    9614:	da07      	bge.n	9626 <android::sp<android::IBinder>::~sp()+0x756>
+    9616:	f7ff ebce 	blx	8db4 <__errno@plt>
+    961a:	6803      	ldr	r3, [r0, #0]
+    961c:	2b62      	cmp	r3, #98	; 0x62
+    961e:	d0d7      	beq.n	95d0 <android::sp<android::IBinder>::~sp()+0x700>
+    9620:	f06f 0401 	mvn.w	r4, #1
+    9624:	e007      	b.n	9636 <android::sp<android::IBinder>::~sp()+0x766>
+    9626:	4620      	mov	r0, r4
+    9628:	2101      	movs	r1, #1
+    962a:	f7ff ebca 	blx	8dc0 <listen@plt>
+    962e:	2800      	cmp	r0, #0
+    9630:	bfb8      	it	lt
+    9632:	f06f 0402 	mvnlt.w	r4, #2
+    9636:	991d      	ldr	r1, [sp, #116]	; 0x74
+    9638:	f8df c018 	ldr.w	ip, [pc, #24]	; 9654 <android::sp<android::IBinder>::~sp()+0x784>
+    963c:	4620      	mov	r0, r4
+    963e:	f855 300c 	ldr.w	r3, [r5, ip]
+    9642:	681a      	ldr	r2, [r3, #0]
+    9644:	4291      	cmp	r1, r2
+    9646:	d001      	beq.n	964c <android::sp<android::IBinder>::~sp()+0x77c>
+    9648:	f7ff eb78 	blx	8d3c <__stack_chk_fail@plt>
+    964c:	b01f      	add	sp, #124	; 0x7c
+    964e:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
+    9652:	bf00      	nop
+    9654:	fffc ffff 			; <UNDEFINED> instruction: 0xfffcffff
+    9658:	0b70      	lsrs	r0, r6, #13
+    965a:	0000      	movs	r0, r0
+    965c:	0c28      	lsrs	r0, r5, #16
+    965e:	0000      	movs	r0, r0
+    9660:	05af      	lsls	r7, r5, #22
+    9662:	0000      	movs	r0, r0
+    9664:	1d1c      	adds	r4, r3, #4
+    9666:	0000      	movs	r0, r0
+    9668:	05e8      	lsls	r0, r5, #23
+    966a:	0000      	movs	r0, r0
+    966c:	b570      	push	{r4, r5, r6, lr}
+    966e:	2280      	movs	r2, #128	; 0x80
+    9670:	b0a4      	sub	sp, #144	; 0x90
+    9672:	4605      	mov	r5, r0
+    9674:	241e      	movs	r4, #30
+    9676:	ae02      	add	r6, sp, #8
+    9678:	9422      	str	r4, [sp, #136]	; 0x88
+    967a:	4630      	mov	r0, r6
+    967c:	2400      	movs	r4, #0
+    967e:	4621      	mov	r1, r4
+    9680:	9423      	str	r4, [sp, #140]	; 0x8c
+    9682:	f7ff eb02 	blx	8c88 <memset@plt>
+    9686:	116b      	asrs	r3, r5, #5
+    9688:	2101      	movs	r1, #1
+    968a:	f10d 0c90 	add.w	ip, sp, #144	; 0x90
+    968e:	f005 021f 	and.w	r2, r5, #31
+    9692:	eb0c 0083 	add.w	r0, ip, r3, lsl #2
+    9696:	fa11 f202 	lsls.w	r2, r1, r2
+    969a:	ab22      	add	r3, sp, #136	; 0x88
+    969c:	f850 1c88 	ldr.w	r1, [r0, #-136]
+    96a0:	430a      	orrs	r2, r1
+    96a2:	4631      	mov	r1, r6
+    96a4:	f840 2c88 	str.w	r2, [r0, #-136]
+    96a8:	1c68      	adds	r0, r5, #1
+    96aa:	9300      	str	r3, [sp, #0]
+    96ac:	4622      	mov	r2, r4
+    96ae:	4623      	mov	r3, r4
+    96b0:	f7ff eb8c 	blx	8dcc <select@plt>
+    96b4:	42a0      	cmp	r0, r4
+    96b6:	dd06      	ble.n	96c6 <android::sp<android::IBinder>::~sp()+0x7f6>
+    96b8:	4628      	mov	r0, r5
+    96ba:	4621      	mov	r1, r4
+    96bc:	4622      	mov	r2, r4
+    96be:	f7ff eb8c 	blx	8dd8 <accept@plt>
+    96c2:	42a0      	cmp	r0, r4
+    96c4:	da01      	bge.n	96ca <android::sp<android::IBinder>::~sp()+0x7fa>
+    96c6:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+    96ca:	b024      	add	sp, #144	; 0x90
+    96cc:	bd70      	pop	{r4, r5, r6, pc}
+    96ce:	bf00      	nop
+    96d0:	b570      	push	{r4, r5, r6, lr}
+    96d2:	2000      	movs	r0, #0
+    96d4:	4b18      	ldr	r3, [pc, #96]	; (9738 <android::sp<android::IBinder>::~sp()+0x868>)
+    96d6:	447b      	add	r3, pc
+    96d8:	685a      	ldr	r2, [r3, #4]
+    96da:	6819      	ldr	r1, [r3, #0]
+    96dc:	f7ff fd9c 	bl	9218 <android::sp<android::IBinder>::~sp()+0x348>
+    96e0:	4b16      	ldr	r3, [pc, #88]	; (973c <android::sp<android::IBinder>::~sp()+0x86c>)
+    96e2:	447b      	add	r3, pc
+    96e4:	f853 2cf4 	ldr.w	r2, [r3, #-244]
+    96e8:	2a02      	cmp	r2, #2
+    96ea:	dd1b      	ble.n	9724 <android::sp<android::IBinder>::~sp()+0x854>
+    96ec:	f853 4cf0 	ldr.w	r4, [r3, #-240]
+    96f0:	4913      	ldr	r1, [pc, #76]	; (9740 <android::sp<android::IBinder>::~sp()+0x870>)
+    96f2:	6865      	ldr	r5, [r4, #4]
+    96f4:	4479      	add	r1, pc
+    96f6:	4628      	mov	r0, r5
+    96f8:	f7ff eb74 	blx	8de4 <strcmp@plt>
+    96fc:	b128      	cbz	r0, 970a <android::sp<android::IBinder>::~sp()+0x83a>
+    96fe:	4911      	ldr	r1, [pc, #68]	; (9744 <android::sp<android::IBinder>::~sp()+0x874>)
+    9700:	4628      	mov	r0, r5
+    9702:	4479      	add	r1, pc
+    9704:	f7ff eb6e 	blx	8de4 <strcmp@plt>
+    9708:	b960      	cbnz	r0, 9724 <android::sp<android::IBinder>::~sp()+0x854>
+    970a:	f104 0108 	add.w	r1, r4, #8
+    970e:	68a0      	ldr	r0, [r4, #8]
+    9710:	f7ff eb6e 	blx	8df0 <execvp@plt>
+    9714:	2800      	cmp	r0, #0
+    9716:	da0c      	bge.n	9732 <android::sp<android::IBinder>::~sp()+0x862>
+    9718:	480b      	ldr	r0, [pc, #44]	; (9748 <android::sp<android::IBinder>::~sp()+0x878>)
+    971a:	4478      	add	r0, pc
+    971c:	f7ff eb14 	blx	8d48 <puts@plt>
+    9720:	2001      	movs	r0, #1
+    9722:	e007      	b.n	9734 <android::sp<android::IBinder>::~sp()+0x864>
+    9724:	4809      	ldr	r0, [pc, #36]	; (974c <android::sp<android::IBinder>::~sp()+0x87c>)
+    9726:	490a      	ldr	r1, [pc, #40]	; (9750 <android::sp<android::IBinder>::~sp()+0x880>)
+    9728:	4478      	add	r0, pc
+    972a:	4479      	add	r1, pc
+    972c:	2200      	movs	r2, #0
+    972e:	f7ff eb66 	blx	8dfc <execlp@plt>
+    9732:	2000      	movs	r0, #0
+    9734:	bd70      	pop	{r4, r5, r6, pc}
+    9736:	bf00      	nop
+    9738:	0af6      	lsrs	r6, r6, #11
+    973a:	0000      	movs	r0, r0
+    973c:	1c02      	adds	r2, r0, #0
+    973e:	0000      	movs	r0, r0
+    9740:	04c5      	lsls	r5, r0, #19
+    9742:	0000      	movs	r0, r0
+    9744:	04ba      	lsls	r2, r7, #18
+    9746:	0000      	movs	r0, r0
+    9748:	04ac      	lsls	r4, r5, #18
+    974a:	0000      	movs	r0, r0
+    974c:	04b4      	lsls	r4, r6, #18
+    974e:	0000      	movs	r0, r0
+    9750:	04c1      	lsls	r1, r0, #19
+    9752:	0000      	movs	r0, r0
+    9754:	b510      	push	{r4, lr}
+    9756:	4b05      	ldr	r3, [pc, #20]	; (976c <android::sp<android::IBinder>::~sp()+0x89c>)
+    9758:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+    975c:	447b      	add	r3, pc
+    975e:	6819      	ldr	r1, [r3, #0]
+    9760:	685a      	ldr	r2, [r3, #4]
+    9762:	f7ff fd59 	bl	9218 <android::sp<android::IBinder>::~sp()+0x348>
+    9766:	2001      	movs	r0, #1
+    9768:	bd10      	pop	{r4, pc}
+    976a:	bf00      	nop
+    976c:	0a70      	lsrs	r0, r6, #9
+    976e:	0000      	movs	r0, r0
+    9770:	b510      	push	{r4, lr}
+    9772:	4c07      	ldr	r4, [pc, #28]	; (9790 <android::sp<android::IBinder>::~sp()+0x8c0>)
+    9774:	447c      	add	r4, pc
+    9776:	f854 0cf8 	ldr.w	r0, [r4, #-248]
+    977a:	f7ff eb10 	blx	8d9c <unlink@plt>
+    977e:	f854 0cf0 	ldr.w	r0, [r4, #-240]
+    9782:	b120      	cbz	r0, 978e <android::sp<android::IBinder>::~sp()+0x8be>
+    9784:	f7ff eb40 	blx	8e08 <free@plt>
+    9788:	2300      	movs	r3, #0
+    978a:	f844 3cf0 	str.w	r3, [r4, #-240]
+    978e:	bd10      	pop	{r4, pc}
+    9790:	1b70      	subs	r0, r6, r5
+    9792:	0000      	movs	r0, r0
+    9794:	b510      	push	{r4, lr}
+    9796:	f7ff ffeb 	bl	9770 <android::sp<android::IBinder>::~sp()+0x8a0>
+    979a:	bd10      	pop	{r4, pc}
+    979c:	b510      	push	{r4, lr}
+    979e:	4604      	mov	r4, r0
+    97a0:	f7ff ffe6 	bl	9770 <android::sp<android::IBinder>::~sp()+0x8a0>
+    97a4:	4620      	mov	r0, r4
+    97a6:	f7ff eadc 	blx	8d60 <exit@plt>
+    97aa:	bf00      	nop
+    97ac:	b570      	push	{r4, r5, r6, lr}
+    97ae:	4605      	mov	r5, r0
+    97b0:	460c      	mov	r4, r1
+    97b2:	4628      	mov	r0, r5
+    97b4:	f7ff ff5a 	bl	966c <android::sp<android::IBinder>::~sp()+0x79c>
+    97b8:	2800      	cmp	r0, #0
+    97ba:	db0a      	blt.n	97d2 <android::sp<android::IBinder>::~sp()+0x902>
+    97bc:	223f      	movs	r2, #63	; 0x3f
+    97be:	4621      	mov	r1, r4
+    97c0:	f7ff eb28 	blx	8e14 <read@plt>
+    97c4:	2800      	cmp	r0, #0
+    97c6:	db04      	blt.n	97d2 <android::sp<android::IBinder>::~sp()+0x902>
+    97c8:	d0f3      	beq.n	97b2 <android::sp<android::IBinder>::~sp()+0x8e2>
+    97ca:	2300      	movs	r3, #0
+    97cc:	5423      	strb	r3, [r4, r0]
+    97ce:	4618      	mov	r0, r3
+    97d0:	e001      	b.n	97d6 <android::sp<android::IBinder>::~sp()+0x906>
+    97d2:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+    97d6:	bd70      	pop	{r4, r5, r6, pc}
+    97d8:	b5f0      	push	{r4, r5, r6, r7, lr}
+    97da:	4606      	mov	r6, r0
+    97dc:	b0ed      	sub	sp, #436	; 0x1b4
+    97de:	4d7a      	ldr	r5, [pc, #488]	; (99c8 <android::sp<android::IBinder>::~sp()+0xaf8>)
+    97e0:	460f      	mov	r7, r1
+    97e2:	447d      	add	r5, pc
+    97e4:	4979      	ldr	r1, [pc, #484]	; (99cc <android::sp<android::IBinder>::~sp()+0xafc>)
+    97e6:	5868      	ldr	r0, [r5, r1]
+    97e8:	2e02      	cmp	r6, #2
+    97ea:	6803      	ldr	r3, [r0, #0]
+    97ec:	936b      	str	r3, [sp, #428]	; 0x1ac
+    97ee:	d10e      	bne.n	980e <android::sp<android::IBinder>::~sp()+0x93e>
+    97f0:	687c      	ldr	r4, [r7, #4]
+    97f2:	4977      	ldr	r1, [pc, #476]	; (99d0 <android::sp<android::IBinder>::~sp()+0xb00>)
+    97f4:	4620      	mov	r0, r4
+    97f6:	4479      	add	r1, pc
+    97f8:	f7ff eaf4 	blx	8de4 <strcmp@plt>
+    97fc:	b128      	cbz	r0, 980a <android::sp<android::IBinder>::~sp()+0x93a>
+    97fe:	4975      	ldr	r1, [pc, #468]	; (99d4 <android::sp<android::IBinder>::~sp()+0xb04>)
+    9800:	4620      	mov	r0, r4
+    9802:	4479      	add	r1, pc
+    9804:	f7ff eaee 	blx	8de4 <strcmp@plt>
+    9808:	b908      	cbnz	r0, 980e <android::sp<android::IBinder>::~sp()+0x93e>
+    980a:	f7ff fe93 	bl	9534 <android::sp<android::IBinder>::~sp()+0x664>
+    980e:	1c72      	adds	r2, r6, #1
+    9810:	4c71      	ldr	r4, [pc, #452]	; (99d8 <android::sp<android::IBinder>::~sp()+0xb08>)
+    9812:	0090      	lsls	r0, r2, #2
+    9814:	447c      	add	r4, pc
+    9816:	f844 6cf4 	str.w	r6, [r4, #-244]
+    981a:	f7ff eb02 	blx	8e20 <malloc@plt>
+    981e:	f844 0cf0 	str.w	r0, [r4, #-240]
+    9822:	b188      	cbz	r0, 9848 <android::sp<android::IBinder>::~sp()+0x978>
+    9824:	f854 2cf4 	ldr.w	r2, [r4, #-244]
+    9828:	1c51      	adds	r1, r2, #1
+    982a:	008a      	lsls	r2, r1, #2
+    982c:	2100      	movs	r1, #0
+    982e:	f7ff ea2c 	blx	8c88 <memset@plt>
+    9832:	f854 3cf4 	ldr.w	r3, [r4, #-244]
+    9836:	f854 0cf0 	ldr.w	r0, [r4, #-240]
+    983a:	009a      	lsls	r2, r3, #2
+    983c:	4639      	mov	r1, r7
+    983e:	f7ff eaf6 	blx	8e2c <memcpy@plt>
+    9842:	2e01      	cmp	r6, #1
+    9844:	dc03      	bgt.n	984e <android::sp<android::IBinder>::~sp()+0x97e>
+    9846:	e012      	b.n	986e <android::sp<android::IBinder>::~sp()+0x99e>
+    9848:	f844 0cf4 	str.w	r0, [r4, #-244]
+    984c:	e0ab      	b.n	99a6 <android::sp<android::IBinder>::~sp()+0xad6>
+    984e:	4963      	ldr	r1, [pc, #396]	; (99dc <android::sp<android::IBinder>::~sp()+0xb0c>)
+    9850:	6878      	ldr	r0, [r7, #4]
+    9852:	4479      	add	r1, pc
+    9854:	f7ff eac6 	blx	8de4 <strcmp@plt>
+    9858:	4606      	mov	r6, r0
+    985a:	b940      	cbnz	r0, 986e <android::sp<android::IBinder>::~sp()+0x99e>
+    985c:	4860      	ldr	r0, [pc, #384]	; (99e0 <android::sp<android::IBinder>::~sp()+0xb10>)
+    985e:	4478      	add	r0, pc
+    9860:	f7ff ea72 	blx	8d48 <puts@plt>
+    9864:	4630      	mov	r0, r6
+    9866:	f7ff eae8 	blx	8e38 <setgid@plt>
+    986a:	b358      	cbz	r0, 98c4 <android::sp<android::IBinder>::~sp()+0x9f4>
+    986c:	e02d      	b.n	98ca <android::sp<android::IBinder>::~sp()+0x9fa>
+    986e:	f7ff eaea 	blx	8e44 <getppid@plt>
+    9872:	ae1b      	add	r6, sp, #108	; 0x6c
+    9874:	2100      	movs	r1, #0
+    9876:	f44f 7280 	mov.w	r2, #256	; 0x100
+    987a:	4c5a      	ldr	r4, [pc, #360]	; (99e4 <android::sp<android::IBinder>::~sp()+0xb14>)
+    987c:	447c      	add	r4, pc
+    987e:	6060      	str	r0, [r4, #4]
+    9880:	4630      	mov	r0, r6
+    9882:	f7ff ea02 	blx	8c88 <memset@plt>
+    9886:	6862      	ldr	r2, [r4, #4]
+    9888:	4630      	mov	r0, r6
+    988a:	4957      	ldr	r1, [pc, #348]	; (99e8 <android::sp<android::IBinder>::~sp()+0xb18>)
+    988c:	4479      	add	r1, pc
+    988e:	466f      	mov	r7, sp
+    9890:	f7ff eade 	blx	8e50 <sprintf@plt>
+    9894:	4630      	mov	r0, r6
+    9896:	4669      	mov	r1, sp
+    9898:	f7ff eae0 	blx	8e5c <stat@plt>
+    989c:	2240      	movs	r2, #64	; 0x40
+    989e:	9e06      	ldr	r6, [sp, #24]
+    98a0:	2100      	movs	r1, #0
+    98a2:	6026      	str	r6, [r4, #0]
+    98a4:	ae5b      	add	r6, sp, #364	; 0x16c
+    98a6:	4630      	mov	r0, r6
+    98a8:	f7ff e9ee 	blx	8c88 <memset@plt>
+    98ac:	f44f 71fc 	mov.w	r1, #504	; 0x1f8
+    98b0:	484e      	ldr	r0, [pc, #312]	; (99ec <android::sp<android::IBinder>::~sp()+0xb1c>)
+    98b2:	4478      	add	r0, pc
+    98b4:	f7ff ead8 	blx	8e68 <mkdir@plt>
+    98b8:	f7ff fe68 	bl	958c <android::sp<android::IBinder>::~sp()+0x6bc>
+    98bc:	60a0      	str	r0, [r4, #8]
+    98be:	2800      	cmp	r0, #0
+    98c0:	da33      	bge.n	992a <android::sp<android::IBinder>::~sp()+0xa5a>
+    98c2:	e02d      	b.n	9920 <android::sp<android::IBinder>::~sp()+0xa50>
+    98c4:	f7ff ead6 	blx	8e74 <setuid@plt>
+    98c8:	b110      	cbz	r0, 98d0 <android::sp<android::IBinder>::~sp()+0xa00>
+    98ca:	4849      	ldr	r0, [pc, #292]	; (99f0 <android::sp<android::IBinder>::~sp()+0xb20>)
+    98cc:	4478      	add	r0, pc
+    98ce:	e01b      	b.n	9908 <android::sp<android::IBinder>::~sp()+0xa38>
+    98d0:	f854 0cf4 	ldr.w	r0, [r4, #-244]
+    98d4:	2803      	cmp	r0, #3
+    98d6:	dd1a      	ble.n	990e <android::sp<android::IBinder>::~sp()+0xa3e>
+    98d8:	f854 4cf0 	ldr.w	r4, [r4, #-240]
+    98dc:	4945      	ldr	r1, [pc, #276]	; (99f4 <android::sp<android::IBinder>::~sp()+0xb24>)
+    98de:	68a6      	ldr	r6, [r4, #8]
+    98e0:	4479      	add	r1, pc
+    98e2:	4630      	mov	r0, r6
+    98e4:	f7ff ea7e 	blx	8de4 <strcmp@plt>
+    98e8:	b128      	cbz	r0, 98f6 <android::sp<android::IBinder>::~sp()+0xa26>
+    98ea:	4943      	ldr	r1, [pc, #268]	; (99f8 <android::sp<android::IBinder>::~sp()+0xb28>)
+    98ec:	4630      	mov	r0, r6
+    98ee:	4479      	add	r1, pc
+    98f0:	f7ff ea78 	blx	8de4 <strcmp@plt>
+    98f4:	b958      	cbnz	r0, 990e <android::sp<android::IBinder>::~sp()+0xa3e>
+    98f6:	f104 010c 	add.w	r1, r4, #12
+    98fa:	68e0      	ldr	r0, [r4, #12]
+    98fc:	f7ff ea78 	blx	8df0 <execvp@plt>
+    9900:	2800      	cmp	r0, #0
+    9902:	da53      	bge.n	99ac <android::sp<android::IBinder>::~sp()+0xadc>
+    9904:	483d      	ldr	r0, [pc, #244]	; (99fc <android::sp<android::IBinder>::~sp()+0xb2c>)
+    9906:	4478      	add	r0, pc
+    9908:	f7ff ea1e 	blx	8d48 <puts@plt>
+    990c:	e006      	b.n	991c <android::sp<android::IBinder>::~sp()+0xa4c>
+    990e:	483c      	ldr	r0, [pc, #240]	; (9a00 <android::sp<android::IBinder>::~sp()+0xb30>)
+    9910:	493c      	ldr	r1, [pc, #240]	; (9a04 <android::sp<android::IBinder>::~sp()+0xb34>)
+    9912:	4478      	add	r0, pc
+    9914:	4479      	add	r1, pc
+    9916:	2200      	movs	r2, #0
+    9918:	f7ff ea70 	blx	8dfc <execlp@plt>
+    991c:	2001      	movs	r0, #1
+    991e:	e046      	b.n	99ae <android::sp<android::IBinder>::~sp()+0xade>
+    9920:	f7ff ff18 	bl	9754 <android::sp<android::IBinder>::~sp()+0x884>
+    9924:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+    9928:	e041      	b.n	99ae <android::sp<android::IBinder>::~sp()+0xade>
+    992a:	6862      	ldr	r2, [r4, #4]
+    992c:	6821      	ldr	r1, [r4, #0]
+    992e:	4f36      	ldr	r7, [pc, #216]	; (9a08 <android::sp<android::IBinder>::~sp()+0xb38>)
+    9930:	447f      	add	r7, pc
+    9932:	f857 0cf8 	ldr.w	r0, [r7, #-248]
+    9936:	4d35      	ldr	r5, [pc, #212]	; (9a0c <android::sp<android::IBinder>::~sp()+0xb3c>)
+    9938:	f7ff fadc 	bl	8ef4 <android::sp<android::IBinder>::~sp()+0x24>
+    993c:	447d      	add	r5, pc
+    993e:	2001      	movs	r0, #1
+    9940:	4629      	mov	r1, r5
+    9942:	f7ff ea9e 	blx	8e80 <bsd_signal@plt>
+    9946:	200d      	movs	r0, #13
+    9948:	4629      	mov	r1, r5
+    994a:	f7ff ea9a 	blx	8e80 <bsd_signal@plt>
+    994e:	200f      	movs	r0, #15
+    9950:	4629      	mov	r1, r5
+    9952:	f7ff ea96 	blx	8e80 <bsd_signal@plt>
+    9956:	4629      	mov	r1, r5
+    9958:	2006      	movs	r0, #6
+    995a:	f7ff ea92 	blx	8e80 <bsd_signal@plt>
+    995e:	482c      	ldr	r0, [pc, #176]	; (9a10 <android::sp<android::IBinder>::~sp()+0xb40>)
+    9960:	4478      	add	r0, pc
+    9962:	f7ff ea94 	blx	8e8c <atexit@plt>
+    9966:	68a0      	ldr	r0, [r4, #8]
+    9968:	4631      	mov	r1, r6
+    996a:	f7ff ff1f 	bl	97ac <android::sp<android::IBinder>::~sp()+0x8dc>
+    996e:	2800      	cmp	r0, #0
+    9970:	da08      	bge.n	9984 <android::sp<android::IBinder>::~sp()+0xab4>
+    9972:	f06f 0001 	mvn.w	r0, #1
+    9976:	6821      	ldr	r1, [r4, #0]
+    9978:	6862      	ldr	r2, [r4, #4]
+    997a:	f7ff fc4d 	bl	9218 <android::sp<android::IBinder>::~sp()+0x348>
+    997e:	2001      	movs	r0, #1
+    9980:	f7ff e9ee 	blx	8d60 <exit@plt>
+    9984:	4923      	ldr	r1, [pc, #140]	; (9a14 <android::sp<android::IBinder>::~sp()+0xb44>)
+    9986:	4630      	mov	r0, r6
+    9988:	4479      	add	r1, pc
+    998a:	f7ff ea2c 	blx	8de4 <strcmp@plt>
+    998e:	b150      	cbz	r0, 99a6 <android::sp<android::IBinder>::~sp()+0xad6>
+    9990:	4921      	ldr	r1, [pc, #132]	; (9a18 <android::sp<android::IBinder>::~sp()+0xb48>)
+    9992:	4630      	mov	r0, r6
+    9994:	4479      	add	r1, pc
+    9996:	f7ff ea26 	blx	8de4 <strcmp@plt>
+    999a:	4604      	mov	r4, r0
+    999c:	b918      	cbnz	r0, 99a6 <android::sp<android::IBinder>::~sp()+0xad6>
+    999e:	f7ff fe97 	bl	96d0 <android::sp<android::IBinder>::~sp()+0x800>
+    99a2:	4620      	mov	r0, r4
+    99a4:	e7ec      	b.n	9980 <android::sp<android::IBinder>::~sp()+0xab0>
+    99a6:	f7ff fed5 	bl	9754 <android::sp<android::IBinder>::~sp()+0x884>
+    99aa:	e7e8      	b.n	997e <android::sp<android::IBinder>::~sp()+0xaae>
+    99ac:	2000      	movs	r0, #0
+    99ae:	996b      	ldr	r1, [sp, #428]	; 0x1ac
+    99b0:	f8df c018 	ldr.w	ip, [pc, #24]	; 99cc <android::sp<android::IBinder>::~sp()+0xafc>
+    99b4:	f855 200c 	ldr.w	r2, [r5, ip]
+    99b8:	6813      	ldr	r3, [r2, #0]
+    99ba:	4299      	cmp	r1, r3
+    99bc:	d001      	beq.n	99c2 <android::sp<android::IBinder>::~sp()+0xaf2>
+    99be:	f7ff e9be 	blx	8d3c <__stack_chk_fail@plt>
+    99c2:	b06d      	add	sp, #436	; 0x1b4
+    99c4:	bdf0      	pop	{r4, r5, r6, r7, pc}
+    99c6:	bf00      	nop
+    99c8:	0926      	lsrs	r6, r4, #4
+    99ca:	0000      	movs	r0, r0
+    99cc:	fffc ffff 			; <UNDEFINED> instruction: 0xfffcffff
+    99d0:	03f8      	lsls	r0, r7, #15
+    99d2:	0000      	movs	r0, r0
+    99d4:	03ef      	lsls	r7, r5, #15
+    99d6:	0000      	movs	r0, r0
+    99d8:	1ad0      	subs	r0, r2, r3
+    99da:	0000      	movs	r0, r0
+    99dc:	03a6      	lsls	r6, r4, #14
+    99de:	0000      	movs	r0, r0
+    99e0:	03a7      	lsls	r7, r4, #14
+    99e2:	0000      	movs	r0, r0
+    99e4:	0950      	lsrs	r0, r2, #5
+    99e6:	0000      	movs	r0, r0
+    99e8:	0398      	lsls	r0, r3, #14
+    99ea:	0000      	movs	r0, r0
+    99ec:	037b      	lsls	r3, r7, #13
+    99ee:	0000      	movs	r0, r0
+    99f0:	038d      	lsls	r5, r1, #14
+    99f2:	0000      	movs	r0, r0
+    99f4:	02d9      	lsls	r1, r3, #11
+    99f6:	0000      	movs	r0, r0
+    99f8:	02ce      	lsls	r6, r1, #11
+    99fa:	0000      	movs	r0, r0
+    99fc:	0365      	lsls	r5, r4, #13
+    99fe:	0000      	movs	r0, r0
+    9a00:	02ca      	lsls	r2, r1, #11
+    9a02:	0000      	movs	r0, r0
+    9a04:	02d7      	lsls	r7, r2, #11
+    9a06:	0000      	movs	r0, r0
+    9a08:	19b4      	adds	r4, r6, r6
+    9a0a:	0000      	movs	r0, r0
+    9a0c:	fe5d ffff 	mrc2	15, 2, pc, cr13, cr15, {7}
+    9a10:	fe31 ffff 	mrc2	15, 1, pc, cr1, cr15, {7}
+    9a14:	02f6      	lsls	r6, r6, #11
+    9a16:	0000      	movs	r0, r0
+    9a18:	02ef      	lsls	r7, r5, #11
+    9a1a:	0000      	movs	r0, r0
+    9a1c:	f004 e51f 			; <UNDEFINED> instruction: 0xf004e51f
+    9a20:	97d9      	str	r7, [sp, #868]	; 0x364
+	...

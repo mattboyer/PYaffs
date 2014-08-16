@@ -26,6 +26,86 @@ I'm gonna need binutils for ARM
 
 ddffd
 
+# Poking around the binary
+
+	578-mboyer@marylou:~/Hacks/Nam-Phone_G40C [master:I±R=]$ export PATH="$PWD/binutils_ARM/arm-none-elf/bin:${PATH}"
+
+	581-mboyer@marylou:~/Hacks/Nam-Phone_G40C [master:I±R=]$ nm -CD ~/Hacks/Nam-Phone_G40C/su
+		 U accept
+		 U __aeabi_unwind_cpp_pr0
+		 U atexit
+		 U atoi
+		 U bind
+		 U bsd_signal
+	0000b200 A __bss_end__
+	0000b200 A _bss_end__
+	0000a1dc A __bss_start
+	0000a1dc A __bss_start__
+	0000a1d0 D __data_start
+	0000a1e0 B __dso_handle
+	0000a1dc A _edata
+	0000b200 A _end
+	0000b200 A __end__
+		 U __errno
+		 U execlp
+		 U execvp
+	00009ce8 A __exidx_end
+	00009c8d A __exidx_start
+		 U exit
+	0000a010 T __FINI_ARRAY__
+		 U free
+		 U getppid
+	0000a008 T __INIT_ARRAY__
+		 U __libc_init
+		 U listen
+		 U malloc
+		 U memcpy
+		 U memset
+		 U mkdir
+		 U mktemp
+		 U property_get
+		 U putchar
+		 U puts
+		 U read
+		 U select
+		 U setgid
+		 U setuid
+		 U snprintf
+		 U socket
+		 U sprintf
+	00080000 A _stack
+		 U __stack_chk_fail
+		 U __stack_chk_guard
+		 U stat
+		 U strcmp
+		 U strcpy
+		 U unlink
+		 U android::defaultServiceManager()
+	00008ed0 W android::sp<android::IBinder>::~sp()
+		 U android::Parcel::writeInt32(int)
+		 U android::Parcel::writeString16(unsigned short const*, unsigned int)
+		 U android::Parcel::writeString16(android::String16 const&)
+		 U android::Parcel::writeStrongBinder(android::sp<android::IBinder> const&)
+		 U android::Parcel::writeInterfaceToken(android::String16 const&)
+		 U android::Parcel::Parcel()
+		 U android::Parcel::~Parcel()
+		 U android::String16::String16(char const*)
+		 U android::String16::~String16()
+		 U android::Parcel::dataPosition() const
+		 U android::Parcel::setDataPosition(unsigned int) const
+		 U android::RefBase::decStrong(void const*) const
+
+There are some C++ symbols in there that look like they belong to some sort of Android API. The rest look like fairly bog-standard C standard library stuff. What's of particular interest here is the presence of `socket` and `bind`. These are a strong indication that this program does sockety stuff.
+
+# Sockety stuff
+
+{% highlight objdump %}
+{% include su_objdump.txt %}
+{% endhighlight %}
+
+
+I have an interest in data that may hardcoded into the binary. The `.rodata` section is a good place to start
+
 
 	Contents of section .rodata:
 	 9a24 726f2e62 75696c64 2e766572 73696f6e  ro.build.version
