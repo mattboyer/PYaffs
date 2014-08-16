@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Hacklog #5: Hacking su(1)"
-tags: su binutils
+tags: su binutils assembly ARM
 ---
 
 # gruh
@@ -104,7 +104,11 @@ There are some C++ symbols in there that look like they belong to some sort of A
 {% endhighlight %}
 
 
-I have an interest in data that may hardcoded into the binary. The `.rodata` section is a good place to start
+something about socket() hey, there's a call to snprintf after that. I wonder what its format string might be
+
+See the ARM documentation for register roles and names 
+
+I have an interest in data that may be hardcoded into the binary. The `.rodata` section is a good place to start
 
 
 	Contents of section .rodata:
