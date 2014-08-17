@@ -196,53 +196,37 @@ I used `objdump -Csd` to dump all sections of the `su` executable and disassembl
 {% include su_objdump.txt %}
 {% endhighlight %}
 
-I can see that the strings I identified above are part of the `.rodata` section. It's very likely that constant function call arguments are to be found in this section. Reverse-engineering is largely an exercise in pattern identification, it's one step removed from pareidolia and that's why reliable information is so valuable in this process - it's what anchors us to the reality of the system under study.
+I can see that the strings I identified above are part of the `.rodata` section. It's very likely that constant function call arguments are to be found in this section. Reverse-engineering is largely an exercise in pattern identification, one step removed from pathological [pareidolia](http://en.wikipedia.org/wiki/Pareidolia) and that's why reliable information is so valuable in this process - it's what anchors us to the reality of the system under study.
 
-So yeah.
-
-
-something about socket() hey, there's a call to snprintf after that. I wonder what its format string might be
-
-See the ARM documentation for register roles and names 
+So yeah. `.rodata`.
 
 
-	Contents of section .rodata:
-	 9a24 726f2e62 75696c64 2e766572 73696f6e  ro.build.version
-	 9a34 2e73646b 00300061 63746976 69747900  .sdk.0.activity.
-	 9a44 616e6472 6f69642e 6170702e 49416374  android.app.IAct
-	 9a54 69766974 794d616e 61676572 00737263  ivityManager.src
-	 9a64 6c69622e 68757961 6e776569 2e706572  lib.huyanwei.per
-	 9a74 6d697373 696f6e67 72616e74 2e726571  missiongrant.req
-	 9a84 75657374 00736f63 6b65745f 61646472  uest.socket_addr
-	 9a94 00756964 00706964 00737263 6c69622e  .uid.pid.srclib.
-	 9aa4 68757961 6e776569 2e706572 6d697373  huyanwei.permiss
-	 9ab4 696f6e67 72616e74 2e62726f 61646361  iongrant.broadca
-	 9ac4 73740073 72636c69 622e6875 79616e77  st.srclib.huyanw
-	 9ad4 65692e70 65726d69 7373696f 6e677261  ei.permissiongra
-	 9ae4 6e742e72 6573706f 6e736500 6772616e  nt.response.gran
-	 9af4 745f7265 73756c74 00557361 67653a20  t_result.Usage: 
-	 9b04 7375205b 6f707469 6f6e735d 004f7074  su [options].Opt
-	 9b14 696f6e73 3a002020 2d632c2d 2d636f6d  ions:.  -c,--com
-	 9b24 6d616e64 20636d64 20207275 6e20636d  mand cmd  run cm
-	 9b34 642e0020 202d682c 2d2d6865 6c702020  d..  -h,--help  
-	 9b44 20202020 20202068 656c7000 41757468         help.Auth
-	 9b54 6f723a68 7579616e 77656900 456d6169  or:huyanwei.Emai
-	 9b64 6c3a7372 636c6962 40686f74 6d61696c  l:srclib@hotmail
-	 9b74 2e636f6d 002f6461 74612f64 6174612f  .com./data/data/
-	 9b84 7372636c 69622e68 7579616e 7765692e  srclib.huyanwei.
-	 9b94 7065726d 69737369 6f6e6772 616e742f  permissiongrant/
-	 9ba4 2e736f63 6b65742e 7372636c 69622e58  .socket.srclib.X
-	 9bb4 58585858 58002573 002d6300 2d2d636f  XXXXX.%s.-c.--co
-	 9bc4 6d6d616e 64007375 202d6320 636f6d6d  mmand.su -c comm
-	 9bd4 616e6420 6572726f 722e0d00 2f737973  and error.../sys
-	 9be4 74656d2f 62696e2f 73680073 68002d68  tem/bin/sh.sh.-h
-	 9bf4 002d2d68 656c7000 2a236875 79616e77  .--help.*#huyanw
-	 9c04 6569232a 00687579 616e7765 69206772  ei#*.huyanwei gr
-	 9c14 616e7420 73756363 65737366 756c202e  ant successful .
-	 9c24 2e2e0d00 2f70726f 632f2564 002f6461  ..../proc/%d./da
-	 9c34 74612f64 6174612f 7372636c 69622e68  ta/data/srclib.h
-	 9c44 7579616e 7765692e 7065726d 69737369  uyanwei.permissi
-	 9c54 6f6e6772 616e742f 00737520 73776974  ongrant/.su swit
-	 9c64 63682065 72726f72 2e0d0073 7520636f  ch error...su co
-	 9c74 6d6d616e 64206572 726f722e 0d004445  mmand error...DE
-	 9c84 4e590041 4c4c4f57 00                 NY.ALLOW.    
+# I've no idea what I'm doing
+
+There's a call to a function named `property_get` at `0x9250`:
+
+{% highlight objdump %}
+9244:    48b2          ldr    r0, [pc, #712]    ; (9510 <android::sp<android::IBinder>::~sp()+0x640>)
+9246:    4621          mov    r1, r4
+9248:    4478          add    r0, pc
+924a:    4ab2          ldr    r2, [pc, #712]    ; (9514 <android::sp<android::IBinder>::~sp()+0x644>)
+924c:    447a          add    r2, pc
+924e:    ae23          add    r6, sp, #140    ; 0x8c
+9250:    f7ff ed20     blx    8c94 <property_get@plt>
+{% endhighlight %}
+
+As per the ARM argument passing convention, the first 4 args are passed in registers `r0` through `r3`, in order. What's in our `r0` here? At offset `0x9244`, we load the value found 712 bytes past the program counter, ie at `0x9246 + 712 == 0x950e`:
+
+    9500 bde8f08f 424e444c fcffffff e20e0000  ....BNDL........
+    9510 d8070000 e9070000 cb070000 9a070000  ................
+
+The 4 bytes at `0x950e` are `0x000007d8`. We add the value of `pc` to `r0` at `0x9248` (the Program Counter has already been incremented to the next address) so that `r0` has the value `0x924a + 0x7d8 == 0x9a24`. This points to a hardcoded string in `.rodata`, "`ro.build.version.sdk`":
+
+    9a24 726f2e62 75696c64 2e766572 73696f6e  ro.build.version
+    9a34 2e73646b 00300061 63746976 69747900  .sdk.0.activity.
+
+
+That's nice but not very useful.
+
+
+Start from the `execvp` calls as this what we know we want. There seems to be some `strcmp` calls beforehand. Have a look there.
