@@ -230,3 +230,5 @@ That's nice but not very useful.
 
 
 Start from the `execvp` calls as this what we know we want. There seems to be some `strcmp` calls beforehand. Have a look there.
+
+The parcel stuff is explained here: http://developer.android.com/reference/android/os/Parcel.html
