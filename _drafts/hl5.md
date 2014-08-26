@@ -229,6 +229,61 @@ The 4 bytes at `0x950e` are `0x000007d8`. We add the value of `pc` to `r0` at `0
 That's nice but not very useful.
 
 
-Start from the `execvp` calls as this what we know we want. There seems to be some `strcmp` calls beforehand. Have a look there.
+OK, let's try from setuid instead
+
+    98c4:	f7ff ead6 	blx	8e74 <setuid@plt>
+
+There's a branching instruction that points here:
+
+    9866:	f7ff eae8 	blx	8e38 <setgid@plt>
+    986a:	b358      	cbz	r0, 98c4 <android::sp<android::IBinder>::~sp()+0x9f4>
+
+So that makes sense, right? First we set the effective Group ID then if that returned 0, we move on to the effective UID.
+
+Let's make our way up:
+
+    983e:	f7ff eaf6 	blx	8e2c <memcpy@plt>
+    9842:	2e01      	cmp	r6, #1
+    9844:	dc03      	bgt.n	984e <android::sp<android::IBinder>::~sp()+0x97e>
+    9846:	e012      	b.n	986e <android::sp<android::IBinder>::~sp()+0x99e>
+    9848:	f844 0cf4 	str.w	r0, [r4, #-244]
+    984c:	e0ab      	b.n	99a6 <android::sp<android::IBinder>::~sp()+0xad6>
+    984e:	4963      	ldr	r1, [pc, #396]	; (99dc <android::sp<android::IBinder>::~sp()+0xb0c>)
+    9850:	6878      	ldr	r0, [r7, #4]
+    9852:	4479      	add	r1, pc
+    9854:	f7ff eac6 	blx	8de4 <strcmp@plt>
+    9858:	4606      	mov	r6, r0
+    985a:	b940      	cbnz	r0, 986e <android::sp<android::IBinder>::~sp()+0x99e>
+    985c:	4860      	ldr	r0, [pc, #384]	; (99e0 <android::sp<android::IBinder>::~sp()+0xb10>)
+    985e:	4478      	add	r0, pc
+    9860:	f7ff ea72 	blx	8d48 <puts@plt>
+    9864:	4630      	mov	r0, r6
+    9866:	f7ff eae8 	blx	8e38 <setgid@plt>
+
+    99e0:	03a7      	lsls	r7, r4, #14
+
+
+The GID is loaded into `r0` from `r6`. Before that , we have a call to puts. The argument given to puts is `0x03a7 + 0x985e + 0x4 == 0x9c09` "`huyanwei grant successful ...\n`". Looks like we're on the right track alright!
+
+The GID is loaded into r0 from r6 at 9864. Before that r6 is overwritten with r0 at 0x9858 at which point r0 holds the return value of a call to strcmp.
+
+The second arg given to strcmp is *0x99de=0x03a7 + 0x9852 + 4 = 0x9bfd "`*#huyanwei#*`". That looks like some sort of hardcoded passphrase. So far, so promising. But what's the first argument? r0 is loaded with the value at r7-4
+
+
+
+    97b2:	4628      	mov	r0, r5
+    97b4:	f7ff ff5a 	bl	966c <android::sp<android::IBinder>::~sp()+0x79c>
+    97b8:	2800      	cmp	r0, #0
+    97ba:	db0a      	blt.n	97d2 <android::sp<android::IBinder>::~sp()+0x902>
+    97bc:	223f      	movs	r2, #63	; 0x3f
+    97be:	4621      	mov	r1, r4
+    97c0:	f7ff eb28 	blx	8e14 <read@plt>
+    97c4:	2800      	cmp	r0, #0
+    97c6:	db04      	blt.n	97d2 <android::sp<android::IBinder>::~sp()+0x902>
+    97c8:	d0f3      	beq.n	97b2 <android::sp<android::IBinder>::~sp()+0x8e2>
+
+The above looks like a read loop where we wait for read (whatever the file descriptor actually points to) to return something negative. The file descriptor for the call to read() is in `r0`, the value of which is the return value of the function called at `0x97b4`. What we have at 0x966c looks like it ties in with the sockety stuff (there are calls to `select`)
+
+TODO The value of `pc` is address of the instruction in the objdump + 4 (because we're reading Thumb code as per the ELF header)
 
 The parcel stuff is explained here: http://developer.android.com/reference/android/os/Parcel.html
