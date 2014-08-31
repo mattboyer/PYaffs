@@ -1,10 +1,10 @@
 ---
 layout: post
 title: "Hacklog #5: Hacking su(1)"
-tags: su binutils assembly ARM
+tags: su binutils assembly ARM nm reverse-engineering hacking
 ---
 
-# TBD clever title involving the word 'binary'
+# A first look at su(1)
 
 So I now have access to the full `/system` filesystem. As I stated in the very first post, I have a special interest in `/system/xbin/su`. Based on the file's name and permissions, I have a [strong expectation]({{site.baseurl}}{% post_url 2014-07-15-Hacklog#0 %}) it can be used to acquire superuser privileges.
 
@@ -23,81 +23,7 @@ I extracted the file using [PYaffs](https://github.com/mattboyer/PYaffs) and pro
 	503-mboyer@marylou:~/Hacks/Nam-Phone_G40C [master:I±R=]$ file su
 	su: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked (uses shared libs), stripped
 
-That's par for the course, there's nothing in the output of [`file(1)`](http://linux.die.net/man/1/file) here I'd call surprising. I ran [`strings(1)`](http://linux.die.net/man/1/strings) on the file to see what bits of human-readable text might be in there:
-
-	566-mboyer@marylou:~/Hacks/Nam-Phone_G40C [master:I±R=]$ strings --radix=x -n 8 ./su
-	    114 /system/bin/linker
-	    6c5 __aeabi_unwind_cpp_pr0
-	    6dc __stack_chk_fail
-	    6ed __stack_chk_guard
-	    707 snprintf
-	    739 __dso_handle
-	    746 __INIT_ARRAY__
-	    755 __FINI_ARRAY__
-	    764 __exidx_start
-	    772 __exidx_end
-	    77e __data_start
-	    792 __bss_start
-	    79e __bss_start__
-	    7ac _bss_end__
-	    7b7 __bss_end__
-	    7f4 property_get
-	    822 _ZNK7android7RefBase9decStrongEPKv
-	    845 _ZN7android8String16D1Ev
-	    85e _ZN7android6Parcel13writeString16ERKNS_8String16E
-	    890 _ZNK7android6Parcel15setDataPositionEj
-	    8b7 _ZN7android6Parcel10writeInt32Ei
-	    8d8 _ZN7android6ParcelC1Ev
-	    8ef _ZN7android6ParcelD1Ev
-	    906 _ZN7android2spINS_7IBinderEED1Ev
-	    927 _ZN7android6Parcel19writeInterfaceTokenERKNS_8String16E
-	    95f _ZN7android6Parcel17writeStrongBinderERKNS_2spINS_7IBinderEEE
-	    99d _ZN7android8String16C1EPKc
-	    9b8 _ZNK7android6Parcel12dataPositionEv
-	    9dc _ZN7android21defaultServiceManagerEv
-	    a01 _ZN7android6Parcel13writeString16EPKtj
-	    a2e __libc_init
-	    a63 bsd_signal
-	    a89 liblog.so
-	    a93 libsqlite.so
-	    aa0 libcutils.so
-	    aad libbinder.so
-	    aba libutils.so
-	    ace libstdc++.so
-	   17f0 |hwI FyD
-	   1879 rZL|D``0F
-	   1886 bh0FWIyDoF
-	   190e <H<IxDyD
-	   1a24 ro.build.version.sdk
-	   1a3b activity
-	   1a44 android.app.IActivityManager
-	   1a61 srclib.huyanwei.permissiongrant.request
-	   1a89 socket_addr
-	   1a9d srclib.huyanwei.permissiongrant.broadcast
-	   1ac7 srclib.huyanwei.permissiongrant.response
-	   1af0 grant_result
-	   1afd Usage: su [options]
-	   1b11 Options:
-	   1b1a   -c,--command cmd  run cmd.
-	   1b37   -h,--help         help
-	   1b50 Author:huyanwei
-	   1b60 Email:srclib@hotmail.com
-	   1b79 /data/data/srclib.huyanwei.permissiongrant/.socket.srclib.XXXXXX
-	   1bc0 --command
-	   1bca su -c command error.
-	   1be0 /system/bin/sh
-	   1bfc *#huyanwei#*
-	   1c09 huyanwei grant successful ...
-	   1c28 /proc/%d
-	   1c31 /data/data/srclib.huyanwei.permissiongrant/
-	   1c5d su switch error.
-	   1c6f su command error.
-
-The early strings in there are consistent with a symbol table, it's the strings at the end that are interesting. In particular, there are several instances of `huyanwei` in there and it looks like it's the name of the person who wrote this implementation of `su(1)`.
-
-I did a teeny bit of searching online and there *are* pages that reference this name, however they are mostly in Chinese which I cannot read. I chose not to spend too much time searching for third-party information as I know from bitter experience that nothing kills momentum on a little project like this quite like stumbling upon the answers.
-
-# Further investigation with binutils
+That's par for the course, there's nothing in the output of [`file(1)`](http://linux.die.net/man/1/file) here I'd call surprising. 
 
 ## Building binutils for ARM
 
@@ -186,6 +112,12 @@ Time to break out my ARM build of [`nm(1)`](http://linux.die.net/man/1/nm)! I tu
 
 There are some C++ symbols in there that look like they belong to some sort of Android API. The rest look like fairly common C standard library stuff. What's of particular interest here is the presence of [`socket(3)`](http://linux.die.net/man/3/socket) and [`bind(3)`](http://linux.die.net/man/3/bind). These are a strong indication that this program does sockety stuff.
 
+## Something about ARM assembly
+
+**TBD** Cover the basics of argument passing and provide links
+
+# Deconstructing the binary
+
 ## Disassembly
 
 This is where the fun **really** begins. I want to get superuser privileges out of this binary. Just running `su` from an unprivileged interactive shell does *not* yield this result so I'm assuming that I need to do something else, possibly by means of a socket.
@@ -204,12 +136,6 @@ I used `objdump -Csd` to dump all sections of the `su` executable and disassembl
 I can see that the strings I identified above are part of the `.rodata` section. It's very likely that constant function call arguments are to be found in this section. Reverse-engineering is largely an exercise in pattern identification, one step removed from pathological [pareidolia](http://en.wikipedia.org/wiki/Pareidolia) and that's why reliable information is so valuable in this process - it's what anchors us to the reality of the system under study.
 
 So yeah. `.rodata`.
-
-## Something about ARM assembly
-
-**TBD** Cover the basics of argument passing and provide links
-
-# Gotta start from somewhere
 
 The `.text` section in this file is large enough that figuring it out in its entirety would be a protracted exercise. Since what I really want is for this `su` to give me a root shell, I've decided to start from somewhere I know implements this behaviour I want and work my way back until I find out how I can trigger that.
 
@@ -368,3 +294,79 @@ TODO The value of `pc` is address of the instruction in the objdump + 4 (because
 The parcel stuff is explained here: http://developer.android.com/reference/android/os/Parcel.html
 
 # More shite
+
+I ran [`strings(1)`](http://linux.die.net/man/1/strings) on the file to see what bits of human-readable text might be in there:
+
+	566-mboyer@marylou:~/Hacks/Nam-Phone_G40C [master:I±R=]$ strings --radix=x -n 8 ./su
+	    114 /system/bin/linker
+	    6c5 __aeabi_unwind_cpp_pr0
+	    6dc __stack_chk_fail
+	    6ed __stack_chk_guard
+	    707 snprintf
+	    739 __dso_handle
+	    746 __INIT_ARRAY__
+	    755 __FINI_ARRAY__
+	    764 __exidx_start
+	    772 __exidx_end
+	    77e __data_start
+	    792 __bss_start
+	    79e __bss_start__
+	    7ac _bss_end__
+	    7b7 __bss_end__
+	    7f4 property_get
+	    822 _ZNK7android7RefBase9decStrongEPKv
+	    845 _ZN7android8String16D1Ev
+	    85e _ZN7android6Parcel13writeString16ERKNS_8String16E
+	    890 _ZNK7android6Parcel15setDataPositionEj
+	    8b7 _ZN7android6Parcel10writeInt32Ei
+	    8d8 _ZN7android6ParcelC1Ev
+	    8ef _ZN7android6ParcelD1Ev
+	    906 _ZN7android2spINS_7IBinderEED1Ev
+	    927 _ZN7android6Parcel19writeInterfaceTokenERKNS_8String16E
+	    95f _ZN7android6Parcel17writeStrongBinderERKNS_2spINS_7IBinderEEE
+	    99d _ZN7android8String16C1EPKc
+	    9b8 _ZNK7android6Parcel12dataPositionEv
+	    9dc _ZN7android21defaultServiceManagerEv
+	    a01 _ZN7android6Parcel13writeString16EPKtj
+	    a2e __libc_init
+	    a63 bsd_signal
+	    a89 liblog.so
+	    a93 libsqlite.so
+	    aa0 libcutils.so
+	    aad libbinder.so
+	    aba libutils.so
+	    ace libstdc++.so
+	   17f0 |hwI FyD
+	   1879 rZL|D``0F
+	   1886 bh0FWIyDoF
+	   190e <H<IxDyD
+	   1a24 ro.build.version.sdk
+	   1a3b activity
+	   1a44 android.app.IActivityManager
+	   1a61 srclib.huyanwei.permissiongrant.request
+	   1a89 socket_addr
+	   1a9d srclib.huyanwei.permissiongrant.broadcast
+	   1ac7 srclib.huyanwei.permissiongrant.response
+	   1af0 grant_result
+	   1afd Usage: su [options]
+	   1b11 Options:
+	   1b1a   -c,--command cmd  run cmd.
+	   1b37   -h,--help         help
+	   1b50 Author:huyanwei
+	   1b60 Email:srclib@hotmail.com
+	   1b79 /data/data/srclib.huyanwei.permissiongrant/.socket.srclib.XXXXXX
+	   1bc0 --command
+	   1bca su -c command error.
+	   1be0 /system/bin/sh
+	   1bfc *#huyanwei#*
+	   1c09 huyanwei grant successful ...
+	   1c28 /proc/%d
+	   1c31 /data/data/srclib.huyanwei.permissiongrant/
+	   1c5d su switch error.
+	   1c6f su command error.
+
+The early strings in there are consistent with a symbol table, it's the strings at the end that are interesting. In particular, there are several instances of `huyanwei` in there and it looks like it's the name of the person who wrote this implementation of `su(1)`.
+
+
+
+I did a teeny bit of searching online and there *are* pages that reference this name, however they are mostly in Chinese which I cannot read. I chose not to spend too much time searching for third-party information as I know from bitter experience that nothing kills momentum on a little project like this quite like stumbling upon the answers.
