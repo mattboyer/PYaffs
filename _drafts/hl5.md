@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Hacklog #5: Hacking su(1)"
-tags: su binutils assembly ARM nm reverse-engineering hacking
+title: "Hacklog #5: Hacking the rootkit"
+tags: su binutils assembly ARM nm reverse-engineering hacking binary privilege huyanwei
 ---
 
 # A first look at su(1)
@@ -114,18 +114,48 @@ There are some C++ symbols in there that look like they belong to [some sort of 
 
 # Deconstructing the binary
 
-## Something about ARM assembly
+## Come feel the ARM around you
 
-**TBD** Cover the basics of argument passing and provide links
+As shown in the output of [`file(1)`](http://linux.die.net/man/1/file) above, my `su` is compiled for the ARM CPU in my phone. I've dealt with [x86](https://github.com/mattboyer/optenum), [SPARC](http://nighthacks.com/roller/jag/resource/SunRIP.jpg), [m68k](http://www.ticalc.org/basics/calculators/ti-92plus.html#9) and even [Z80](http://www.ticalc.org/basics/calculators/ti-86.html#9) assembly at various points in the past, but this is the first time I'm going to have to wade through ARM code.
+
+Or [Thumb-2](http://infocenter.arm.com/help/topic/com.arm.doc.ddi0210c/CACBCAAE.html) code, rather:
+
+{% highlight objdump %}
+{% include readelf.txt %}
+{% endhighlight %}
+
+The thing about assembly is that it's a lot easier to read than it is to write. It's even easier when one focuses on reverse-engineering a small body of code! For that sort of job, the only thing one really needs is a passing familiarity with [basic instructions](http://infocenter.arm.com/help/topic/com.arm.doc.dui0489e/Chddgcje.html) (shifting values between registers, basic arithmetic and comparisons), [memory access](http://infocenter.arm.com/help/topic/com.arm.doc.dui0489e/Chdhbfcd.html) (reading and writing to memory, as opposed to the registers) and knowledge of [how argument and return value passing work](http://infocenter.arm.com/help/topic/com.arm.doc.ihi0042e/IHI0042E_aapcs.pdf). The ARM documentation is pretty good for all of that and it's quite readable as well.
+
+One thing I learned the hard way is that when an instruction references the program counter register `pc`, its value is that of the *next instruction*'s offset, ie. the current instruction plus an offset of 2 bytes if running in Thumb mode or 4 bytes if running in ARM mode.
 
 ## Disassembly
 
-This is where the fun **really** begins. I want to get superuser privileges out of this binary. Just running `su` from an unprivileged interactive shell does *not* yield this result so I'm assuming that I need to do something else, possibly by means of a socket.
+This is where the fun **really** begins. I want to get superuser privileges out of this binary. Just running `su` from an unprivileged interactive shell does *not* yield this result so I'm assuming that I need to do something else, possibly by means of a socket to trigger privilege escalation.
 
-	*TBD*
+	$ id
 	id
+	uid=2000(shell) gid=2000(shell) groups=1003(graphics),1004(input),1007(log),1009(mount),1011(adb),10
+	15(sdcard_rw),3001(net_bt_admin),3002(net_bt),3003(inet)
+	
+	$ su
 	su
+	
+	$ id
 	id
+	uid=2000(shell) gid=2000(shell) groups=1003(graphics),1004(input),1007(log),1009(mount),1011(adb),10
+	15(sdcard_rw),3001(net_bt_admin),3002(net_bt),3003(inet)
+	
+	$ su -h
+	su -h
+	Usage: su [options]
+	Options:
+	  -c,--command cmd  run cmd.
+	  -h,--help         help
+
+	Author:huyanwei
+	Email:srclib@hotmail.com
+	
+	$
 
 I used `objdump -Csd` to dump all sections of the `su` executable and disassemble the `.text` section into human-readable ARM assembly in one go:
 
@@ -133,13 +163,15 @@ I used `objdump -Csd` to dump all sections of the `su` executable and disassembl
 {% include su_objdump.txt %}
 {% endhighlight %}
 
-I can see there are human-readable strings in the `.rodata` section. It's very likely that constant function call arguments are to be found in this section. Reverse-engineering is largely an exercise in pattern identification, one step removed from pathological [pareidolia](http://en.wikipedia.org/wiki/Pareidolia) and that's why reliable information is so valuable in this process - it's what anchors us to the reality of the system under study.
+I can see there are human-readable strings in the `.rodata` section. It's very likely that constant function call arguments are to be found in this section.
+
+Reverse-engineering is largely an exercise in pattern identification and in this way it is one step removed from pathological [pareidolia](http://en.wikipedia.org/wiki/Pareidolia). Something *Gestalt* something something [bicameral](http://en.wikipedia.org/wiki/Bicameralism_%28psychology%29) [mind](http://michaelprescott.typepad.com/.a/6a00d83451574c69e201901b7e2e2f970b-pi). This is why reliable information is so valuable in this process - it's what anchors us to the reality of the system under study.
 
 So yeah. I'll have to watch out for addresses that point to `.rodata`.
 
 The `.text` section in this file is large enough that figuring it out in its entirety would be a protracted exercise. Since what I really want is for this `su` to give me a root shell, I've decided to start from somewhere I know implements this behaviour I want and work my way back until I find out how I can trigger that.
 
-I know thanks to `nm(1)` that my `su` has a linker table entry for [`setuid(3)`](http://linux.die.net/man/3/setuid). The output of `objdump` very conveniently includes the names of PLT entries after the BL and BLX function call instructions. As it happens, there's only one call to `setuid`, so I know that no matter what, I want to execute the instruction at offset `0x98c4`.
+I know thanks to `nm(1)` that my `su` has a linker table entry for [`setuid(3)`](http://linux.die.net/man/3/setuid). The output of `objdump` very conveniently includes the names of PLT entries after the [`bl`](http://infocenter.arm.com/help/topic/com.arm.doc.dui0489e/Cihfddaf.html) and [`blx`](http://infocenter.arm.com/help/topic/com.arm.doc.dui0489e/Cihfddaf.html) function call instructions. As it happens, there's only one call to `setuid`, so I know that no matter what, I want to execute the instruction at offset `0x98c4`.
 
 All that's left to do now is work my way up until I can figure out how I can cause `su` to execute this call. I've chosen to focus on the section of code in `.text` between this call and the first function header found before it, in this case the `push {r4, r5, r6, r7, lr}` at offset `0x97d8`. Here's the relevant section of disassembled ARM code:
 
@@ -247,11 +279,11 @@ All that's left to do now is work my way up until I can figure out how I can cau
 98ce:	e01b		b.n	9908 <android::sp<android::IBinder>::~sp()+0xa38>
 {% endhighlight %}
 
-## Working back
+## Scratching the Turing turntable
 
-The instruction immediately preceding the call to `setuid(3)` is a `b.n` unconditional branch and the one before *that* is a `bge.n` conditional branch. This is a pattern typical of compiled code that is found at the "seams" between sequences of instructions compiled from different control flow branches. The upshot is that if and when the ARM CPU executes the instruction at offset `0x98c4`, it must be after it's jumped there from somewhere else.
+The instruction immediately preceding the call to `setuid` is a [`b.n`](http://infocenter.arm.com/help/topic/com.arm.doc.dui0489e/Cihfddaf.html) unconditional branch and the one before *that* is a [`bge.n`](http://infocenter.arm.com/help/topic/com.arm.doc.dui0489e/Cihfddaf.html) conditional branch. This is a pattern typical of compiled code that is found at the "seams" between sequences of instructions compiled from different control flow branches. The upshot is that if and when the ARM CPU executes the instruction at offset `0x98c4`, it must be after it's jumped there from somewhere else.
 
-Sure enough, there's a `cbz` conditional branching instruction that points here at offset `0x986a`:
+Sure enough, there's a [`cbz`](http://infocenter.arm.com/help/topic/com.arm.doc.dui0489e/Cjaghefc.html) conditional branching instruction that points here at offset `0x986a`:
 
 {% highlight objdump %}
 985c:        4860              ldr        r0, [pc, #384]        ; (99e0 <android::sp<android::IBinder>::~sp()+0xb10>)
@@ -264,9 +296,9 @@ Sure enough, there's a `cbz` conditional branching instruction that points here 
 
 So that makes sense, right? First we set the effective Group ID with [`setgid(3)`](http://linux.die.net/man/3/setgid) then if that returned 0, we move on to the effective UID. We even reuse the `0` return code from `setgid` as `setuid`'s argument.
 
-The GID is loaded into `r0` from `r6` at `0x9864`. Before that, we have a call to [`puts(3)`](http://linux.die.net/man/3/puts). The argument given to `puts` in `r0` is `*0x99e0(==0x03a7) + 0x985e + 0x4 == 0x9c09`, which points to a string in `.rodata`: "`huyanwei grant successful ...\n`". Looks like we're on the right track, alright!
+The GID is loaded into `r0` from `r6` at `0x9864`. Before that, there's a call to [`puts(3)`](http://linux.die.net/man/3/puts). The argument given to `puts` in `r0` is `*0x99e0(==0x03a7) + 0x985e + 0x4 == 0x9c09`, which points to a string in `.rodata`: "`huyanwei grant successful ...\n`". Looks like I'm on the right track, alright!
 
-This call to `puts(3)` is preceded by a call to `strcmp(3)` and a `cbnz` conditional branch instruction:
+This call to `puts(3)` is preceded by a call to [`strcmp(3)`](http://linux.die.net/man/3/strcmp) and a `cbnz` conditional branch instruction:
 
 {% highlight objdump %}
 984e:        4963              ldr        r1, [pc, #396]        ; (99dc <android::sp<android::IBinder>::~sp()+0xb0c>)
@@ -277,7 +309,7 @@ This call to `puts(3)` is preceded by a call to `strcmp(3)` and a `cbnz` conditi
 985a:        b940              cbnz       r0, 986e <android::sp<android::IBinder>::~sp()+0x99e>
 {% endhighlight %}
 
-This is very promising, as it means a zero return value in this call to [`strcmp(3)`](http://linux.die.net/man/3/strcmp) is what triggers the privilege escalation performed by `setgid` then `setuid`.
+This is very promising, as it means a zero return value in this call to `strcmp` is what triggers the privilege escalation performed by `setgid` then `setuid`.
 
 So what are we comparing, and against what? The second argument passed to `strcmp` in `r1` is a static `char*` with a value of `*0x99dc(==0x03a6) + 0x9852 + 0x4 == 0x9bfc`. This once again points to a string in `.rodata` with the value "`*#huyanwei#*`". This includes the name of the author and looks like some sort of hardcoded passphrase. But what are we comparing against this value? The immediate answer is `*(r7+4)` but what is at that address?
 
@@ -298,9 +330,11 @@ To find out more, I searched for instructions before the call to `strcmp` that i
 980a:        f7ff fe93         bl         9534 <android::sp<android::IBinder>::~sp()+0x664>
 {% endhighlight %}
 
-So we copy `*(r7 + 4)` - the same address we'll compare against `*#huyanwei#*` to decide whether to escalate privileges - into `r4` and then `r0`. This becomes the first argument passed in another call to `strcmp` at offset `0x97f8`. What's the second argument, then? `*0x99d0 (==0x3f8) + 0x97f6 + 4 == 0x9bf2`, which points to a string in `.rodata`: "`-h`".
+So we copy `*(r7 + 4)` - the same address we'll later compare against `*#huyanwei#*` to decide whether to escalate privileges - into `r4` and then `r0`. This becomes the first argument passed in another call to `strcmp` at offset `0x97f8`. What's the second argument, then? `*0x99d0 (==0x3f8) + 0x97f6 + 4 == 0x9bf2`, which points to a string in `.rodata`: "`-h`".
 
-Wait a minute! That looks a lot like one of the CLI options documented in the usage message, doesn't it? If `*(r7 + 4)` is indeed equal to "`-h`" then we jump to `0x980a`, else we compare that address again, this time to `*0x99d4 (==0x3ef) + 0x9802 + 4 == 0x9bf5`. Once again, this points to `.rodata` and this time to "`--help`". We can now reasonably infer that `r7 + 4` points to the first CLI argument given to `su`. Considering we have `mov r7, r1` at offset `0x97e0` immediately after the function header, this would mean that -***GASP!***- `r1` was `argv` when the function was called!
+Wait a minute! That looks a lot like one of the CLI options documented in the usage message, doesn't it? If `*(r7 + 4)` is indeed equal to "`-h`" then we jump to `0x980a`, else we compare that address again, this time to `*0x99d4 (==0x3ef) + 0x9802 + 4 == 0x9bf5`. Once again, this points to `.rodata` and this time to "`--help`".
+
+I can now reasonably infer that `r7 + 4` points to the first CLI argument given to `su`. Considering we have `mov r7, r1` at offset `0x97e0` immediately after the function header, this would mean that -***GASP!***- `r1` was `argv` when the function was called!
 
 Since we're looking at 32-bit ARM code, `argv + 4 == argv[1]`. This would make the function starting at `0x97d8` the program's `main` and `r0` our `argc`.
 
@@ -308,91 +342,20 @@ Since we're looking at 32-bit ARM code, `argv + 4 == argv[1]`. This would make t
 
 I tried running su with `*#huyanwei#*` as the first argument on the CLI:
 
+![That escalated quickly]({{ site.baseurl }}/images/su_successful.png)
+
 ...and it worked. Yay!
 
+# Now what?
 
-# Sockety stuff
+So I've finally obtained superuser privileges on my phone. I did this by leveraging a rootkit that was present out of the box rather than writing a proper exploit. The whole experience was a bit hollow - I really expected to have to figure out what `su` does with sockets and build a program that would trigger escalation in this way. I was looking forward to that. Instead, I got there by feeding it a magic string as a CLI argument. It's expedient but a bit disappointing all the same. For a moment there, I... I believed. And I wanted more.
 
-The above looks like a read loop where we wait for read (whatever the file descriptor actually points to) to return something negative. The file descriptor for the call to read() is in `r0`, the value of which is the return value of the function called at `0x97b4`. What we have at 0x966c looks like it ties in with the sockety stuff (there are calls to `select`)
+I did a teeny bit of searching online and there *are* pages that reference the author's name, Huyan Wei. They are mostly in Chinese however, which I cannot read. I chose not to spend too much time searching for third-party information as I know from bitter experience that nothing kills momentum on a little project like this quite like stumbling upon the answers.
 
-TODO The value of `pc` is address of the instruction in the objdump + 4 (because we're reading Thumb code as per the ELF header)
+As things stand I thought I should recap the objectives I set in the [first hacklog]({{site.baseurl}}{% post_url 2014-07-15-Hacklog#0 %}):
 
-The parcel stuff is explained here: http://developer.android.com/reference/android/os/Parcel.html
+- ✔ Gain superuser privileges
+- ✔ Access the full filesystem (superuser privilege lets me access the full filesystem)
+- ✘ Investigate the presence of `su(1)`, `tcpdump(1)`
 
-# More shite
-
-I ran [`strings(1)`](http://linux.die.net/man/1/strings) on the file to see what bits of human-readable text might be in there:
-
-	566-mboyer@marylou:~/Hacks/Nam-Phone_G40C [master:I±R=]$ strings --radix=x -n 8 ./su
-	    114 /system/bin/linker
-	    6c5 __aeabi_unwind_cpp_pr0
-	    6dc __stack_chk_fail
-	    6ed __stack_chk_guard
-	    707 snprintf
-	    739 __dso_handle
-	    746 __INIT_ARRAY__
-	    755 __FINI_ARRAY__
-	    764 __exidx_start
-	    772 __exidx_end
-	    77e __data_start
-	    792 __bss_start
-	    79e __bss_start__
-	    7ac _bss_end__
-	    7b7 __bss_end__
-	    7f4 property_get
-	    822 _ZNK7android7RefBase9decStrongEPKv
-	    845 _ZN7android8String16D1Ev
-	    85e _ZN7android6Parcel13writeString16ERKNS_8String16E
-	    890 _ZNK7android6Parcel15setDataPositionEj
-	    8b7 _ZN7android6Parcel10writeInt32Ei
-	    8d8 _ZN7android6ParcelC1Ev
-	    8ef _ZN7android6ParcelD1Ev
-	    906 _ZN7android2spINS_7IBinderEED1Ev
-	    927 _ZN7android6Parcel19writeInterfaceTokenERKNS_8String16E
-	    95f _ZN7android6Parcel17writeStrongBinderERKNS_2spINS_7IBinderEEE
-	    99d _ZN7android8String16C1EPKc
-	    9b8 _ZNK7android6Parcel12dataPositionEv
-	    9dc _ZN7android21defaultServiceManagerEv
-	    a01 _ZN7android6Parcel13writeString16EPKtj
-	    a2e __libc_init
-	    a63 bsd_signal
-	    a89 liblog.so
-	    a93 libsqlite.so
-	    aa0 libcutils.so
-	    aad libbinder.so
-	    aba libutils.so
-	    ace libstdc++.so
-	   17f0 |hwI FyD
-	   1879 rZL|D``0F
-	   1886 bh0FWIyDoF
-	   190e <H<IxDyD
-	   1a24 ro.build.version.sdk
-	   1a3b activity
-	   1a44 android.app.IActivityManager
-	   1a61 srclib.huyanwei.permissiongrant.request
-	   1a89 socket_addr
-	   1a9d srclib.huyanwei.permissiongrant.broadcast
-	   1ac7 srclib.huyanwei.permissiongrant.response
-	   1af0 grant_result
-	   1afd Usage: su [options]
-	   1b11 Options:
-	   1b1a   -c,--command cmd  run cmd.
-	   1b37   -h,--help         help
-	   1b50 Author:huyanwei
-	   1b60 Email:srclib@hotmail.com
-	   1b79 /data/data/srclib.huyanwei.permissiongrant/.socket.srclib.XXXXXX
-	   1bc0 --command
-	   1bca su -c command error.
-	   1be0 /system/bin/sh
-	   1bfc *#huyanwei#*
-	   1c09 huyanwei grant successful ...
-	   1c28 /proc/%d
-	   1c31 /data/data/srclib.huyanwei.permissiongrant/
-	   1c5d su switch error.
-	   1c6f su command error.
-
-The early strings in there are consistent with a symbol table, it's the strings at the end that are interesting. In particular, there are several instances of `huyanwei` in there and it looks like it's the name of the person who wrote this implementation of `su(1)`.
-
-
-
-I did a teeny bit of searching online and there *are* pages that reference this name, however they are mostly in Chinese which I cannot read. I chose not to spend too much time searching for third-party information as I know from bitter experience that nothing kills momentum on a little project like this quite like stumbling upon the answers.
+So far, this project has been more about hacking than it has been about forensics. Now that I have unfettered access to the device, I expect this to change and future posts to focus more on the *what* than the *how do I get access*.
