@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Hacklog #6: Dumping the whole filesystem"
-tags: VFS SSH sshd dropbear busybox netcat MTK
+tags: VFS SSH sshd dropbear busybox netcat MTK android
 ---
 
 # I want it all
@@ -22,9 +22,9 @@ The `/system` dump I extracted includes a bunch of interesting CLI executables, 
 {% include system_file_list.txt %}
 ```
 
-Unfortunately, while there are some pretty powerful tools in there I couldn't find a SSH daemon in the original firmware. Using the [OpenSSH](http://www.openssh.com/) implementation of the [Secure SHell protocol](http://datatracker.ietf.org/wg/secsh/documents/) would be possible but this would require me to cross-compile it from my `x86_64` laptop for the phone's target architecture, `arm-*-elf`... along with its dependencies, including OpenSSL's libcrypto.
+Unfortunately, while there are some pretty powerful tools in there, I couldn't find a SSH daemon in the original firmware. Using the [OpenSSH](http://www.openssh.com/) implementation of the [Secure SHell protocol](http://datatracker.ietf.org/wg/secsh/documents/) would be possible but this would require me to cross-compile it from my `x86_64` laptop for the phone's target architecture, `arm-*-elf`... along with its dependencies, including OpenSSL's libcrypto.
 
-This would be a significant effort, so I chose instead to use  [dropbear](https://matt.ucc.asn.au/dropbear/dropbear.html), a more lightweight SSH daemon. For fun, here's a comparison of runtime dependencies for OpenSSH's [`sshd`](http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man8/sshd.8?query=sshd&sec=8) and [`dropbear`](http://linux.die.net/man/8/dropbear) on Arch Linux:
+This would be a significant effort, so I chose instead to use [dropbear](https://matt.ucc.asn.au/dropbear/dropbear.html), a more lightweight SSH daemon. For fun, here's a comparison of runtime dependencies for OpenSSH's [`sshd`](http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man8/sshd.8?query=sshd&sec=8) and [`dropbear`](http://linux.die.net/man/8/dropbear) on Arch Linux:
 
 ```
 528-mboyer@marylou:~/Hacks/Nam-Phone_G40C [master:I=R=S_]$ diff -y arch_sshd_deps.txt arch_dropbear_deps.txt
@@ -60,10 +60,10 @@ The build of dropbear from that page has a patch applied to it that mocks the ca
 I considered patching the dropbear source and recompiling it, but decided remounting `/system` read-write (`/etc` being symlinked to `/system/etc`) and echoing `/system/bin/sh` into `/system/etc/shells` was the more pragmatic approach, even though as a forensic exercise I really shouldn't touch a read-only file system. I'm not proud.
 
 ```
-629-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [master:I±R=S+]$ ssh -v -i ../nam_id_rsa_openssh root@192.168.1.17
+629-mboyer@marylou:~/Hacks/Nam-Phone_G40C/PYaffs [master:I±R=S+]$ ssh -v -i ../nam_id_rsa_openssh root@<phone>
 OpenSSH_6.7p1, OpenSSL 1.0.1j 15 Oct 2014
 debug1: Reading configuration data /etc/ssh/ssh_config
-debug1: Connecting to 192.168.1.17 [192.168.1.17] port 22.
+debug1: Connecting to A.B.C.D [A.B.C.D] port 22.
 debug1: Connection established.
 debug1: key_load_public: No such file or directory
 debug1: identity file ../nam_id_rsa_openssh type -1
@@ -80,7 +80,7 @@ debug1: kex: client->server aes128-ctr hmac-sha1 none
 debug1: sending SSH2_MSG_KEXDH_INIT
 debug1: expecting SSH2_MSG_KEXDH_REPLY
 debug1: Server host key: RSA 0e:98:fa:4e:51:e6:5a:51:3e:cd:a5:69:1b:f5:36:54
-debug1: Host '192.168.1.17' is known and matches the RSA host key.
+debug1: Host 'A.B.C.D' is known and matches the RSA host key.
 debug1: Found key in /home/mboyer/.ssh/known_hosts:10
 debug1: SSH2_MSG_NEWKEYS sent
 debug1: expecting SSH2_MSG_NEWKEYS
@@ -92,7 +92,7 @@ debug1: Authentications that can continue: publickey
 debug1: Next authentication method: publickey
 debug1: Trying private key: ../nam_id_rsa_openssh
 debug1: Authentication succeeded (publickey).
-Authenticated to 192.168.1.17 ([192.168.1.17]:22).
+Authenticated to A.B.C.D ([A.B.C.D]:22).
 debug1: channel 0: new [client-session]
 debug1: Entering interactive session.
 [1007] Jun 01 19:07:17 lastlog_perform_login: Couldn't stat /var/log/lastlog: No such file or directory
@@ -125,21 +125,20 @@ And so finally I was able to connect to my phone from my regular Linux environme
 
 > Dropbear illustration ©[fablefire](http://fablefire.deviantart.com/art/Woot-Shirt-Drop-Bears-v2-268962490)
 
-
 # Archiving the FS
 
-This is nice and way more comfortable but I still need a way to copy the whole filesystem over the network.
+Being able to connect to the phone is very nice, but I still need a way to copy the whole [Virtual FileSystem](http://www.ibm.com/developerworks/library/l-virtual-filesystem-switch/index.html) onto my laptop. Using [`sftp`](http://linux.die.net/man/1/sftp) is not an option, since that would require a [sftp-server](http://linux.die.net/man/8/sftp-server) executable to be present on the phone. Likewise, [`scp`](http://linux.die.net/man/1/scp) would need to be present on both peers, as explained in this excellent blog [post](https://blogs.oracle.com/janp/entry/how_the_scp_protocol_works).
 
-SCP and SFTP don't work because dropbear doesn't include the respective binaries that would be needed to make them work 
+Instead, I'll do this the old school way with [`tar(1)`](http://linux.die.net/man/1/tar) and [`netcat(1)`](http://linux.die.net/man/1/nc). Neither is present on the phone's firmware, but I was very lucky to find a ready-made [build of busybox](https://github.com/zoobab/busybox-static-for-android) for my phone's target architecture with minimal versions of both.
 
-Soemthing Jan Pechanec's [post](https://blogs.oracle.com/janp/entry/how_the_scp_protocol_works)
+```
+# busybox tar -cv -f - --exclude='sys/*' --exclude='dev/*' --exclude='proc/*' / | busybox nc <laptop> <arbitrary port>
+```
 
-I'll do this the old school way with tar and netcat.
+And just like that, I now have a full archive of my phone's filesystem which I can now map and analyse!
 
-Unfortunately, the phone's toolbox doesn't include them.
+```
+{% include full_file_list.txt %}
+```
 
-Busybox to the rescue! Link to zoobab github repo
-
-Final netcat CLI
-
-	# busybox tar -cv -f - --exclude='sys/*' --exclude='dev/*' --exclude='proc/*' / | busybox nc 192.168.1.10 9876
+I've only just had a quick look at the names of the files but some certainly sound interesting. What's dropbox doing here? I'm guessing `/data/data/srclib.huyanwei.permissiongrant/databases/permissiongrant.sqlite` has something to do with `/system/xbin/su`, but I'm curious to know what exactly. I wonder what the "MobileLog" files really do. And why do we need ext2 tools on a Yaffs-based phone anyway?
