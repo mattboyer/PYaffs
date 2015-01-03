@@ -4,6 +4,7 @@ highlighter: pygments
 
 redcarpet:
   extensions: ["tables"]
-pygments: true
 baseurl: /PYaffs
+host: localhost
+timezone: Europe/Dublin
 exclude: ['path']
